@@ -41,11 +41,26 @@ namespace KEvents
 		virtual void setThreadPool(ThreadPoolPtr threadPool);
 		/**
 		* @brief 
-		* The function always called by the execution tree to execute events.
-		* this function must not under no circumstance execute any long standing tasks, 
-		* it must always pass data to the router.
+		* The function that's always called by the execution tree to execute events.
+		* this function must not under no circumstance execute any blocking tasks that take too long, 
+		* it must always pass data to the router and exit. 
+		* This function can not be override by the subclasses.
 		*/
 		virtual void executeEvent(Event e) final;
+
+		/**
+		* @brief
+		* since the router itself is private to the children
+		* This function exposes the registering interface of the router without exposing the router itself.
+		* 
+		*/
+		virtual void registerCallBack(CallBackBasePtr _cbPtr, std::string EventName);
+		/**
+		* @brief
+		* Initializes the routes that specializes the executor, passing specific callbacks
+		* via the registerCallback interface of the routes function
+		*/
+		virtual void initRoutes() = 0;
 
 	private:
 		EventProducerPtr eventProducer;

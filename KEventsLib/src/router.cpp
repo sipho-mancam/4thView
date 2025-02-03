@@ -3,9 +3,7 @@
 
 namespace KEvents
 {
-	RouterBase::RouterBase()
-	{
-	}
+	
 	/**
 	* @brief 
 	* This function receives the event object, and routes it to the registered
@@ -30,18 +28,24 @@ namespace KEvents
 			}
 		}
 	}
+
 	void RouterBase::registerCallback(CallBackBasePtr _cbPtr, std::string& eventName)
 	{
 		if(!routingMap.contains(eventName))
 		{
 			routingMap[eventName] = std::vector<CallBackBasePtr>();
 		}
+		_cbPtr->setEventProducer(eventProducer);
 		routingMap[eventName].push_back(_cbPtr);
 	}
 
 	void RouterBase::setThreadPool(ThreadPoolPtr tPool)
 	{
 		threadPoolPtr = tPool;
+	}
+	void RouterBase::setEventProducer(EventProducerPtr eProducer)
+	{
+		eventProducer = eProducer;
 	}
 }
 

@@ -3,8 +3,8 @@
 
 namespace KEvents
 {
-	CallBackBase::CallBackBase()
+	void CallBackBase::setEventProducer(EventProducerPtr eProducer)
 	{
-
-	}	
+		eventProducerPtr = eProducer;
+	}
 }

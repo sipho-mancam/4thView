@@ -42,7 +42,10 @@ namespace KEvents
 		* @breif
 		* Receive the event object, pass it to the router and return.
 		*/
-
-
+		router.executeEvent(e);
+	}
+	void ExecutorBase::registerCallBack(CallBackBasePtr _cbPtr, std::string eventName)
+	{
+		router.registerCallback(_cbPtr, eventName);
 	}
 }
