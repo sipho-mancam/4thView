@@ -1,5 +1,6 @@
 #pragma once
 #include "router.hpp"
+#include "thread_pool.hpp"
 #include <memory>
 #include <map>
 #include <vector>
@@ -49,5 +50,6 @@ namespace KEvents
 	private:
 		EventProducerPtr eventProducer;
 		Router router;
+		ThreadPoolPtr threadPool;
 	};
 }

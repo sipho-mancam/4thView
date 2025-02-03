@@ -5,7 +5,9 @@ namespace KEvents
 {
 	ThreadPool::ThreadPool(ulong poolSz)
 		:threadCount(0),
-		poolSize(poolSz)
+		poolSize(poolSz),
+		maxTries(3),
+		poolWorker(nullptr)
 	{
 		for (int i = 0; i < poolSize; i++)
 		{
@@ -16,6 +18,8 @@ namespace KEvents
 				runnables.push_back(runnable);
 			}
 		}
+
+		start();
 	}
 
 	ThreadPool::~ThreadPool()
@@ -40,8 +44,79 @@ namespace KEvents
 	{
 		while (!exitFlag)
 		{
-			// Check if the queue is not empty and dish out tasks
+			if (!taskQ.empty())
+			{
+				try
+				{
+					std::function<void()> task;
+					task = taskQ.pull();
 
+					// find a runnable that's currently done with work
+					bool escape = false;
+
+					// strategy 1: Look for a Runnable that's finished or wait for one to finish up.
+					for (int tries = 0; tries < maxTries; tries++)
+					{
+						for (RunnableThreadPtr runnable : runnables)
+						{
+							if (runnable->isTaskComplete())
+							{
+								runnable->appendTask(std::move(task));
+								escape = true;
+								break;
+							}
+						}
+
+						if (escape)
+						{
+							break;
+						}
+						else
+						{
+							std::this_thread::sleep_for(std::chrono::milliseconds(50));
+						}
+					}
+					// This means that strategy 1 failed, we couldn't find any free thread, now we
+					// attempt to wait for 100ms for each runnable and then queue the task somewhere and leave.
+					if (!escape)
+					{
+						// strategy 2: Wait and avg of 100ms
+						int avgWaitTime = 100 / runnables.size();
+						for (RunnableThreadPtr runnable : runnables)
+						{
+							runnable->waitFor(avgWaitTime);
+							if (runnable->isTaskComplete())
+							{
+								runnable->appendTask(std::move(task));
+								escape = true;
+								break;
+							}
+						}
+
+						if (!escape)
+						{
+							for (RunnableThreadPtr runnable : runnables)
+							{
+								runnable->appendTask(std::move(task));
+								escape = true;
+								break;
+							}
+						}
+					}
+				}
+				catch (std::runtime_error& re)
+				{
+					continue;
+				}
+			}
+		}
+	}
+
+	void ThreadPool::start()
+	{
+		if (!poolWorker)
+		{
+			poolWorker = new std::thread(&ThreadPool::run, this);
 		}
 	}
 

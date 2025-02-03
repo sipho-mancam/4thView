@@ -32,9 +32,9 @@ namespace KEvents
 		eventProducer = eProducer;
 	}
 
-	void ExecutorBase::setThreadPool(ThreadPoolPtr threadPool)
+	void ExecutorBase::setThreadPool(ThreadPoolPtr tPool)
 	{
-
+		threadPool = tPool;
 	}
 	void ExecutorBase::executeEvent(Event e)
 	{

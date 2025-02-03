@@ -22,11 +22,12 @@ namespace KEvents
 			for (CallBackBasePtr& _cbPtr : callbacks)
 			{
 				auto callableTask = std::bind(&CallBackBase::execute, _cbPtr, e);
-				// threadPool.appendTask(callableTask);
+				if (threadPoolPtr)
+				{
+					// Send thhe task off to the pool
+					threadPoolPtr->appendTask(std::move(callableTask));
+				}
 			}
-			// Send thhe task off to the pool
-
-			// Leave
 		}
 	}
 	void RouterBase::registerCallback(CallBackBasePtr _cbPtr, std::string& eventName)
@@ -36,6 +37,11 @@ namespace KEvents
 			routingMap[eventName] = std::vector<CallBackBasePtr>();
 		}
 		routingMap[eventName].push_back(_cbPtr);
+	}
+
+	void RouterBase::setThreadPool(ThreadPoolPtr tPool)
+	{
+		threadPoolPtr = tPool;
 	}
 }
 

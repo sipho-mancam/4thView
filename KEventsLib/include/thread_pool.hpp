@@ -110,24 +110,18 @@ namespace KEvents
 	public:
 		ThreadPool(ulong poolSize);
 		~ThreadPool();
-
-		template<typename F>
-		void appendTask(F task)
-		{
-			taskQ.emplace(task);
-		}
-
 		void run();
+		void start();
+		template<typename F>
+		void appendTask(F task) { taskQ.emplace(task); }
+		
 	private:
 		concurrent::ConcurrentQueue<std::function<void()>> taskQ;
 		ulong threadCount, poolSize;
 		std::atomic<bool>exitFlag;
 		std::vector<RunnableThreadPtr> runnables;
 		std::vector<std::thread*> workers;
-		
+		std::thread* poolWorker;
+		long maxTries;
 	};
-
-	
-	
-
 }
