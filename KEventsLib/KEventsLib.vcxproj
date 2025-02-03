@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\thread_pool.cpp" />
     <ClCompile Include="KEventsLib.cpp" />
     <ClCompile Include="src\callback.cpp" />
     <ClCompile Include="src\executor.cpp" />

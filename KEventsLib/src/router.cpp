@@ -21,7 +21,7 @@ namespace KEvents
 			std::vector<CallBackBasePtr>& callbacks = routingMap[eventName];
 			for (CallBackBasePtr& _cbPtr : callbacks)
 			{
-				auto callableTask = std::bind(CallBackBase::execute, _cbPtr, e);
+				auto callableTask = std::bind(&CallBackBase::execute, _cbPtr, e);
 				// threadPool.appendTask(callableTask);
 			}
 			// Send thhe task off to the pool
