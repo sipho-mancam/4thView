@@ -108,7 +108,7 @@ namespace KEvents
 	class ThreadPool
 	{
 	public:
-		ThreadPool(ulong poolSize);
+		ThreadPool(ulong poolSize=3);
 		~ThreadPool();
 		void run();
 		void start();

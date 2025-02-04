@@ -12,6 +12,9 @@ namespace KEvents
 	*/
 	void RouterBase::executeEvent(Event e)
 	{
+		if (!threadPoolPtr)
+			return;
+
 		std::string eventName = e.getEventName();
 		if (routingMap.contains(eventName))
 		{
@@ -20,11 +23,8 @@ namespace KEvents
 			for (CallBackBasePtr& _cbPtr : callbacks)
 			{
 				auto callableTask = std::bind(&CallBackBase::execute, _cbPtr, e);
-				if (threadPoolPtr)
-				{
-					// Send thhe task off to the pool
-					threadPoolPtr->appendTask(std::move(callableTask));
-				}
+				// Send thhe task off to the pool
+				threadPoolPtr->appendTask(std::move(callableTask));
 			}
 		}
 	}
@@ -42,10 +42,20 @@ namespace KEvents
 	void RouterBase::setThreadPool(ThreadPoolPtr tPool)
 	{
 		threadPoolPtr = tPool;
+		
 	}
 	void RouterBase::setEventProducer(EventProducerPtr eProducer)
 	{
 		eventProducer = eProducer;
+
+		for (auto item : routingMap)
+		{
+			std::vector<CallBackBasePtr>& cbs = item.second;
+			for (CallBackBasePtr cb : cbs)
+			{
+				cb->setEventProducer(eventProducer);
+			}
+		}
 	}
 }
 

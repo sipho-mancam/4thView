@@ -19,13 +19,15 @@ namespace KEvents
 	class ThreadPool;
 	class RouterBase;
 	class RunnableThread;
+	class DefaultExecutor;
 
 	using ExecutorBasePtr = std::shared_ptr<ExecutorBase>;
 	using EventProducerPtr = std::shared_ptr<EventProducer>;
 	using ThreadPoolPtr = std::shared_ptr<ThreadPool>;
-	using Router = RouterBase;
 	using CallBackBasePtr = std::shared_ptr<CallBackBase>;
 	using RunnableThreadPtr = std::shared_ptr<RunnableThread>;
+	using RouterPtr = std::shared_ptr<RouterBase>;
+	using Router = RouterBase;
 
 	typedef unsigned __int64 ulong;
 	typedef unsigned int uint;
