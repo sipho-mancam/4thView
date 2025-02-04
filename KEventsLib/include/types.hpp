@@ -2,6 +2,8 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 
+#include "concurrent_queue.hpp"
+
 using json = nlohmann::json;
 
 namespace KEvents
@@ -20,13 +22,17 @@ namespace KEvents
 	class RouterBase;
 	class RunnableThread;
 	class DefaultExecutor;
+	struct Event;
 
+	using EventQueue = concurrent::ConcurrentQueue<Event>;
 	using ExecutorBasePtr = std::shared_ptr<ExecutorBase>;
 	using EventProducerPtr = std::shared_ptr<EventProducer>;
 	using ThreadPoolPtr = std::shared_ptr<ThreadPool>;
 	using CallBackBasePtr = std::shared_ptr<CallBackBase>;
 	using RunnableThreadPtr = std::shared_ptr<RunnableThread>;
 	using RouterPtr = std::shared_ptr<RouterBase>;
+	using EventQueuePtr = std::shared_ptr<EventQueue>;
+	using ExecutorTreePtr = std::shared_ptr<ExecutorTree>;
 	using Router = RouterBase;
 
 	typedef unsigned __int64 ulong;

@@ -26,6 +26,6 @@ namespace KEvents
 	class EventConsumer
 	{
 	public:
-		EventConsumer();
+		EventConsumer(std::string consumerTopic);
 	};
 }

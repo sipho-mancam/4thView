@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\kevents.cpp" />
     <ClCompile Include="src\thread_pool.cpp" />
     <ClCompile Include="KEventsLib.cpp" />
     <ClCompile Include="src\callback.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="include\concurrent_queue.hpp" />
     <ClInclude Include="include\executor.hpp" />
     <ClInclude Include="include\kafka.hpp" />
+    <ClInclude Include="include\kevents.hpp" />
     <ClInclude Include="include\router.hpp" />
     <ClInclude Include="include\thread_pool.hpp" />
     <ClInclude Include="include\types.hpp" />

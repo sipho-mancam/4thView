@@ -1,15 +1,18 @@
 #include "executor.hpp"
 
-
 namespace KEvents
 {
-	ExecutorTree::ExecutorTree(EventProducerPtr producer)
+	ExecutorTree::ExecutorTree(EventProducerPtr producer, ulong poolSize)
 		:defaultExecutor()
 	{
 		eventProducer = producer;
-		threadPool = std::make_shared<ThreadPool>();
+		threadPool = std::make_shared<ThreadPool>(poolSize);
 		defaultExecutor.setEventProducer(eventProducer);
 		defaultExecutor.setThreadPool(threadPool);
+	}
+	ExecutorTree::~ExecutorTree()
+	{
+		std::cout << "Shutting down executor tree ..." << std::endl;
 	}
 	void ExecutorTree::enqueueEvent(Event event)
 	{

@@ -10,7 +10,8 @@ namespace KEvents
 
 
 
-	EventConsumer::EventConsumer()
+	
+	EventConsumer::EventConsumer(std::string consumerTopic)
 	{
 	}
 }

@@ -24,6 +24,7 @@ namespace KEvents
 
 	ThreadPool::~ThreadPool()
 	{
+		std::cout << "Shutting down thread pool ..." << std::endl;
 		exitFlag = true;
 		for (auto& runnable : runnables)
 		{
@@ -37,7 +38,7 @@ namespace KEvents
 
 			delete worker;
 		}
-
+		std::cout << "Thread Pool shutdown complete..." << std::endl;
 	}
 
 	void ThreadPool::run()
