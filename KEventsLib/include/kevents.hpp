@@ -3,6 +3,7 @@
 #include <iostream>
 #include <atomic>
 #include <thread>
+#include <nlohmann/json.hpp>
 
 #include "kafka.hpp"
 #include "executor.hpp"
@@ -13,6 +14,10 @@
 
 namespace KEvents
 {
+
+	Event createEvent(std::string message);
+
+
 	/**
 	* @brief 
 	* This is the top level class, implementing a lot of the frameworks parts and

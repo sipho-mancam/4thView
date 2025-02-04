@@ -9,7 +9,7 @@ int main()
 {
 	{
 		std::cout << "System running ... " << std::endl;
-		KEvents::EventsManager eventsManager("processor-topic");
+		KEvents::EventsManager eventsManager("events");
 
 
 		// Register all your callbacks here ... 

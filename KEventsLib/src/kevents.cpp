@@ -37,6 +37,16 @@ namespace KEvents
 	{
 		while (!exitFlag)
 		{
+			std::string message = eventConsumerPtr->update();
+			if (!message.empty())
+			{
+				Event e = createEvent(message);
+				std::cout << e.getEventName() << std::endl;
+				std::cout << e.getEventData() << std::endl;
+
+				eventsQueue->push(e);
+			}
+
 			if (eventsQueue->empty())
 				continue;
 
@@ -44,5 +54,10 @@ namespace KEvents
 
 			executorTreePtr->enqueueEvent(currentEvent);
 		}
+	}
+	Event createEvent(std::string message)
+	{
+		Event e = Event::deserializeEvent(message);
+		return e;
 	}
 }
