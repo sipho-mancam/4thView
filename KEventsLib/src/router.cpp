@@ -35,7 +35,15 @@ namespace KEvents
 		{
 			routingMap[eventName] = std::vector<CallBackBasePtr>();
 		}
+		// check if this callback doesn't already exist
+		std::vector<CallBackBasePtr>& _cbs = routingMap[eventName];
+		for (CallBackBasePtr& _cb : _cbs)
+		{
+			if (_cbPtr == _cb)
+				return;
+		}
 		_cbPtr->setEventProducer(eventProducer);
+
 		routingMap[eventName].push_back(_cbPtr);
 	}
 
@@ -47,7 +55,6 @@ namespace KEvents
 	void RouterBase::setEventProducer(EventProducerPtr eProducer)
 	{
 		eventProducer = eProducer;
-
 		for (auto item : routingMap)
 		{
 			std::vector<CallBackBasePtr>& cbs = item.second;

@@ -36,6 +36,13 @@ namespace KEvents
 	{
 		if (!executionTree.contains(type))
 			executionTree[type] = std::vector<ExecutorBasePtr>();
+		
+		std::vector<ExecutorBasePtr> execsList = executionTree[type];
+		for (ExecutorBasePtr& exec : execsList)
+		{
+			if (exec == execPtr)
+				return;
+		}
 		executionTree[type].push_back(execPtr);
 	}
 

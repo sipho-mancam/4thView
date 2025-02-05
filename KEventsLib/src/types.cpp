@@ -20,7 +20,25 @@ namespace KEvents
 
 	void Event::__deserializeEvent(std::string& str)
 	{
-		json result = json::parse(str);
+		json result;
+		try
+		{
+			result = json::parse(str);
+		}
+		catch (json::parse_error& ex)
+		{
+			std::cerr << "Parse error at byte: " << ex.byte << std::endl;
+			return;
+		}
+		
+		// check for existence of keys before trying anything
+		if (!result.contains("event_id") ||
+			!result.contains("source_module") ||
+			!result.contains("event_name") ||
+			!result.contains("event_data")
+		)
+			return ;
+
 		eventId = result["event_id"];
 		sourceModule = result["source_module"];
 		eventName = result["event_name"];

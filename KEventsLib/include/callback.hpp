@@ -21,4 +21,15 @@ namespace KEvents
 	protected:
 		EventProducerPtr eventProducerPtr;
 	};
+
+	using CallbackBasePtr = std::shared_ptr<CallBackBase>;
+	/*template<typename T, typename ...Args>
+	std::shared_ptr<T> createCallback(Args&& ... args);*/
+	
+
+	template<typename T, typename ...Args>
+	std::shared_ptr<T> createCallback(Args && ...args)
+	{
+		return std::make_shared<T>(args...);
+	}
 }

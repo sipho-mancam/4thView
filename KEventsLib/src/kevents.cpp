@@ -13,6 +13,7 @@ namespace KEvents
 		eventsQueue = std::make_shared<EventQueue>();
 		eventConsumerPtr->subscribeEventsQueue(eventsQueue);
 	}
+	
 
 	EventsManager::~EventsManager()
 	{
@@ -35,6 +36,16 @@ namespace KEvents
 		exitFlag = true;
 	}
 
+	void EventsManager::registerCallback(std::string eventName, CallBackBasePtr _cbPtr)
+	{
+		executorTreePtr->registerCallBack(eventName, _cbPtr);
+	}
+
+	void EventsManager::registerExecutor(EventType typ, ExecutorBasePtr _executor)
+	{
+		executorTreePtr->registerExecutor(_executor, typ);
+	}
+
 	void EventsManager::__run()
 	{
 		while (!exitFlag)
@@ -48,7 +59,7 @@ namespace KEvents
 			std::cout << currentEvent.getEventName() << std::endl;
 			std::cout << currentEvent.getEventData() << std::endl;
 #endif
-			eventProducerPtr->sendMessage("test", currentEvent);
+			//eventProducerPtr->sendMessage("test", currentEvent);
 			executorTreePtr->enqueueEvent(currentEvent);
 		}
 	}
@@ -57,4 +68,5 @@ namespace KEvents
 		Event e = Event::deserializeEvent(message);
 		return e;
 	}
+	
 }

@@ -80,7 +80,7 @@ namespace KEvents
 		* This simplifies the process of registering event routes with their callback
 		* Note: Any callback registered through this function will only be executed via the defaultExecutor,
 		* For custom implementations of executors, you'll need to keep a reference to that executor to register callbacks
-		* at a later stage.
+		* at a later stage and use the registerExecutor function instead.
 		*/
 		void registerCallBack(std::string eventName, CallBackBasePtr _cbPtr);
 
@@ -90,6 +90,4 @@ namespace KEvents
 		ThreadPoolPtr threadPool;
 		EventProducerPtr eventProducer;
 	};
-
-	
 }
