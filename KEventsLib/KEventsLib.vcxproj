@@ -151,6 +151,9 @@
     <ClInclude Include="include\types.hpp" />
     <ClInclude Include="testSuite\callbacks_test.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="include\4th_view_config.json" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

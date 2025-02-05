@@ -43,7 +43,6 @@ namespace KEvents
 		sourceModule = result["source_module"];
 		eventName = result["event_name"];
 		eventData = result["event_data"];
-
 	}
 	std::string Event::serializeEvent(json event)
 	{
@@ -119,7 +118,42 @@ namespace KEvents
 		eventType = eType;
 		return this;
 	}
-	
+
+	json __load_config__()
+	{
+		std::string path = "C:/ProgramData/Player Tracking Software/4th_view_config.json";
+		if (std::filesystem::exists(path))
+		{
+			std::ifstream file(path);
+			try {
+				json result = json::parse(file);
+				return result;
+			}
+			catch (json::parse_error& ex) {
+				goto DefaultConfig;
+			}
+			
+		}
+		else {
+			DefaultConfig:
+			json defaultConfig = json::parse(R"(
+			{
+				"kEventslib":{
+					"poolSize": 3,
+					"kafka":{
+						"broker":"127.0.0.1:9092"
+					}
+				}
+			})");
+			// dump the default config and return
+			std::string dstPath = "C:/ProgramData/Player Tracking Software/4th_view_config.json";
+			std::string confStr = defaultConfig.dump();
+			std::ofstream file(dstPath);
+			file.write(const_cast<char*>(confStr.c_str()), confStr.size());
+			file.close();
+			return defaultConfig;
+		}
+	}
 }
 
 

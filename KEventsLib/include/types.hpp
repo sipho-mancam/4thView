@@ -1,10 +1,16 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <nlohmann/adl_serializer.hpp>
+#include <string>
 
 #include "concurrent_queue.hpp"
 
 using json = nlohmann::json;
+using namespace nlohmann::literals;
+
 
 namespace KEvents
 {
@@ -37,6 +43,8 @@ namespace KEvents
 
 	typedef unsigned __int64 ulong;
 	typedef unsigned int uint;
+
+	json __load_config__();
 
 	/**
 	* @brief

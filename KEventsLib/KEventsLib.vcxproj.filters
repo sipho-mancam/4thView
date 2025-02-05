@@ -69,4 +69,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="include\4th_view_config.json" />
+  </ItemGroup>
 </Project>

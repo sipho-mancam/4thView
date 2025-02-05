@@ -11,7 +11,7 @@ int main()
 {
 	{
 		std::cout << "System running ... " << std::endl;
-		KEvents::EventsManager eventsManager("events");
+		KEvents::EventsManager eventsManager("events", "test_group");
 		std::shared_ptr<KEvents::TestCallback>	testCb = std::make_shared<KEvents::TestCallback>();
 		std::shared_ptr<KEvents::TestCallback2> testCb2 = KEvents::createCallback<KEvents::TestCallback2>();
 		std::shared_ptr<KEvents::TestCallback3> testCb3 = KEvents::createCallback<KEvents::TestCallback3>("hello_friend");

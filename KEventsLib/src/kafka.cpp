@@ -78,7 +78,7 @@ namespace KEvents
 		:
 		deliveryReport()
 	{
-		kafkaProducer = buildProducer("127.0.0.1:9092", &deliveryReport);
+		kafkaProducer = buildProducer(broker, &deliveryReport);
 	}
 
 	void EventProducer::sendMessage(std::string _topic, Event e)
@@ -153,10 +153,10 @@ namespace KEvents
 	}
 
 	
-	EventConsumer::EventConsumer(std::string consumerTopic)
+	EventConsumer::EventConsumer(std::string broker, std::string consumerTopic, std::string group_id)
 		: _callBackHandler()
 	{
-		kConsumer = buildConsumer("127.0.0.1:9092", "test_consumer", &_callBackHandler);
+		kConsumer = buildConsumer(broker, group_id, &_callBackHandler);
 		kConsumer->subscribe(std::vector<std::string>({ consumerTopic }));
 	}
 

@@ -2,14 +2,16 @@
 
 namespace KEvents
 {
-	EventsManager::EventsManager(std::string consumerTopic, ulong poolSize)
+	EventsManager::EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize)
 		: worker(nullptr)
 	{
-		eventConsumerPtr = std::make_shared<EventConsumer>(consumerTopic);
-		eventProducerPtr = std::make_shared<EventProducer>("127.0.0.1:9092");
+		json config = __load_config__();
+		json& libConfig = config["kEventslib"];
+
+		eventConsumerPtr = std::make_shared<EventConsumer>(libConfig["kafka"]["broker"], consumerTopic, service_name);
+		eventProducerPtr = std::make_shared<EventProducer>(libConfig["kafka"]["broker"]);
 
 		executorTreePtr = std::make_shared<ExecutorTree>(eventProducerPtr, poolSize);
-
 		eventsQueue = std::make_shared<EventQueue>();
 		eventConsumerPtr->subscribeEventsQueue(eventsQueue);
 	}
@@ -28,7 +30,8 @@ namespace KEvents
 
 	void EventsManager::startEventLoop()
 	{
-		worker = std::make_unique<std::thread>(&EventsManager::__run, this);
+		if(!worker)
+			worker = std::make_unique<std::thread>(&EventsManager::__run, this);
 	}
 
 	void EventsManager::exit()
@@ -63,6 +66,7 @@ namespace KEvents
 			executorTreePtr->enqueueEvent(currentEvent);
 		}
 	}
+	
 	Event createEvent(std::string message)
 	{
 		Event e = Event::deserializeEvent(message);

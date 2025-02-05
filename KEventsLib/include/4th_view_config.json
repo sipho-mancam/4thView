@@ -1,0 +1,8 @@
+{
+    "kEventslib":{
+        "poolSize": 3,
+        "kafka":{
+            "broker":"127.0.0.1:9092"
+        }
+    }
+}
