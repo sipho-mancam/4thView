@@ -6,7 +6,7 @@ namespace KEvents
 		: worker(nullptr)
 	{
 		eventConsumerPtr = std::make_shared<EventConsumer>(consumerTopic);
-		eventProducerPtr = std::make_shared<EventProducer>();
+		eventProducerPtr = std::make_shared<EventProducer>("127.0.0.1:9092");
 
 		executorTreePtr = std::make_shared<ExecutorTree>(eventProducerPtr, poolSize);
 
@@ -48,6 +48,7 @@ namespace KEvents
 			std::cout << currentEvent.getEventName() << std::endl;
 			std::cout << currentEvent.getEventData() << std::endl;
 #endif
+			eventProducerPtr->sendMessage("test", currentEvent);
 			executorTreePtr->enqueueEvent(currentEvent);
 		}
 	}

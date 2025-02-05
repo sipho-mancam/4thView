@@ -57,9 +57,10 @@ namespace KEvents
 		}
 		if (_deliveryCb)
 		{
-			if (conf->set("delivery_cb", _deliveryCb, err) != RdKafka::Conf::CONF_OK)
+			if (conf->set("dr_cb", _deliveryCb, err) != RdKafka::Conf::CONF_OK)
 			{
 				std::cerr << "Could not configure delivery callback" << std::endl;
+				std::cerr << "Error: " << err << std::endl;
 			}
 		}
 		RdKafka::Producer* producer = RdKafka::Producer::create(conf, err);
@@ -73,9 +74,11 @@ namespace KEvents
 	}
 
 
-	EventProducer::EventProducer()
+	EventProducer::EventProducer(std::string broker)
+		:
+		deliveryReport()
 	{
-		kafkaProducer = buildProducer(&deliveryReport);
+		kafkaProducer = buildProducer("127.0.0.1:9092", &deliveryReport);
 	}
 
 	void EventProducer::sendMessage(std::string _topic, Event e)
@@ -195,6 +198,11 @@ namespace KEvents
 	void MessageCallback::subscribeEventsQueue(EventQueuePtr q)
 	{
 		qsList.push_back(q);
+	}
+
+	MessageDeliveryCallback::MessageDeliveryCallback()
+		:RdKafka::DeliveryReportCb()
+	{
 	}
 
 	void MessageDeliveryCallback::dr_cb(Message& message)

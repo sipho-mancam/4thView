@@ -41,10 +41,11 @@ namespace KEvents
 	};
 
 
-	class MessageDeliveryCallback : public DeliveryReportCb
+	class MessageDeliveryCallback : public RdKafka::DeliveryReportCb
 	{
 	public:
-		virtual void dr_cb(Message& message);
+		MessageDeliveryCallback();
+		virtual void dr_cb(Message& message) override;
 	};
 
 
@@ -52,7 +53,7 @@ namespace KEvents
 	class EventProducer
 	{
 	public:
-		EventProducer();
+		EventProducer(std::string broker);
 
 		void sendMessage(std::string _topic, Event e);
 		void sendMessage(std::string _topic, std::string _message);
