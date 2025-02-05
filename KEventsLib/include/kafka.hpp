@@ -6,13 +6,17 @@
 #include <exception>
 #include <librdkafka/rdkafkacpp.h>
 #include <vector>
+#include <time.h>
 
 #include "types.hpp"
 
+#define RETRY_COUNT 3
 using namespace RdKafka;
 
 namespace KEvents
 {
+
+
 	/**
 	*@brief
 	*	EventProduce is a wrapper for the Kafka Producer class. It abstracts the exact underlying producer
@@ -21,6 +25,7 @@ namespace KEvents
 	*	you want to produce to.
 	*/
 	std::shared_ptr<KafkaConsumer> buildConsumer(std::string broker, std::string group_id, ConsumeCb* _messageCb = nullptr);
+	std::shared_ptr<RdKafka::Producer> buildProducer(std::string broker, DeliveryReportCb* _deliveryCb = nullptr);
 
 	class MessageCallback : public ConsumeCb
 	{
@@ -36,11 +41,28 @@ namespace KEvents
 	};
 
 
+	class MessageDeliveryCallback : public DeliveryReportCb
+	{
+	public:
+		virtual void dr_cb(Message& message);
+	};
+
+
 
 	class EventProducer
 	{
 	public:
 		EventProducer();
+
+		void sendMessage(std::string _topic, Event e);
+		void sendMessage(std::string _topic, std::string _message);
+
+	private:
+		std::string __create_message__(Event e);
+		std::string __create_message__(std::string e);
+
+		std::shared_ptr<RdKafka::Producer> kafkaProducer;
+		MessageDeliveryCallback deliveryReport;
 	};
 
 	/**
