@@ -11,6 +11,7 @@ namespace KEvents
 		executorTreePtr = std::make_shared<ExecutorTree>(eventProducerPtr, poolSize);
 
 		eventsQueue = std::make_shared<EventQueue>();
+		eventConsumerPtr->subscribeEventsQueue(eventsQueue);
 	}
 
 	EventsManager::~EventsManager()
@@ -21,6 +22,7 @@ namespace KEvents
 
 		if (worker->joinable())
 			worker->join();
+		std::cout << "Events manager shutdown complete ... " << std::endl;
 	}
 
 	void EventsManager::startEventLoop()
@@ -37,21 +39,15 @@ namespace KEvents
 	{
 		while (!exitFlag)
 		{
-			std::string message = eventConsumerPtr->update();
-			if (!message.empty())
-			{
-				Event e = createEvent(message);
-				std::cout << e.getEventName() << std::endl;
-				std::cout << e.getEventData() << std::endl;
-
-				eventsQueue->push(e);
-			}
-
+			eventConsumerPtr->update();
 			if (eventsQueue->empty())
 				continue;
 
 			Event currentEvent = eventsQueue->pull();
-
+#ifdef _DEBUG
+			std::cout << currentEvent.getEventName() << std::endl;
+			std::cout << currentEvent.getEventData() << std::endl;
+#endif
 			executorTreePtr->enqueueEvent(currentEvent);
 		}
 	}

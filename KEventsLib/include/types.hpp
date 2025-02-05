@@ -42,6 +42,7 @@ namespace KEvents
 	* @brief
 	* Any module implementing the executor tree uses this model to decide how to router events to their respective executors.
 	*/ 
+	
 	enum EventType
 	{
 		DEFAULT = -1, // ignored events.
@@ -68,6 +69,13 @@ namespace KEvents
 		Event(Event&& obj) noexcept; // Move Constructor deleted
 		Event& operator=(const Event& obj); // Copy Assignable
 		~Event() = default;
+
+
+		static Event* createEvent();
+		Event* setEventName(std::string eName);
+		Event* setSourceModule(std::string sourceModule);
+		Event* setEventData(json data);
+		Event* setEventType(EventType eType);
 
 		long getEventID() { return eventId; }
 		EventType getEventType() { return eventType; }

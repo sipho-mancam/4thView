@@ -13,10 +13,7 @@ int main()
 
 
 		// Register all your callbacks here ... 
-
-
 		eventsManager.startEventLoop();
-
 		// continue with your other business here ...
 		_getch();
 	}

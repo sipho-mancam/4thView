@@ -5,6 +5,9 @@
 #include <iostream>
 #include <exception>
 #include <librdkafka/rdkafkacpp.h>
+#include <vector>
+
+#include "types.hpp"
 
 using namespace RdKafka;
 
@@ -25,6 +28,11 @@ namespace KEvents
 		virtual void consume_cb(Message& message, void* opaque) override;
 
 		virtual ~MessageCallback();
+
+		void subscribeEventsQueue(EventQueuePtr q);
+
+	private:
+		std::vector<EventQueuePtr> qsList;
 	};
 
 
@@ -38,18 +46,21 @@ namespace KEvents
 	/**
 	*@brief
 	*	EventConsumer is a wrapper for a kafka consumer, 
-	*	it implements the thread and starts the consumer polling loop 
-	*	on that execution thread, it's also responsible for killing the consumer.
+	*	it implements the kafka message callback and update the events queue subscribed,
+	*	it's also responsible for killing the consumer.
 	*/
 	class EventConsumer
 	{
 	public:
 		EventConsumer(std::string consumerTopic);
 		~EventConsumer();
-		std::string update();
+		void update();
+		void subscribeEventsQueue(EventQueuePtr eq);
+
 	private:
 
 		std::shared_ptr<KafkaConsumer>kConsumer;
 		MessageCallback _callBackHandler;
+		EventQueuePtr eventQ;
 	};
 }

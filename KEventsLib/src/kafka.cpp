@@ -48,14 +48,11 @@ namespace KEvents
 
 	}
 
-
-
-
 	
 	EventConsumer::EventConsumer(std::string consumerTopic)
 		: _callBackHandler()
 	{
-		kConsumer = buildConsumer("127.0.0.1:9092", "test_consumer");
+		kConsumer = buildConsumer("127.0.0.1:9092", "test_consumer", &_callBackHandler);
 		kConsumer->subscribe(std::vector<std::string>({ consumerTopic }));
 	}
 
@@ -63,36 +60,39 @@ namespace KEvents
 	{
 		std::cout << "Shutting down events consumer" << std::endl;
 		kConsumer->close();
-		delete kConsumer.get();
 		std::cout << "Shutting down events consumer complete" << std::endl;
 	}
 
-	std::string EventConsumer::update()
-	{		
-		RdKafka::Message* message = kConsumer->consume(20);
-		if (message->err() == ERR_NO_ERROR)
-		{
-			std::string message_ = std::string(static_cast<const char*>(message->payload()), message->len());
-			//std::cout << message_ << std::endl;
-			return message_;
-		}
-		delete message;
+	void EventConsumer::update()
+	{	
+		kConsumer->poll(20);
+	}
 
-		return std::string();
+	void EventConsumer::subscribeEventsQueue(EventQueuePtr eq)
+	{
+		_callBackHandler.subscribeEventsQueue(eq);
 	}
 
 
 	void MessageCallback::consume_cb(Message& message, void* opaque)
 	{
-		std::cout << "There was a message recieved " << std::endl;
 		if (message.err() == ERR_NO_ERROR)
 		{
-			std::cout << "Message Received" << std::endl;
+			std::string message_ = std::string(static_cast<const char*>(message.payload()), message.len());
+			Event e = Event::deserializeEvent(message_);
+			for (EventQueuePtr q : qsList)
+			{
+				q->push(e);
+			}
 		}
 	}
 
 	MessageCallback::~MessageCallback()
 	{
-
+		
+	}
+	void MessageCallback::subscribeEventsQueue(EventQueuePtr q)
+	{
+		qsList.push_back(q);
 	}
 }

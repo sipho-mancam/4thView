@@ -43,13 +43,12 @@ namespace KEvents
 		:eventId(0),
 		eventType(EventType::DEFAULT)
 	{
-
 	}
 	Event::Event(const Event& obj)
 	{
 		eventName = obj.eventName;
 		eventId = obj.eventId;
-		eventData == obj.eventData;
+		eventData = obj.eventData;
 		eventType = obj.eventType;
 	}
 
@@ -57,7 +56,7 @@ namespace KEvents
 	{
 		eventName = obj.eventName;
 		eventId = obj.eventId;
-		eventData == obj.eventData;
+		eventData = obj.eventData;
 		eventType = obj.eventType;
 	}
 
@@ -65,10 +64,44 @@ namespace KEvents
 	{
 		eventName = obj.eventName;
 		eventId = obj.eventId;
-		eventData == obj.eventData;
+		eventData = obj.eventData;
 		eventType = obj.eventType;
 		return std::ref(*this);
 	}
+	Event* Event::createEvent()
+	{
+		Event* e = new Event();
+		e->
+		setEventType(EventType::DEFAULT)->
+		setEventName("")->
+		setSourceModule("")->
+		setEventData(json());
+		return e;
+	}
+	Event* Event::setEventName(std::string eName)
+	{
+		eventName = eName;
+		return this;
+	}
+
+	Event* Event::setSourceModule(std::string sModule)
+	{
+		sourceModule = sModule;
+		return this;
+	}
+
+	Event* Event::setEventData(json data)
+	{
+		eventData = data;
+		return this;
+	}
+
+	Event* Event::setEventType(EventType eType)
+	{
+		eventType = eType;
+		return this;
+	}
+	
 }
 
 
