@@ -45,7 +45,6 @@ namespace KEvents
 	typedef unsigned int uint;
 
 	json __load_config__();
-
 	/**
 	* @brief
 	* Any module implementing the executor tree uses this model to decide how to router events to their respective executors.
