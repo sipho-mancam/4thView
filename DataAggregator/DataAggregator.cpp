@@ -1,14 +1,10 @@
 #include <iostream>
 #include "kevents.hpp"
-#include "st_callback.hpp"
-#include <conio.h>
-
-
 
 int main()
 {
 	json config = KEvents::__load_config__();
-	json moduleConfig = config["InputManager"];
+	json moduleConfig = config["DataAggregator"];
 	json systemSettings = config["systemSettings"];
 
 	std::string serviceTopic = moduleConfig["serviceTopic"];
@@ -16,14 +12,7 @@ int main()
 
 	KEvents::EventsManager eventsManager(serviceTopic, serviceName);
 
-	std::shared_ptr<StreamDataCallback> streamCb = KEvents::createCallback<StreamDataCallback>(
-		config["Processor"]["serviceTopic"],
-		serviceName);
-
-	eventsManager.registerCallback(EN_STREAM_DATA, streamCb);
-
-	eventsManager.startEventLoop(true);
-
-	return 0;
 	
+	eventsManager.startEventLoop(true);
+	return 0;
 }

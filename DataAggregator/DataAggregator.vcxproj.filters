@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Processor.cpp">
+    <ClCompile Include="DataAggregator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\stream_data_da.cpp">
+    <ClCompile Include="src\stream_data_cb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\stream_data_da.hpp">
+    <ClInclude Include="include\stream_data_cb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

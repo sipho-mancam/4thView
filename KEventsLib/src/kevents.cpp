@@ -28,10 +28,12 @@ namespace KEvents
 		std::cout << "Events manager shutdown complete ... " << std::endl;
 	}
 
-	void EventsManager::startEventLoop()
+	void EventsManager::startEventLoop(bool sync)
 	{
-		if(!worker)
+		if (!worker && !sync)
 			worker = std::make_unique<std::thread>(&EventsManager::__run, this);
+		else
+			__run();
 	}
 
 	void EventsManager::exit()

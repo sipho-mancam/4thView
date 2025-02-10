@@ -30,7 +30,7 @@ namespace KEvents
 		EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize=3);
 		~EventsManager();
 
-		void startEventLoop();
+		void startEventLoop(bool sync=false);
 		void exit();
 		void registerCallback(std::string eventName, CallBackBasePtr _cbPtr);
 		void registerExecutor(EventType t, ExecutorBasePtr _executor);

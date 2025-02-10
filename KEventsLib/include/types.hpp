@@ -1,4 +1,12 @@
 #pragma once
+
+#ifdef _EXPORT
+#define KEVENTS_API __declspec(dllexport)
+#else
+#define KEVENTS_API __declspec(dllimport)
+#endif
+
+
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <fstream>
@@ -10,6 +18,15 @@
 
 using json = nlohmann::json;
 using namespace nlohmann::literals;
+
+
+#define EN_DATA_REQUEST "data_request"
+#define EN_DATA_RESPONSE "data_response"
+#define EN_STREAM_DATA "stream_data"
+#define EN_STREAM_DATA_UPDATE "stream_data_mod"
+#define EN_STATE_MOD "state_mod"
+#define EN_STATE_CAPTURE_START "state_capture_start"
+#define EN_STATE_CAPTURE_STOP "state_capture_stop"
 
 
 namespace KEvents
@@ -61,7 +78,7 @@ namespace KEvents
 		E_OUTPUT, // Output related events
 		E_MISC_EVENTS // Arbitrary modules related events.
 	};
-
+	
 	struct Event
 	{
 	public:
