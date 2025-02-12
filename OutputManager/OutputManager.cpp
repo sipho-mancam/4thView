@@ -1,20 +1,24 @@
-// OutputManager.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include "kevents.hpp"
+#include "stream_cb.hpp"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	json config = KEvents::__load_config__();
+	json moduleConfig = config["OutputManager"];
+	json systemSettings = config["systemSettings"];
+
+	std::string serviceTopic = moduleConfig["serviceTopic"];
+	std::string serviceName = moduleConfig["serviceName"];
+
+	KEvents::EventsManager eventsManager(serviceTopic, serviceName);
+
+	std::shared_ptr<StreamCallback> streamCb = KEvents::createCallback<StreamCallback>(config, serviceName);
+
+	eventsManager.registerCallback(EN_STREAM_DATA_UPDATE, streamCb);
+
+
+	eventsManager.startEventLoop(true);
+
+	return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

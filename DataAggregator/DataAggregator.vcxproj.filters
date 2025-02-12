@@ -21,9 +21,15 @@
     <ClCompile Include="src\stream_data_cb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\state_management.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\stream_data_cb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\state_management.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

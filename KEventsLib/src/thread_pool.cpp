@@ -70,10 +70,12 @@ namespace KEvents
 
 						if (escape)
 						{
+							// break out of the second loop
 							break;
 						}
 						else
 						{
+							// retry durations ... 50ms intervals
 							std::this_thread::sleep_for(std::chrono::milliseconds(50));
 						}
 					}
@@ -82,7 +84,7 @@ namespace KEvents
 					if (!escape)
 					{
 						// strategy 2: Wait and avg of 100ms
-						int avgWaitTime = 100 / runnables.size();
+						int avgWaitTime = 100 / (int)runnables.size();
 						for (RunnableThreadPtr runnable : runnables)
 						{
 							runnable->waitFor(avgWaitTime);
@@ -107,6 +109,7 @@ namespace KEvents
 				}
 				catch (std::runtime_error& re)
 				{
+					std::cerr << re.what() << std::endl;
 					continue;
 				}
 			}

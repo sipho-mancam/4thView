@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataAggregator.cpp" />
+    <ClCompile Include="src\state_management.cpp" />
     <ClCompile Include="src\stream_data_cb.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +145,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\state_management.hpp" />
     <ClInclude Include="include\stream_data_cb.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

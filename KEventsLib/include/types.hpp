@@ -16,18 +16,16 @@
 
 #include "concurrent_queue.hpp"
 
-using json = nlohmann::json;
-using namespace nlohmann::literals;
-
-
 #define EN_DATA_REQUEST "data_request"
 #define EN_DATA_RESPONSE "data_response"
 #define EN_STREAM_DATA "stream_data"
-#define EN_STREAM_DATA_UPDATE "stream_data_mod"
+#define EN_STREAM_DATA_UPDATE "stream_data_update"
 #define EN_STATE_MOD "state_mod"
 #define EN_STATE_CAPTURE_START "state_capture_start"
 #define EN_STATE_CAPTURE_STOP "state_capture_stop"
 
+using json = nlohmann::json;
+using namespace nlohmann::literals;
 
 namespace KEvents
 {
@@ -79,6 +77,19 @@ namespace KEvents
 		E_MISC_EVENTS // Arbitrary modules related events.
 	};
 	
+	//This does not belong here ... but we need all the subsystems to know about it.
+	//It's a hack.
+	enum STATES_DEF {
+		ANNOTATION = 1,
+		HIGHLIGHT = 2,
+		DISTANCE = 3,
+		POSITION = 4
+	};
+	
+	enum STREAM_TYPES {
+		TRACKER = 0
+	};
+
 	struct Event
 	{
 	public:
