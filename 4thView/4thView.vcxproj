@@ -76,6 +76,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)KEventsLib\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,6 +92,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)KEventsLib\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,6 +109,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)KEventsLib\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,6 +124,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)KEventsLib\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +136,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="4thView.cpp" />
+    <ClCompile Include="src\processes_manager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\processes_manager.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataAggregator\DataAggregator.vcxproj">
+      <Project>{8933aed9-2712-4434-83af-09a30b0d8172}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\InputManager\InputManager.vcxproj">
+      <Project>{506b6bf6-c5e6-4ef9-a2d6-d1340e6b2c92}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\KEventsLib\KEventsLib.vcxproj">
+      <Project>{ac241c1c-2d3d-469f-983b-3d935287bc7d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\OutputManager\OutputManager.vcxproj">
+      <Project>{0f01f31b-6268-45ab-9c37-6ff43cdf2afb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Processor\Processor.vcxproj">
+      <Project>{e0136212-f4c8-4e36-8490-4e670dc440a9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\SportEventProcessor\SportEventProcessor.vcxproj">
+      <Project>{0a910dbd-9afe-4506-a24f-a2cc2df1ce6e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

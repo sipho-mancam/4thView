@@ -70,7 +70,7 @@ namespace KEvents
 	class ExecutorTree final
 	{
 	public:
-		ExecutorTree(EventProducerPtr producer, ulong poolSize=3);
+		ExecutorTree(EventProducerPtr producer, ulong poolSize=1);
 		~ExecutorTree();
 
 		void enqueueEvent(Event event);
