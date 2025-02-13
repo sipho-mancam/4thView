@@ -1,11 +1,17 @@
 #include "AppMain.h"
 #include <QtWidgets/QGraphicsItem>
+#include <iostream>
+#include <streambuf>
+#include <string>
+#include <QObject>
+
 
 AppMain::AppMain(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AppMainClass())
 {
     ui->setupUi(this);
+    
     scene = new QGraphicsScene();
     ui->graphicsView->setScene(scene);
     QSize rsize = ui->graphicsView->size();
@@ -25,6 +31,9 @@ AppMain::AppMain(QWidget *parent)
 ;
     text = (QGraphicsItem*)scene->addText(QString("Off"), font);
     text->setPos(280 + width - 20, 260 - height / 2 + 50);
+
+    outputHandle = new StdoutStreamBuffer(this);
+    connect(outputHandle, &StdoutStreamBuffer::outputCaptured, this, &AppMain::appendOutput);
 
 }
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1077</width>
-    <height>692</height>
+    <width>1193</width>
+    <height>846</height>
    </rect>
   </property>
   <property name="font">
@@ -20,7 +20,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="AppMain.qrc">
-    <normaloff>:/AppMain/resources/Seb 4.png</normaloff>:/AppMain/resources/Seb 4.png</iconset>
+    <normaloff>:/AppMain/resources/Seb 4 white.png</normaloff>:/AppMain/resources/Seb 4 white.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
@@ -58,7 +58,7 @@ QDockWidget{
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1077</width>
+     <width>1193</width>
      <height>21</height>
     </rect>
    </property>
@@ -167,6 +167,18 @@ QDockWidget{
       <height>100</height>
      </size>
     </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPlainTextEdit" name="plainTextEdit">
+       <property name="tabChangesFocus">
+        <bool>true</bool>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QToolBar" name="toolBar">

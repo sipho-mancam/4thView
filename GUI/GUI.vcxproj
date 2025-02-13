@@ -109,6 +109,7 @@
     <QtMoc Include="AppMain.h" />
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="output_console.ui" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KEventsLib\KEventsLib.vcxproj">
@@ -117,6 +118,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\stream_buffer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

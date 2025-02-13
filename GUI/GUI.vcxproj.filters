@@ -44,4 +44,14 @@
   <ItemGroup>
     <None Include="main_styles.qss" />
   </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="output_console.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\stream_buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

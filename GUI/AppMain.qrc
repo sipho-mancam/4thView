@@ -2,5 +2,6 @@
     <qresource prefix="/AppMain">
         <file>resources/Seb 4.png</file>
         <file>resources/green_oval.png</file>
+        <file>resources/Seb 4 white.png</file>
     </qresource>
 </RCC>
