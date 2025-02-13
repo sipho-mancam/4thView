@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="AppMain">
+    <qresource prefix="/AppMain">
+        <file>resources/Seb 4.png</file>
+        <file>resources/green_oval.png</file>
     </qresource>
 </RCC>

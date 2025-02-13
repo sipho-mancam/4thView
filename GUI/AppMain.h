@@ -17,4 +17,5 @@ public:
 
 private:
     Ui::AppMainClass *ui;
+    QGraphicsScene* scene;
 };
