@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
+    <None Include="resources\database-icon" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="output_console.ui">
@@ -53,5 +54,22 @@
     <ClInclude Include="include\stream_buffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\green_oval.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Seb 4 2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\SEB 4 empty.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Seb 4 white.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\Seb 4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

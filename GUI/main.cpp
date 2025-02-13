@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     w.show();
     std::thread t(
         [&]() {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 60; i++)
             {
                 // Test stdout output
                 std::cout << "Hello, this is stdout!\n" << std::flush;

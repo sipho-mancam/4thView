@@ -118,9 +118,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
+    <None Include="resources\database-icon" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\stream_buffer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\green_oval.png" />
+    <Image Include="resources\Seb 4 2.png" />
+    <Image Include="resources\SEB 4 empty.png" />
+    <Image Include="resources\Seb 4 white.png" />
+    <Image Include="resources\Seb 4.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

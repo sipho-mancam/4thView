@@ -3,5 +3,7 @@
         <file>resources/Seb 4.png</file>
         <file>resources/green_oval.png</file>
         <file>resources/Seb 4 white.png</file>
+        <file>resources/SEB 4 empty.png</file>
+        <file>resources/database-icon</file>
     </qresource>
 </RCC>
