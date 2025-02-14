@@ -61,8 +61,8 @@ namespace KEvents
 
 			Event currentEvent = eventsQueue->pull();
 #ifdef _DEBUG
-			std::cout << currentEvent.getEventName() << std::endl;
-			std::cout << currentEvent.getEventData() << std::endl;
+			/*std::cout << currentEvent.getEventName() << std::endl;
+			std::cout << currentEvent.getEventData() << std::endl;*/
 #endif
 			//eventProducerPtr->sendMessage("test", currentEvent);
 			executorTreePtr->enqueueEvent(currentEvent);
@@ -74,5 +74,4 @@ namespace KEvents
 		Event e = Event::deserializeEvent(message);
 		return e;
 	}
-	
 }

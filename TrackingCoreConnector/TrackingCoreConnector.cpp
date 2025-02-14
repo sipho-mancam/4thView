@@ -37,7 +37,6 @@ int main()
             e.setEventName(EN_STREAM_DATA);
             e.setSourceModule(serviceName);
             e.setEventData(message);
-
             // This is a cheat, hacking the callback system to execute events on our own.
             // But should be common for data generators
             outputCb->execute(e);
