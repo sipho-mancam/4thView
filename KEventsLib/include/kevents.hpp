@@ -22,7 +22,11 @@ namespace KEvents
 	/**
 	* @brief 
 	* This is the top level class, implementing a lot of the frameworks parts and
-	* managing the Consumer as well as the event Q
+	* managing the Consumer as well as the event 
+	* 
+	* @param consumerTopic
+	* @param serviceName
+	* @param poolSize (default=1)
 	*/
 	class EventsManager
 	{

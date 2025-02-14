@@ -138,13 +138,96 @@ namespace KEvents
 			DefaultConfig:
 			json defaultConfig = json::parse(R"(
 			{
+				"systemSettings":{
+					"kafka":{
+						"broker":"127.0.0.1:9092"
+					},
+					"registeredModules":[
+						"InputManager",
+						"Processor",
+						"DataAggregator",
+						"OutputManager",
+						"SportEventProcessor",
+						"TrackingCoreConnector",
+						"GUI"
+					]
+				},
+    
 				"kEventslib":{
 					"poolSize": 3,
 					"kafka":{
 						"broker":"127.0.0.1:9092"
 					}
+				},
+
+				"GUI":{
+					"serviceName":"gui",
+					"serviceTopic":"gui_mod"
+				},
+
+				"Processor":{
+					"serviceName":"processor",
+					"serviceTopic":"processor_mod"
+				},
+				"DataAggregator":{
+					"serviceName":"data_aggregator",
+					"serviceTopic":"data_aggregator_mod"
+				},
+				"OutputManager":{
+					"serviceName":"output_manager",
+					"serviceTopic":"output_manager_mod",
+					"connectors_list":[
+						"unrealEngine",
+						"vizEngine"
+					]
+				},
+				"UnrealEngineConnector":{
+					"serviceName":"unreal_engine_con",
+					"serviceTopic": "unreal_engine_mod"
+				},
+				"VizEngineConnector":{
+					"serviceName":"viz_engine_con",
+					"serviceTopic": "viz_engine_mod"
+				},
+				"SportEventProcessor":{
+					"serviceName":"sport_event_processor",
+					"serviceTopic": "sport_event_processor_mod"
+				},
+				"TrackingCoreConnector":{
+					"serviceName":"tracking_core_connector",
+					"serviceTopic": "tracking_core_connector_mod",
+					"trackerAddress":"system-output"
+				},
+				"InputManager":{
+					"serviceName":"input_manager",
+					"serviceTopic":"input_manager_mod",
+					"connectors_list":[
+						"plotter",
+						"db_query_processor",
+						"file_sys",
+						"st_data"
+					],
+					"connectors":{
+						"plotter":{
+							"address":"plotter_con",
+							"description":"Generates input data from the field position plotter GUI"
+						},
+						"db_query_processor":{
+							"address":"db_query_processor_con",
+							"description":"facilitates communications between database and the clients, and implements the query generator"
+						},
+						"file_sys":{
+							"address":"file_sys_con",
+							"description":"Handles file system data requests, abstracts the underlying OS file system from the system."
+						},
+						"st_data":{
+							"address":"st_data_con",
+							"description": "Receives live data from the seb tracker and feeds it to the system for processing and view."
+						}
+					}
 				}
-			})");
+			}
+			)");
 			// dump the default config and return
 			std::string dstPath = "C:/ProgramData/Player Tracking Software/4th_view_config.json";
 			std::string confStr = defaultConfig.dump();

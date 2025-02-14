@@ -54,6 +54,7 @@ namespace KEvents
 	{
 	public:
 		EventProducer(std::string broker);
+		~EventProducer();
 
 		void sendMessage(std::string _topic, Event e);
 		void sendMessage(std::string _topic, std::string _message);

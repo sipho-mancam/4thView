@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2b203069-0eee-4ffc-8e84-c64f4b722e04}</ProjectGuid>
-    <RootNamespace>My4thView</RootNamespace>
+    <ProjectGuid>{ce80ee6a-faae-47d4-a4ce-114c10f7d29a}</ProjectGuid>
+    <RootNamespace>TrackingCoreConnector</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -108,8 +108,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)KEventsLib\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,41 +135,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="4thView.cpp" />
-    <ClCompile Include="src\processes_manager.cpp" />
+    <ClCompile Include="src\output_callback.cpp" />
+    <ClCompile Include="src\tracker_consumer.cpp" />
+    <ClCompile Include="TrackingCoreConnector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\kafka_admin.hpp" />
-    <ClInclude Include="include\processes_manager.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DataAggregator\DataAggregator.vcxproj">
-      <Project>{8933aed9-2712-4434-83af-09a30b0d8172}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\GUI\GUI.vcxproj">
-      <Project>{6a1aed05-70f8-4efe-9e3b-5a716cab6902}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\InputManager\InputManager.vcxproj">
-      <Project>{506b6bf6-c5e6-4ef9-a2d6-d1340e6b2c92}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\KEventsLib\KEventsLib.vcxproj">
       <Project>{ac241c1c-2d3d-469f-983b-3d935287bc7d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\OutputManager\OutputManager.vcxproj">
-      <Project>{0f01f31b-6268-45ab-9c37-6ff43cdf2afb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Processor\Processor.vcxproj">
-      <Project>{e0136212-f4c8-4e36-8490-4e670dc440a9}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SportEventProcessor\SportEventProcessor.vcxproj">
-      <Project>{0a910dbd-9afe-4506-a24f-a2cc2df1ce6e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\TrackingCoreConnector\TrackingCoreConnector.vcxproj">
-      <Project>{ce80ee6a-faae-47d4-a4ce-114c10f7d29a}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="docker_start.bat" />
+    <ClInclude Include="include\output_callback.hpp" />
+    <ClInclude Include="include\tracker_consumer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

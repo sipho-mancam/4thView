@@ -81,6 +81,11 @@ namespace KEvents
 		kafkaProducer = buildProducer(broker, &deliveryReport);
 	}
 
+	EventProducer::~EventProducer()
+	{
+		kafkaProducer->flush(1000);
+	}
+
 	void EventProducer::sendMessage(std::string _topic, Event e)
 	{
 		if (!kafkaProducer)

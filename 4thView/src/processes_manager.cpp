@@ -13,12 +13,15 @@ ProcessesManager::ProcessesManager(json globConfig)
 
 ProcessesManager::~ProcessesManager()
 {
+	std::cout << "[info] " << "Initiating manager shutdown ..." << std::endl;
 	for (size_t i = 0; i < procInfoList.size(); i++)
 	{
 		// Close process and thread handles. 
 		CloseHandle(procInfoList[i].hProcess);
 		CloseHandle(procInfoList[i].hThread);
 	}
+
+	std::cout << "[info] " << "Manager shutdown complete ..." << std::endl;
 }
 
 void ProcessesManager::init()

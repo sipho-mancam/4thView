@@ -15,24 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="4thView.cpp">
+    <ClCompile Include="TrackingCoreConnector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\processes_manager.cpp">
+    <ClCompile Include="src\tracker_consumer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\output_callback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\processes_manager.hpp">
+    <ClInclude Include="include\tracker_consumer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\kafka_admin.hpp">
+    <ClInclude Include="include\output_callback.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="docker_start.bat">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
 </Project>
