@@ -23,7 +23,7 @@ bool TrackerConsumer::waitForMessage()
 		delete message;
 		return false;
 	}	
-	std::cout << "[Tracking Core Connector] " << "Message received!" << std::endl;
+	//std::cout << "[Tracking Core Connector] " << "Message received!" << std::endl;
 	currentMessage = std::string(static_cast<char*>(message->payload()), message->len());
 	messageStatus = true;
 	delete message;

@@ -104,6 +104,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\stream_callback.cpp" />
     <QtRcc Include="AppMain.qrc" />
     <QtUic Include="AppMain.ui" />
     <QtMoc Include="AppMain.h" />
@@ -122,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\stream_buffer.hpp" />
+    <ClInclude Include="include\stream_callback.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\green_oval.png" />
