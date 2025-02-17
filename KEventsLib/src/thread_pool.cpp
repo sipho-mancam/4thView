@@ -45,6 +45,8 @@ namespace KEvents
 	{
 		while (!exitFlag)
 		{
+			lck.wait();
+			std::cout << "I execute" << std::endl;
 			if (!taskQ.empty())
 			{
 				try
@@ -146,9 +148,13 @@ namespace KEvents
 	{
 		while (!exitFlag)
 		{
+			// wait to be notified that you have a task to execute .. 
+			// this is meant to reduce the processor time used for polling an empty queue.
+			lck.wait();
 			if (task_q.empty())
 			{
 				taskStatus = true;
+				lck.wait_until(20);
 				continue;
 			}
 
@@ -156,7 +162,7 @@ namespace KEvents
 			taskStatus = false;
 			currentTask();
 			task_q.pop();
-			notifyAll();
+			//notifyAll();
 			taskStatus = true;
 		}
 	}
@@ -181,6 +187,9 @@ namespace KEvents
 		lck.notify();
 	}
 
-
+	void RunnableThread::notify()
+	{
+		lck.notify();
+	}
 }
 

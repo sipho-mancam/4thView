@@ -10,7 +10,6 @@ namespace KEvents
 
 		eventConsumerPtr = std::make_shared<EventConsumer>(libConfig["kafka"]["broker"], consumerTopic, service_name);
 		eventProducerPtr = std::make_shared<EventProducer>(libConfig["kafka"]["broker"]);
-
 		executorTreePtr = std::make_shared<ExecutorTree>(eventProducerPtr, poolSize);
 		eventsQueue = std::make_shared<EventQueue>();
 		eventConsumerPtr->subscribeEventsQueue(eventsQueue);
@@ -57,14 +56,18 @@ namespace KEvents
 		{
 			eventConsumerPtr->update();
 			if (eventsQueue->empty())
+			{
+				// reduce the query overhead ...
+				// Need to find a clever way to do this ...
+				std::this_thread::sleep_for(std::chrono::milliseconds(20));
 				continue;
+			}
 
 			Event currentEvent = eventsQueue->pull();
 #ifdef _DEBUG
 			/*std::cout << currentEvent.getEventName() << std::endl;
 			std::cout << currentEvent.getEventData() << std::endl;*/
 #endif
-			//eventProducerPtr->sendMessage("test", currentEvent);
 			executorTreePtr->enqueueEvent(currentEvent);
 		}
 	}

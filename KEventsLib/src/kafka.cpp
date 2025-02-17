@@ -174,7 +174,7 @@ namespace KEvents
 
 	void EventConsumer::update()
 	{	
-		kConsumer->poll(20);
+		kConsumer->poll(100);
 	}
 
 	void EventConsumer::subscribeEventsQueue(EventQueuePtr eq)

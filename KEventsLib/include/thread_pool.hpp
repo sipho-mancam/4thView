@@ -33,10 +33,10 @@ namespace KEvents
 			condition = false;
 		}
 
-		void wait_until(int time)
+		void wait_until(int time_ms)
 		{
 			std::unique_lock<std::mutex> lck(mtx);
-			cv.wait_for(lck, std::chrono::milliseconds(time), [&] {
+			cv.wait_for(lck, std::chrono::milliseconds(time_ms), [&] {
 				if (condition)
 					return true;
 				return false;
@@ -84,6 +84,7 @@ namespace KEvents
 		void appendTask(F func)
 		{
 			task_q.emplace(func);
+			notify();
 		}
 		/**
 		* @brief
@@ -97,6 +98,7 @@ namespace KEvents
 		*/
 		void waitFor(uint time);
 		void notifyAll();
+		void notify();
 
 	private:
 		std::queue<std::function<void()>> task_q;
@@ -113,7 +115,7 @@ namespace KEvents
 		void run();
 		void start();
 		template<typename F>
-		void appendTask(F task) { taskQ.emplace(task); }
+		void appendTask(F task) { taskQ.emplace(task); lck.notify(); }
 		
 	private:
 		concurrent::ConcurrentQueue<std::function<void()>> taskQ;
@@ -123,5 +125,6 @@ namespace KEvents
 		std::vector<std::thread*> workers;
 		std::thread* poolWorker;
 		long maxTries;
+		Lock lck;
 	};
 }
