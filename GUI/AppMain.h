@@ -4,6 +4,7 @@
 #include "ui_AppMain.h"
 #include <iostream>
 #include <QDateTime>
+#include <views/cricket_oval_widget.hpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };

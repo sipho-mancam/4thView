@@ -43,6 +43,9 @@
     <ClCompile Include="src\stream_callback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\views\cricket_oval_widget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -58,6 +61,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\stream_callback.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\views\cricket_oval_widget.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

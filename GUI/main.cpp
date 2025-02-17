@@ -4,6 +4,7 @@
 #include <thread>
 #include "kevents.hpp"
 #include "stream_callback.hpp"
+#include <Windows.h>
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +14,7 @@ int main(int argc, char *argv[])
 
     json globalConfig = KEvents::__load_config__();
     json systemConfig = globalConfig["systemSettings"];
-    json moduleConfig = globalConfig["GUI"];
+    json moduleConfig = globalConfig["GUI"]; 
 
     std::string serviceName, serviceTopic;
     serviceName = moduleConfig["serviceName"];
@@ -24,7 +25,5 @@ int main(int argc, char *argv[])
     eventsManager.registerCallback(EN_STREAM_DATA_UPDATE, streamCb);
     eventsManager.startEventLoop();
 
-   int ret = a.exec();
-
-    return  ret;
+    return a.exec();
 }

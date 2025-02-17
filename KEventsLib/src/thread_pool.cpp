@@ -46,7 +46,6 @@ namespace KEvents
 		while (!exitFlag)
 		{
 			lck.wait();
-			std::cout << "I execute" << std::endl;
 			if (!taskQ.empty())
 			{
 				try

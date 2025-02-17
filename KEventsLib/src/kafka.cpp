@@ -25,6 +25,12 @@ namespace KEvents
 			throw std::runtime_error("Invalid kafka Config for Auto Offset Reset");
 		}
 
+		if (config->set("enable.auto.commit", "true", err) != Conf::CONF_OK)
+		{
+			std::cerr << err << std::endl;
+			throw std::runtime_error("Invalid kafka Config for Enable Auto Commit Offset");
+		}
+
 		if (_messageCb)
 		{
 			std::cout << "Registering message callback" << std::endl;
