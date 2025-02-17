@@ -50,7 +50,6 @@ void ProcessesManager::__start_process(std::string processName)
 	}
 
 	if (!CreateProcess(
-		/*proc*/
 		wProcessName.c_str(),
 		NULL,
 		NULL,

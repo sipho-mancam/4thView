@@ -4,7 +4,6 @@ StreamCallback::StreamCallback(json globConfig, std::string servName)
 	: globalConfig(globalConfig),
 	serviceName(servName)
 {
-
 }
 
 
