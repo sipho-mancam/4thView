@@ -20,6 +20,7 @@ namespace KEvents
 	{
 		exitFlag = true;
 		std::cout << "Shutting down events manager ..." << std::endl;
+		exit();
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 		if (worker->joinable())
@@ -38,6 +39,11 @@ namespace KEvents
 	void EventsManager::exit()
 	{
 		exitFlag = true;
+		if (worker && worker->joinable())
+		{
+			worker->join();
+		}
+		executorTreePtr->exit();
 	}
 
 	void EventsManager::registerCallback(std::string eventName, CallBackBasePtr _cbPtr)

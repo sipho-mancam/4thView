@@ -114,6 +114,7 @@ namespace KEvents
 		~ThreadPool();
 		void run();
 		void start();
+		void stop();
 		template<typename F>
 		void appendTask(F task) { taskQ.emplace(task); lck.notify(); }
 		

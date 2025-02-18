@@ -13,6 +13,7 @@ namespace KEvents
 	ExecutorTree::~ExecutorTree()
 	{
 		std::cout << "Shutting down executor tree ..." << std::endl;
+		exit();
 	}
 	void ExecutorTree::enqueueEvent(Event event)
 	{
@@ -49,6 +50,12 @@ namespace KEvents
 	void ExecutorTree::registerCallBack(std::string eventName, CallBackBasePtr _cbPtr)
 	{
 		defaultExecutor.registerCallBack(_cbPtr, eventName);
+	}
+
+	void ExecutorTree::exit()
+	{
+		if (threadPool)
+			threadPool->stop();
 	}
 
 	ExecutorBase::ExecutorBase()

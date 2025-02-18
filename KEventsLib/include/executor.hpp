@@ -83,6 +83,7 @@ namespace KEvents
 		* at a later stage and use the registerExecutor function instead.
 		*/
 		void registerCallBack(std::string eventName, CallBackBasePtr _cbPtr);
+		void exit();
 
 	private:
 		std::map<EventType, std::vector<ExecutorBasePtr>> executionTree;

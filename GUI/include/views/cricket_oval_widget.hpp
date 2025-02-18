@@ -2,9 +2,12 @@
 #include <QtWidgets/QGraphicsItem>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QWidget>
+#include <iomanip>
+#include <string>
+#include <sstream>
+#include <nlohmann/json.hpp>
 
-
-
+using json = nlohmann::json;
 
 class PlayerItemWidget : public QGraphicsEllipseItem
 {
@@ -57,6 +60,7 @@ private:
 	int trackId;
 	std::tuple<double, double> coordinates;
 	PlayerItemWidget::E_STATE state;
+	QGraphicsTextItem* idText;
 	E_POSITION playerPosition;
 	double width, height;
 };
@@ -70,11 +74,18 @@ public:
 
 	void init();
 	void update();
+	void updateFrameData(json frameData);
+	void updateId(int id, json data);
+	std::tuple<qreal, qreal> getDimensions() { return { _width, _height }; }
+
+
 private:
 	qreal _width, _height; // bounding rect
 	QRect _boundingRect;
+	std::map<int, PlayerItemWidget*> playersMap;
 
 };
 
 QColor __state2color__(PlayerItemWidget::E_STATE);
 QPen __state2pen__(PlayerItemWidget::E_STATE);
+QColor __state2text__(PlayerItemWidget::E_STATE);

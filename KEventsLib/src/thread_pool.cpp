@@ -25,11 +25,8 @@ namespace KEvents
 	ThreadPool::~ThreadPool()
 	{
 		std::cout << "Shutting down thread pool ..." << std::endl;
-		exitFlag = true;
-		for (auto& runnable : runnables)
-		{
-			runnable->exit();
-		}
+		stop();
+		
 
 		for (auto& worker : workers)
 		{
@@ -125,6 +122,17 @@ namespace KEvents
 		}
 	}
 
+	void ThreadPool::stop()
+	{
+		exitFlag = true;
+		lck.notify();
+
+		for (auto& runnable : runnables)
+		{
+			runnable->exit();
+		}
+	}
+
 	
 	RunnableThread::RunnableThread()
 		:taskStatus(false),
@@ -169,6 +177,7 @@ namespace KEvents
 	void RunnableThread::exit()
 	{
 		exitFlag = true;
+		lck.notify();
 	}
 
 	bool RunnableThread::isTaskComplete()

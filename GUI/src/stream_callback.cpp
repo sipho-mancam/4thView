@@ -9,5 +9,12 @@ StreamCallback::StreamCallback(json globConfig, std::string servName)
 
 void StreamCallback::execute(KEvents::Event e)
 {
-	std::cout << e.getEventName() << "\n" << std::flush;
+	//std::cout << e.getEventName() << "\n" << std::flush;
+	for (auto _cb : registeredDataCallbacks)
+	{
+		std::cout << "registered callback called \n";
+		_cb(e.getEventData());
+	}
 }
+
+

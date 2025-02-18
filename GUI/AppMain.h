@@ -5,6 +5,9 @@
 #include <iostream>
 #include <QDateTime>
 #include <views/cricket_oval_widget.hpp>
+#include <QtWidgets/QMessageBox>
+#include "kevents.hpp"
+#include "stream_data_store.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -74,6 +77,10 @@ public:
     AppMain(QWidget *parent = nullptr);
     ~AppMain();
 
+    virtual void closeEvent(QCloseEvent* e) override;
+    void setEventManager(KEvents::EventsManager* evMan) { eventMan = evMan; }
+    void setStreamDataStore(StreamDataStore* sDs);
+
 private slots:
     void appendOutput(const QString& text)
     {
@@ -85,4 +92,6 @@ private:
     Ui::AppMainClass *ui;
     QGraphicsScene* scene;
     StdoutStreamBuffer* outputHandle;
+    KEvents::EventsManager* eventMan;
+    StreamDataStore* streamDs;
 };

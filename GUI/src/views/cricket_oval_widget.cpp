@@ -11,7 +11,7 @@ CricketOvalScene::CricketOvalScene(QObject* parent)
 {
 	init();
 
-	this->addItem(new PlayerItemWidget(10, { 20, 40 }));
+	this->addItem(new PlayerItemWidget(36, { 20, 40 }));
 }
 
 CricketOvalScene::CricketOvalScene(QRect sceneRect)
@@ -22,7 +22,7 @@ CricketOvalScene::CricketOvalScene(QRect sceneRect)
 	_boundingRect(sceneRect)
 {
 	init();
-	this->addItem(new PlayerItemWidget(10, { 20, 40 }));
+	this->addItem(new PlayerItemWidget(20, { 20, 40 }));
 }
 
 void CricketOvalScene::init()
@@ -70,6 +70,68 @@ void CricketOvalScene::update()
 {
 }
 
+void CricketOvalScene::updateFrameData(json frameData)
+{
+	// check if the data has tracks
+	if (frameData.contains("tracks"))
+	{
+		std::vector<json> tracks = frameData["tracks"];
+		for (json& track : tracks)
+		{
+			if (track.contains("track_id"))
+			{
+				int trackId = track["track_id"];
+
+				// we need to scale up the coordinates data before we send it through.
+				auto coords = track["coordinates"];
+				double x = coords[0], y = coords[1], xScaled, yScaled;
+				xScaled = x * _width;
+				yScaled = y * _height;
+
+				track["coordinates"] = std::vector<double>({ xScaled, yScaled });
+
+				this->updateId(trackId, track);
+			}
+		}
+	}
+}
+
+void CricketOvalScene::updateId(int id, json data)
+{
+	// find out if the object already exists
+	if (playersMap.contains(id))
+	{
+		PlayerItemWidget* player = playersMap[id];
+		// get state
+		if (data.contains("state"))
+		{
+			PlayerItemWidget::E_STATE state = (PlayerItemWidget::E_STATE)data["state"];
+			player->setState(state);
+		}
+		if (data.contains("coordinates"))
+		{
+			auto coordinates = data["coordinates"];
+			player->update({ coordinates[0], coordinates[1] });
+		}
+
+		if (data.contains("position"))
+		{
+			PlayerItemWidget::E_POSITION pos = (PlayerItemWidget::E_POSITION)data["position"];
+			player->setPosition(pos);
+		}
+		player->updateGraphic();
+	}
+	else { // we need to create the object for this new ID.
+		if (!data.contains("coordinates"))
+			return;
+
+		auto coordinates = data["coordinates"];
+		PlayerItemWidget* player = new PlayerItemWidget(id, { coordinates[0], coordinates[1] });
+		this->addItem(player);
+		playersMap[id] = player;
+	}
+}
+
 
 PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, QGraphicsItem* parent)
 	:QGraphicsEllipseItem(parent), 
@@ -81,11 +143,25 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, QGr
 {
 	const auto [x, y] = coordinates;
 	QRect rect(x, y, width, height);
-	//this->prepareGeometryChange();
 	this->setRect(rect);
 	this->setBrush(QBrush(__state2color__(state)));
 	this->setPen(__state2pen__(state));
 
+	idText = new QGraphicsTextItem(this);
+	std::string idTextStr;
+	std::ostringstream oss;
+
+	QFont font;
+	font.setPointSize(10);
+	font.setBold(true);
+	oss << std::setw(2) << std::to_string(trackId) << std::setfill('0');
+	idTextStr = oss.str();
+
+	idText->setPlainText(QString(const_cast<char*>(idTextStr.c_str())));
+	idText->setFont(font);
+	idText->setZValue(this->zValue() + 2);
+	idText->setDefaultTextColor(__state2text__(state));
+	idText->setPos(x*0.90, y*0.92);
 }
 
 void PlayerItemWidget::update(std::tuple<double, double> coord)
@@ -93,16 +169,24 @@ void PlayerItemWidget::update(std::tuple<double, double> coord)
 	const auto [x, y] = coord;
 	this->setPos(x, y);
 	coordinates = coord;
+	updateGraphic();
 }
 
 void PlayerItemWidget::update(double x, double y)
 {
 	coordinates = { x, y };
 	this->setPos(x, y);
+	updateGraphic();
 }
 
 void PlayerItemWidget::updateGraphic()
 {
+	const auto [x, y] = coordinates;
+	idText->setDefaultTextColor(__state2text__(state));
+	idText->setPos(x * 0.90, y * 0.92);
+	this->setBrush(QBrush(__state2color__(state)));
+	this->setPen(__state2pen__(state));
+	this->prepareGeometryChange();
 }
 
 bool PlayerItemWidget::operator==(int& trackId)
@@ -113,6 +197,8 @@ bool PlayerItemWidget::operator==(int& trackId)
 void PlayerItemWidget::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
 	std::cout << "You clicked : " << trackId << "\n" << std::endl;
+	state = E_STATE::SELECTED;
+	updateGraphic();
 }
 
 QColor __state2color__(PlayerItemWidget::E_STATE state)
@@ -131,7 +217,7 @@ QColor __state2color__(PlayerItemWidget::E_STATE state)
 	}
 	else if (state == PlayerItemWidget::E_STATE::HIGHLIGHTED)
 	{
-		return QColorConstants::Green;
+		return QColorConstants::Color1;
 	}
 	else if (state == PlayerItemWidget::E_STATE::ANNOTATED)
 	{
@@ -158,11 +244,38 @@ QPen __state2pen__(PlayerItemWidget::E_STATE state)
 	}
 	else if (state == PlayerItemWidget::E_STATE::HIGHLIGHTED)
 	{
-		return QPen(QColorConstants::Yellow, thickness);
+		return QPen(QColorConstants::Blue, thickness);
 	}
 	else if (state == PlayerItemWidget::E_STATE::ANNOTATED)
 	{
 		return QPen(QColorConstants::Yellow, thickness);
 	}
 	return QPen(QColorConstants::Gray);
+}
+
+QColor __state2text__(PlayerItemWidget::E_STATE state)
+{
+	if (state == PlayerItemWidget::E_STATE::DEFAULT)
+	{
+		return QColorConstants::Black;
+	}
+	else if (state == PlayerItemWidget::E_STATE::SELECTED)
+	{
+		return QColorConstants::Black;
+	}
+	else if (state == PlayerItemWidget::E_STATE::DESELECTED)
+	{
+		return QColorConstants::Black;
+	}
+	else if (state == PlayerItemWidget::E_STATE::HIGHLIGHTED)
+	{
+		return QColorConstants::Black;
+	}
+	else if (state == PlayerItemWidget::E_STATE::ANNOTATED)
+	{
+		return QColorConstants::White;
+	}
+
+	return QColorConstants::Black;
+	
 }

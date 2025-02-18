@@ -9,7 +9,8 @@
 
 AppMain::AppMain(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::AppMainClass())
+    , ui(new Ui::AppMainClass()),
+    eventMan(nullptr)
 {
     ui->setupUi(this);
     outputHandle = new StdoutStreamBuffer(this);
@@ -22,4 +23,18 @@ AppMain::AppMain(QWidget *parent)
 AppMain::~AppMain()
 {
     delete ui;
+}
+
+void AppMain::closeEvent(QCloseEvent* e)
+{
+    if (eventMan) {
+        eventMan->exit();
+   }
+}
+
+void AppMain::setStreamDataStore(StreamDataStore* sDs)
+{
+    streamDs = sDs;
+    auto cricketOvalCb = std::bind(&CricketOvalScene::updateFrameData, static_cast<CricketOvalScene*>(scene), std::placeholders::_1);
+    streamDs->registerUICallback(cricketOvalCb);
 }
