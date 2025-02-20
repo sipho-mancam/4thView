@@ -1,6 +1,8 @@
 #pragma once
 #include "data_store_base.hpp"
 #include <qobject.h>
+#include "kevents.hpp"
+#include <mutex>
 
 class PlayerItemWidget;
 
@@ -10,7 +12,6 @@ class StreamDataStore : public QObject, public DataStoreBase
 
 public:
 	StreamDataStore();
-
 	// We'll register this function with the stream callback, so tha
 	void dataCallback(json data);
 
@@ -36,4 +37,5 @@ private:
 	std::vector<std::function<void(json)>> registeredUICallbacks;
 	json currentState, currentClickedTrack;
 	int currentClickedId;
+	std::mutex mtx;
 };

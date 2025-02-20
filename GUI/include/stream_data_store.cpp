@@ -2,14 +2,18 @@
 #include "views/cricket_oval_widget.hpp"
 
 StreamDataStore::StreamDataStore()
+	:currentClickedId(-1)
 {
 }
 
 void StreamDataStore::dataCallback(json data)
 {
-	currentState = data;
+	{
+		std::lock_guard<std::mutex> lck(mtx);
+		currentState = data;
+	}
 	updateCurrentState();
-	emit dataChanged(currentState);
+	Q_EMIT dataChanged(currentState);
 }
 
 void StreamDataStore::setCurrentClicked(int trackId)
@@ -22,6 +26,7 @@ void StreamDataStore::setCurrentClicked(int trackId)
 
 void StreamDataStore::updateCurrentState()
 {
+	std::lock_guard<std::mutex> lck(mtx);
 	std::vector<json> tracks = currentState["tracks"];
 	for (json& track : tracks)
 	{
