@@ -6,11 +6,14 @@
 #include <string>
 #include <sstream>
 #include <nlohmann/json.hpp>
+#include "player_props_widget.hpp"
 
 using json = nlohmann::json;
 
-class PlayerItemWidget : public QGraphicsEllipseItem
+class PlayerItemWidget : public QObject, public QGraphicsEllipseItem
 {
+	Q_OBJECT
+
 public:
 	enum E_STATE
 	{
@@ -32,8 +35,8 @@ public:
 	explicit PlayerItemWidget(int id, std::tuple<double, double> coord, QGraphicsItem* parent = nullptr);
 	PlayerItemWidget() = delete;
 
-	void update(std::tuple<double, double>coord);
-	void update(double x, double y);
+	void updateCoordinates(std::tuple<double, double>coord);
+	void updateCoordinates(double x, double y);
 	void updateGraphic();
 
 	void setPosition(E_POSITION pos) { playerPosition = pos; }
@@ -44,7 +47,7 @@ public:
 	{
 		const auto [x, y] = coord;
 		coordinates = coord;
-		this->update(coord);
+		this->updateCoordinates(coord);
 		return std::ref(*this);
 	}
 
@@ -56,6 +59,9 @@ public:
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
+signals:
+	void updateClickedId(int id);
+
 private:
 	int trackId;
 	std::tuple<double, double> coordinates;
@@ -66,8 +72,10 @@ private:
 };
 
 
-class CricketOvalScene : public QGraphicsScene, public QWidget
+class CricketOvalScene : public QGraphicsScene
 {
+	Q_OBJECT
+
 public:
 	CricketOvalScene(QObject* parent=nullptr);
 	CricketOvalScene(QRect sceneRect);
@@ -78,12 +86,17 @@ public:
 	void updateId(int id, json data);
 	std::tuple<qreal, qreal> getDimensions() { return { _width, _height }; }
 
+public slots:
+	void dataChangeUpdate(json data);
+	void selectedIdChanged(int trackId);
+
+signals:
+	void selectedIdChangedSig(int trackId);
 
 private:
 	qreal _width, _height; // bounding rect
 	QRect _boundingRect;
 	std::map<int, PlayerItemWidget*> playersMap;
-
 };
 
 QColor __state2color__(PlayerItemWidget::E_STATE);

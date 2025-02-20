@@ -3,26 +3,26 @@
 #include <iostream>
 
 CricketOvalScene::CricketOvalScene(QObject* parent)
-	:QGraphicsScene(parent),
-	QWidget(static_cast<QWidget*>(parent)),
-	_width(560),
-	_height(520),
+	:
+	QGraphicsScene(parent),
+	_width(540),
+	_height(500),
 	_boundingRect(0, 0, _width, _height)
 {
+	setSceneRect(_boundingRect);
 	init();
-
-	this->addItem(new PlayerItemWidget(36, { 20, 40 }));
+	/*this->addItem(new PlayerItemWidget(6, { 100, 100 }));*/
 }
 
 CricketOvalScene::CricketOvalScene(QRect sceneRect)
-	:QGraphicsScene(sceneRect),
-	QWidget(),
+	:
+	QGraphicsScene(sceneRect),
 	_width(sceneRect.width()),
 	_height(sceneRect.height()),
 	_boundingRect(sceneRect)
 {
+	setSceneRect(_boundingRect);
 	init();
-	this->addItem(new PlayerItemWidget(20, { 20, 40 }));
 }
 
 void CricketOvalScene::init()
@@ -70,6 +70,11 @@ void CricketOvalScene::update()
 {
 }
 
+void CricketOvalScene::dataChangeUpdate(json frameData)
+{
+	updateFrameData(frameData);
+}
+
 void CricketOvalScene::updateFrameData(json frameData)
 {
 	// check if the data has tracks
@@ -80,16 +85,13 @@ void CricketOvalScene::updateFrameData(json frameData)
 		{
 			if (track.contains("track_id"))
 			{
-				int trackId = track["track_id"];
-
+				auto trackId = track["track_id"];
 				// we need to scale up the coordinates data before we send it through.
 				auto coords = track["coordinates"];
 				double x = coords[0], y = coords[1], xScaled, yScaled;
-				xScaled = x * _width;
-				yScaled = y * _height;
-
+				xScaled = x * _boundingRect.width()/2;
+				yScaled = y * _boundingRect.height()/2;
 				track["coordinates"] = std::vector<double>({ xScaled, yScaled });
-
 				this->updateId(trackId, track);
 			}
 		}
@@ -106,12 +108,13 @@ void CricketOvalScene::updateId(int id, json data)
 		if (data.contains("state"))
 		{
 			PlayerItemWidget::E_STATE state = (PlayerItemWidget::E_STATE)data["state"];
+			//std::cout << "State for player ID: " << id << " Changed \n";
 			player->setState(state);
 		}
 		if (data.contains("coordinates"))
 		{
 			auto coordinates = data["coordinates"];
-			player->update({ coordinates[0], coordinates[1] });
+			player->updateCoordinates({ coordinates[0], coordinates[1] });
 		}
 
 		if (data.contains("position"))
@@ -126,10 +129,16 @@ void CricketOvalScene::updateId(int id, json data)
 			return;
 
 		auto coordinates = data["coordinates"];
-		PlayerItemWidget* player = new PlayerItemWidget(id, { coordinates[0], coordinates[1] });
+		PlayerItemWidget* player = new PlayerItemWidget(id, { coordinates[0], coordinates[1]});
 		this->addItem(player);
 		playersMap[id] = player;
+		connect(player, &PlayerItemWidget::updateClickedId, this, &CricketOvalScene::selectedIdChanged);
 	}
+}
+
+void CricketOvalScene::selectedIdChanged(int trackId)
+{
+	emit selectedIdChangedSig(trackId);
 }
 
 
@@ -146,6 +155,7 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, QGr
 	this->setRect(rect);
 	this->setBrush(QBrush(__state2color__(state)));
 	this->setPen(__state2pen__(state));
+	this->setPos(x, y);
 
 	idText = new QGraphicsTextItem(this);
 	std::string idTextStr;
@@ -154,28 +164,25 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, QGr
 	QFont font;
 	font.setPointSize(10);
 	font.setBold(true);
-	oss << std::setw(2) << std::to_string(trackId) << std::setfill('0');
+	oss << std::setw(2) << std::setfill('0') << std::to_string(trackId);
 	idTextStr = oss.str();
 
 	idText->setPlainText(QString(const_cast<char*>(idTextStr.c_str())));
 	idText->setFont(font);
 	idText->setZValue(this->zValue() + 2);
 	idText->setDefaultTextColor(__state2text__(state));
-	idText->setPos(x*0.90, y*0.92);
+	idText->setPos(x-2, y-3);
 }
 
-void PlayerItemWidget::update(std::tuple<double, double> coord)
+void PlayerItemWidget::updateCoordinates(std::tuple<double, double> coord)
 {
-	const auto [x, y] = coord;
-	this->setPos(x, y);
-	coordinates = coord;
+	coordinates = coord;	
 	updateGraphic();
 }
 
-void PlayerItemWidget::update(double x, double y)
+void PlayerItemWidget::updateCoordinates(double x, double y)
 {
 	coordinates = { x, y };
-	this->setPos(x, y);
 	updateGraphic();
 }
 
@@ -183,10 +190,12 @@ void PlayerItemWidget::updateGraphic()
 {
 	const auto [x, y] = coordinates;
 	idText->setDefaultTextColor(__state2text__(state));
-	idText->setPos(x * 0.90, y * 0.92);
+	
+	this->prepareGeometryChange();
+	this->setPos(x, y);
 	this->setBrush(QBrush(__state2color__(state)));
 	this->setPen(__state2pen__(state));
-	this->prepareGeometryChange();
+	
 }
 
 bool PlayerItemWidget::operator==(int& trackId)
@@ -196,7 +205,9 @@ bool PlayerItemWidget::operator==(int& trackId)
 
 void PlayerItemWidget::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-	std::cout << "You clicked : " << trackId << "\n" << std::endl;
+	/*std::cout << "You clicked : " << trackId << "\n";
+	std::cout << "X : " << this->pos().x() << "Y: " << this->pos().y() <<"\n";*/
+	emit updateClickedId(this->trackId);
 	state = E_STATE::SELECTED;
 	updateGraphic();
 }

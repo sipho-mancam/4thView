@@ -1,10 +1,13 @@
 #pragma once
 #include "data_store_base.hpp"
+#include <qobject.h>
 
 class PlayerItemWidget;
 
-class StreamDataStore : public DataStoreBase
+class StreamDataStore : public QObject, public DataStoreBase
 {
+	Q_OBJECT
+
 public:
 	StreamDataStore();
 
@@ -19,9 +22,15 @@ public:
 
 	json getCurrentState() { return currentState; }
 	json getCurrentClicked() { return currentClickedTrack; }
-	void setCurrentClicked(int trackId);
 	void updateCurrentState();
 
+public slots:
+	void setCurrentClicked(int trackId);
+	
+
+signals:
+	void dataChanged(json);
+	void currentSelectedChangedSig(json currentTrack);
 
 private:
 	std::vector<std::function<void(json)>> registeredUICallbacks;

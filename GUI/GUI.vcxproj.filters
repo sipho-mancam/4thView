@@ -49,6 +49,9 @@
     <ClCompile Include="include\stream_data_store.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\views\player_props_widget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -66,13 +69,7 @@
     <ClInclude Include="include\stream_callback.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\views\cricket_oval_widget.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\data_store_base.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stream_data_store.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -92,5 +89,16 @@
     <Image Include="resources\Seb 4.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="include\stream_data_store.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\views\cricket_oval_widget.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\views\player_props_widget.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

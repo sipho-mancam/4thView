@@ -7,13 +7,9 @@ StreamDataStore::StreamDataStore()
 
 void StreamDataStore::dataCallback(json data)
 {
-	std::cout << "Data Callback has been called ...\n";
-
 	currentState = data;
-	for (auto func : registeredUICallbacks)
-	{
-		func(data);
-	}
+	updateCurrentState();
+	emit dataChanged(currentState);
 }
 
 void StreamDataStore::setCurrentClicked(int trackId)
@@ -21,14 +17,13 @@ void StreamDataStore::setCurrentClicked(int trackId)
 	currentClickedId = trackId;
 	if (!currentState.contains("tracks"))
 		return;
-
 	updateCurrentState();
 }
 
 void StreamDataStore::updateCurrentState()
 {
 	std::vector<json> tracks = currentState["tracks"];
-	for (json track : tracks)
+	for (json& track : tracks)
 	{
 		if (track["track_id"] == currentClickedId)
 		{
@@ -36,4 +31,7 @@ void StreamDataStore::updateCurrentState()
 			currentClickedTrack = track;
 		}
 	}
+	currentState["tracks"] = tracks;
+	if(!currentClickedTrack.empty())
+		Q_EMIT currentSelectedChangedSig(currentClickedTrack);
 }

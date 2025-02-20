@@ -57,7 +57,7 @@ private:
         // Format the output
         QString formattedOutput = timestamp + systemName + text;
         // Emit a signal with the captured text
-        Q_EMIT outputCaptured(formattedOutput);
+        Q_EMIT outputCaptured(text);
     }
 
 signals:
@@ -91,6 +91,7 @@ private slots:
 private:
     Ui::AppMainClass *ui;
     QGraphicsScene* scene;
+    PlayerPropertiesGroup* propsGroup;
     StdoutStreamBuffer* outputHandle;
     KEvents::EventsManager* eventMan;
     StreamDataStore* streamDs;
