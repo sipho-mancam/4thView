@@ -108,6 +108,7 @@
     <ClCompile Include="src\stream_callback.cpp" />
     <ClCompile Include="src\views\cricket_oval_widget.cpp" />
     <ClCompile Include="src\views\player_props_widget.cpp" />
+    <ClCompile Include="src\views\player_state_mod.cpp" />
     <QtRcc Include="AppMain.qrc" />
     <QtUic Include="AppMain.ui" />
     <QtMoc Include="AppMain.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="include\stream_buffer.hpp" />
     <ClInclude Include="include\stream_callback.hpp" />
     <ClInclude Include="include\data_store_base.hpp" />
+    <QtMoc Include="include\views\player_state_mod.hpp" />
     <QtMoc Include="include\views\player_props_widget.hpp" />
     <QtMoc Include="include\stream_data_store.hpp" />
     <QtMoc Include="include\views\cricket_oval_widget.hpp" />

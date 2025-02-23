@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     KEvents::EventsManager eventsManager(serviceTopic, serviceName);
     std::shared_ptr<StreamCallback> streamCb = KEvents::createCallback<StreamCallback>(globalConfig, serviceName);
     auto streamDataStore = std::bind(&StreamDataStore::dataCallback, &streamDs, std::placeholders::_1);
-
     streamCb->registerDataCallback(streamDataStore);
     w.setStreamDataStore(&streamDs);
 

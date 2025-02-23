@@ -52,6 +52,9 @@
     <ClCompile Include="src\views\player_props_widget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\views\player_state_mod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -98,6 +101,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\views\player_props_widget.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\views\player_state_mod.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

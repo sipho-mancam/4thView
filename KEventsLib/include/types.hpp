@@ -6,7 +6,6 @@
 #define KEVENTS_API __declspec(dllimport)
 #endif
 
-
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <fstream>
@@ -23,6 +22,7 @@
 #define EN_STATE_MOD "state_mod"
 #define EN_STATE_CAPTURE_START "state_capture_start"
 #define EN_STATE_CAPTURE_STOP "state_capture_stop"
+#define EN_STATE_CAPTURE_LOAD "state_capture_load" // pull the data from the stored state and load.
 
 using json = nlohmann::json;
 using namespace nlohmann::literals;
@@ -77,8 +77,7 @@ namespace KEvents
 		E_MISC_EVENTS // Arbitrary modules related events.
 	};
 	
-	//This does not belong here ... but we need all the subsystems to know about it.
-	//It's a hack.
+	
 	enum STATES_DEF {
 		ANNOTATION = 1,
 		HIGHLIGHT = 2,
@@ -101,7 +100,7 @@ namespace KEvents
 
 		Event();
 		Event(const Event& obj); // Copy Constructor
-		Event(Event&& obj) noexcept; // Move Constructor deleted
+		Event(Event&& obj) noexcept;
 		Event& operator=(const Event& obj); // Copy Assignable
 		~Event() = default;
 
