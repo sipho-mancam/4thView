@@ -17,11 +17,13 @@ class PlayerStateModifierGroup : public QObject
 
 public:
 	PlayerStateModifierGroup(QCheckBox* highlight, QLineEdit* annotText, 
-		QComboBox* position, QCheckBox* activateAnnotation, 
+		QCheckBox* activateAnnotation, QComboBox* position,
 		QPushButton* _updateButton, QObject* parent=(nullptr));
 
 	void updateState();
 	json getCurrentState();
+
+	void resetWidgets();
 
 signals:
 	/**
@@ -39,8 +41,6 @@ public slots:
 	*/
 	void laodCurrentState(json state);
 
-	
-
 private:
 	QComboBox* positionInfo;
 	QLineEdit* annotationText;
@@ -51,7 +51,7 @@ private:
 	* Player state represents the raw state coming from the tracker.
 	* While state Object represents the state modification of an object, 
 	* which is just a group of states lumped to together like
-	* {
+	* StateObject{
 	*	highlight:{
 	*	}
 	*	Annotate: {

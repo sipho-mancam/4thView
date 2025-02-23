@@ -1,5 +1,5 @@
 #include "types.hpp"
-
+#include <Bits.h>
 
 namespace KEvents
 {
@@ -236,6 +236,60 @@ namespace KEvents
 			file.close();
 			return defaultConfig;
 		}
+	}
+
+	std::string __playerPosition2Str__(EPLAYER_POSITIONS pos)
+	{
+		if (pos == EPLAYER_POSITIONS::BATMAN)
+		{
+			return "batter";
+		}
+		else if (pos == EPLAYER_POSITIONS::BATMAN_A)
+		{
+			return "batter facing";
+		}
+		else if (pos == EPLAYER_POSITIONS::BOWLER)
+		{
+			return "bowler";
+		}
+		else if (pos == EPLAYER_POSITIONS::FIELDER)
+		{
+			return "fielder";
+		}
+		else if (pos == EPLAYER_POSITIONS::UMPIRE)
+		{
+			return "umpire";
+		}
+
+		return "";
+	}
+
+	EPLAYER_POSITIONS __str2PlayerPosition__(std::string pos)
+	{
+		std::string lower_(pos);
+		std::transform(pos.begin(), pos.end(), lower_.begin(), ::tolower);
+		if (lower_ == "fielder")
+		{
+			return EPLAYER_POSITIONS::FIELDER;
+		}
+		else if (lower_ == "bowler")
+		{
+			return EPLAYER_POSITIONS::BOWLER;
+		}
+		else if (lower_ == "batter")
+		{
+			return EPLAYER_POSITIONS::BATMAN;
+		}
+		else if (lower_ == "umpire")
+		{
+			return EPLAYER_POSITIONS::UMPIRE;
+		}
+		else if (lower_ == "batter facing")
+		{
+			return EPLAYER_POSITIONS::BATMAN_A;
+		}
+
+		return EPLAYER_POSITIONS::C_ERROR;
 	}
 }
 

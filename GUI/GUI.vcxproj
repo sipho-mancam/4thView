@@ -104,6 +104,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\state_modification_callback.cpp" />
     <ClCompile Include="include\stream_data_store.cpp" />
     <ClCompile Include="src\stream_callback.cpp" />
     <ClCompile Include="src\views\cricket_oval_widget.cpp" />
@@ -126,6 +127,7 @@
     <None Include="resources\database-icon" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="include\state_modification_callback.hpp" />
     <ClInclude Include="include\stream_buffer.hpp" />
     <ClInclude Include="include\stream_callback.hpp" />
     <ClInclude Include="include\data_store_base.hpp" />

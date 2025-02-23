@@ -29,12 +29,27 @@ json StateManager::updateTrackData(json frame)
 {
 	if (frame["stream_type"] == KEvents::STREAM_TYPES::TRACKER)
 	{
-		//1. Update all the objects that need to be highlighted
+		json& tracks = frame["tracks"];
+		for (auto& track : tracks)
+		{
+			int trackId = track["track_id"];
+			if (playerHighlight.contains(trackId))
+			{
+				track["highlight"] = true;
+				track["state"] = KEvents::STATES_DEF::HIGHLIGHT;
+			}
 
-		//2. Update all the objects that have an annotation set
+			if (playerAnnotions.contains(trackId))
+			{
+				track["annotation"] = playerAnnotions[trackId];
+				track["state"] = KEvents::STATES_DEF::ANNOTATION;
+			}
 
-		//3. Update all players that have their positions set
-
+			if (playerPositions.contains(trackId))
+			{
+				track["position"] = playerPositions[trackId];
+			}
+		}
 		//4. Append Distance information
 	}
 	
@@ -47,19 +62,22 @@ void StateManager::updateState(json stateInfo)
 	{
 		json data = stateInfo["data"];
 		addAnnotation(data["id"], data);
-	}
+
+		std::cout << "Added Annotation: " << data << std::endl;
+ 	}
 	else if (stateInfo["state_def"] == KEvents::STATES_DEF::HIGHLIGHT)
 	{
 		addHighlight(stateInfo["data"]["id"], stateInfo["data"]);
+		std::cout << "Modified highlight: " << stateInfo["data"] << std::endl;
 	}
 	else if(stateInfo["state_def"] == KEvents::STATES_DEF::POSITION)
 	{
 		addPosition(stateInfo["data"]["id"], stateInfo["data"]);
-
+		std::cout << "Modified Position: " << stateInfo["data"] << std::endl;
 	}
 	else if (stateInfo["state_def"] == KEvents::STATES_DEF::DISTANCE)
 	{
-		addPosition(stateInfo["data"]["id"], stateInfo["data"]);
+		//addPosition(stateInfo["data"]["id"], stateInfo["data"]);
 	}
 }
 

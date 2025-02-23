@@ -5,6 +5,7 @@
 #include "kevents.hpp"
 #include "stream_callback.hpp"
 #include "stream_data_store.hpp"
+#include "state_modification_callback.hpp"
 #include <Windows.h>
 
 
@@ -26,12 +27,19 @@ int main(int argc, char *argv[])
     serviceTopic = moduleConfig["serviceTopic"];
 
     KEvents::EventsManager eventsManager(serviceTopic, serviceName);
+
     std::shared_ptr<StreamCallback> streamCb = KEvents::createCallback<StreamCallback>(globalConfig, serviceName);
     auto streamDataStore = std::bind(&StreamDataStore::dataCallback, &streamDs, std::placeholders::_1);
     streamCb->registerDataCallback(streamDataStore);
     w.setStreamDataStore(&streamDs);
 
+    std::shared_ptr<StateModificationCb> stateMod = KEvents::createCallback<StateModificationCb>(globalConfig, serviceName);
+    w.setStatePlayerStateModifier(stateMod);
     eventsManager.registerCallback(EN_STREAM_DATA_UPDATE, streamCb);
+    eventsManager.registerCallback(EN_STATE_MOD, stateMod);
+
+
+
     eventsManager.startEventLoop();
 
     w.setEventManager(&eventsManager);

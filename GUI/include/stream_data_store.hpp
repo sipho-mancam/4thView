@@ -31,7 +31,20 @@ public slots:
 
 signals:
 	void dataChanged(json);
+	/**
+	* @brief
+	* This one fires continuously for every frame with the current state object.
+	*/
 	void currentSelectedChangedSig(json currentTrack);
+	/**
+	* @brief
+	* This signal will fire once only for every state change (New player selected)
+	* Do not trust the changing information here, because it will be obsolete
+	* Only Fixed state variables like:
+	* Highlight, Position, Annotation, etc, that doesn't changed per frame
+	* until the user updates.
+	*/
+	void selectedStateChagedSig(json currentState);
 
 private:
 	std::vector<std::function<void(json)>> registeredUICallbacks;

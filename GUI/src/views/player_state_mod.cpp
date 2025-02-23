@@ -2,7 +2,10 @@
 #include <iostream>
 
 
-PlayerStateModifierGroup::PlayerStateModifierGroup(QCheckBox* _highlight, QLineEdit* annotText, QComboBox* position, QCheckBox* _activateAnnotation, QPushButton* _updateButton, QObject *parent)
+PlayerStateModifierGroup::PlayerStateModifierGroup(QCheckBox* _highlight, QLineEdit* annotText, 
+	QCheckBox* _activateAnnotation, QComboBox* position, 
+	QPushButton* _updateButton, QObject *parent)
+
 	:QObject(parent),
 	highlight(_highlight),
 	annotationText(annotText),
@@ -11,7 +14,7 @@ PlayerStateModifierGroup::PlayerStateModifierGroup(QCheckBox* _highlight, QLineE
 	updateButton(_updateButton),
 	playerId(-1)
 {
-	_updateButton->connect(_updateButton, &QPushButton::click, this,
+	_updateButton->connect(_updateButton, &QPushButton::clicked, this,
 		&PlayerStateModifierGroup::updateState);
 }
 
@@ -28,35 +31,116 @@ void PlayerStateModifierGroup::updateState()
 		json highlighObject;
 		highlighObject["id"] = playerId;
 		highlighObject["activate"] = true;
-
+		highlighObject["set"] = highlight->isChecked();
 		stateObject["highlight"] = highlighObject;
 	}
 
 	if (!annotationText->text().isEmpty())
 	{
-		QString annTxt = annotationText->text();
-
-		std::string annText(annTxt.begin(), annTxt.end());
-		std::cout << annText << std::endl;
+		std::string annText = annotationText->text().toStdString();
 		json annotationObject;
 		annotationObject["id"] = playerId;
 		annotationObject["text"] = annText;
 		annotationObject["activate"] = activateAnnotation->isChecked();
-
+		annotationObject["set"] = true;
+		stateObject["annotation"] = annotationObject;
+	}
+	else {
+		/**
+		* @brief
+		* This is the state that clears an annotation, when you set the text to empty
+		*/
+		json annotationObject;
+		annotationObject["id"] = playerId;
+		annotationObject["set"] = false;
 		stateObject["annotation"] = annotationObject;
 	}
 
 	int currentSelected = positionInfo->currentIndex();
-	QString positionTxt = positionInfo->currentText();
+	std::string positionTxt = positionInfo->currentText().toStdString();
+	KEvents::EPLAYER_POSITIONS pos = KEvents::__str2PlayerPosition__(positionTxt);
+
+	if (pos != KEvents::EPLAYER_POSITIONS::C_ERROR)
+	{
+		json positionObject;
+		positionObject["id"] = playerId;
+		positionObject["position"] = pos;
+		positionObject["set"] = true;
+		stateObject["position"] = positionObject;
+	}
+	
+	Q_EMIT playerStateChanged(stateObject);
+}
+
+void PlayerStateModifierGroup::laodCurrentState(json plState)
+{
+	playerState = plState;
+
+	if (!playerState.contains("track_id"))
+		return;
+
+	resetWidgets();
+	// Does the player have a highlight status?
+	if (playerState.contains("highlight"))
+	{
+		bool highlght = playerState["highlight"];
+		highlight->setChecked(highlght);
+	}
+
+	if (playerState.contains("annotation"))
+	{
+		json annotateObject = playerState["annotation"];
+		std::string annText = annotateObject["text"];
+		bool activate = annotateObject["activate"];
+
+		activateAnnotation->setChecked(activate);
+		annotationText->setText(QString(const_cast<char*>(annText.c_str())));
+	}
+	if (playerState.contains("position"))
+	{
+		KEvents::EPLAYER_POSITIONS pos = playerState["position"]["position"];
+		int idx = -1;
+		if (pos == KEvents::EPLAYER_POSITIONS::FIELDER)
+		{
+			idx = 0;
+		}
+		else if (KEvents::EPLAYER_POSITIONS::BOWLER)
+		{
+			idx = 1;
+		}
+		else if (KEvents::EPLAYER_POSITIONS::BATMAN_A)
+		{
+			idx = 2;
+		}
+		else if (KEvents::EPLAYER_POSITIONS::BATMAN)
+		{
+			idx = 3;
+		}
+		else if (KEvents::EPLAYER_POSITIONS::UMPIRE)
+		{
+			idx = 4;
+		}
 
 
-
+		if (idx >= 0)
+		{
+			positionInfo->setCurrentIndex(idx);
+		}
+	}
 
 }
 
 json PlayerStateModifierGroup::getCurrentState()
 {
 	return stateObject;
+}
+
+void PlayerStateModifierGroup::resetWidgets()
+{
+	highlight->setChecked(false);
+	annotationText->setText(QString(""));
+	activateAnnotation->setChecked(false);
+	positionInfo->setCurrentIndex(0);
 }
 
 

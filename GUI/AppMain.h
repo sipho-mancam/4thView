@@ -4,16 +4,17 @@
 #include "ui_AppMain.h"
 #include <iostream>
 #include <QDateTime>
-#include <views/cricket_oval_widget.hpp>
 #include <QtWidgets/QMessageBox>
 #include "kevents.hpp"
 #include "stream_data_store.hpp"
+#include "views/cricket_oval_widget.hpp"
+#include "views/player_state_mod.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
 QT_END_NAMESPACE
 
-
+class StateModificationCb;
 // Custom stream buffer to capture stdout
  class StdoutStreamBuffer  : public QObject, public std::streambuf{
     Q_OBJECT
@@ -80,6 +81,7 @@ public:
     virtual void closeEvent(QCloseEvent* e) override;
     void setEventManager(KEvents::EventsManager* evMan) { eventMan = evMan; }
     void setStreamDataStore(StreamDataStore* sDs);
+    void setStatePlayerStateModifier(std::shared_ptr<StateModificationCb> stMod);
 
 private slots:
     void appendOutput(const QString& text)
@@ -92,7 +94,11 @@ private:
     Ui::AppMainClass *ui;
     QGraphicsScene* scene;
     PlayerPropertiesGroup* propsGroup;
+    PlayerStateModifierGroup* playerStateModifier;
     StdoutStreamBuffer* outputHandle;
     KEvents::EventsManager* eventMan;
+
+
     StreamDataStore* streamDs;
+    std::shared_ptr<StateModificationCb> stateMod;
 };

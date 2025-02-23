@@ -55,6 +55,9 @@
     <ClCompile Include="src\views\player_state_mod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\state_modification_callback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -104,6 +107,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\views\player_state_mod.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\state_modification_callback.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -7,6 +7,7 @@
 #include <sstream>
 #include <nlohmann/json.hpp>
 #include "player_props_widget.hpp"
+#include "kevents.hpp"
 
 using json = nlohmann::json;
 
@@ -18,10 +19,10 @@ public:
 	enum E_STATE
 	{
 		DEFAULT = 0,
-		DESELECTED = 1,
-		SELECTED = 2,
-		HIGHLIGHTED = 3,
-		ANNOTATED = 4
+		DESELECTED = 4,
+		SELECTED = 3,
+		ANNOTATED = 1,
+		HIGHLIGHTED = 2,
 	};
 
 	enum E_POSITION {

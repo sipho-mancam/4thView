@@ -76,6 +76,15 @@ namespace KEvents
 		E_OUTPUT, // Output related events
 		E_MISC_EVENTS // Arbitrary modules related events.
 	};
+
+	enum EPLAYER_POSITIONS {
+		C_ERROR = -1,
+		FIELDER = 0,
+		BATMAN_A = 1,
+		BATMAN,
+		UMPIRE,
+		BOWLER
+	};
 	
 	
 	enum STATES_DEF {
@@ -88,6 +97,9 @@ namespace KEvents
 	enum STREAM_TYPES {
 		TRACKER = 0
 	};
+
+	std::string __playerPosition2Str__(EPLAYER_POSITIONS pos);
+	EPLAYER_POSITIONS __str2PlayerPosition__(std::string pos);
 
 	struct Event
 	{

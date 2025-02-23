@@ -119,8 +119,8 @@ void CricketOvalScene::updateId(int id, json data)
 
 		if (data.contains("position"))
 		{
-			PlayerItemWidget::E_POSITION pos = (PlayerItemWidget::E_POSITION)data["position"];
-			player->setPosition(pos);
+			/*PlayerItemWidget::E_POSITION pos = (PlayerItemWidget::E_POSITION)data["position"];
+			player->setPosition(pos);*/
 		}
 		player->updateGraphic();
 	}

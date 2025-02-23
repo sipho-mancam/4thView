@@ -22,6 +22,7 @@ void StreamDataStore::setCurrentClicked(int trackId)
 	if (!currentState.contains("tracks"))
 		return;
 	updateCurrentState();
+	Q_EMIT selectedStateChagedSig(currentClickedTrack);
 }
 
 void StreamDataStore::updateCurrentState()
