@@ -195,6 +195,10 @@ namespace KEvents
 		{
 			std::string message_ = std::string(static_cast<const char*>(message.payload()), message.len());
 			Event e = Event::deserializeEvent(message_);
+
+			if (e.getEventName() == EN_STATE_MOD)
+				std::cout << "Received a mod event ... \n";
+
 			for (EventQueuePtr q : qsList)
 			{
 				q->push(e);

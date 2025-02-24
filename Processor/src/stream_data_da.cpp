@@ -18,8 +18,8 @@ void StreamDataCallback::execute(KEvents::Event e)
 		if (e.getEventName() == EN_STREAM_DATA || e.getEventName() == EN_STATE_MOD)
 		{
 			eventProducerPtr->sendMessage(globalConfig[dataAggregator]["serviceTopic"], e);
-			if (e.getEventName() == EN_STATE_MOD)
-				std::cout << "Recieved state modification event." << std::endl;
+			/*if (e.getEventName() == EN_STATE_MOD)
+				std::cout << "Recieved state modification event." << std::endl;*/
 		}
 		else if (e.getEventName() == EN_STREAM_DATA_UPDATE)
 		{

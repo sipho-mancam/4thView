@@ -9,7 +9,6 @@
 #include <Windows.h>
 
 
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -37,8 +36,6 @@ int main(int argc, char *argv[])
     w.setStatePlayerStateModifier(stateMod);
     eventsManager.registerCallback(EN_STREAM_DATA_UPDATE, streamCb);
     eventsManager.registerCallback(EN_STATE_MOD, stateMod);
-
-
 
     eventsManager.startEventLoop();
 

@@ -149,7 +149,7 @@ namespace KEvents
 						"OutputManager",
 						"SportEventProcessor",
 						"TrackingCoreConnector",
-						"GUI"
+						"UnrealEngineConnector"
 					]
 				},
     
@@ -183,7 +183,9 @@ namespace KEvents
 				},
 				"UnrealEngineConnector":{
 					"serviceName":"unreal_engine_con",
-					"serviceTopic": "unreal_engine_mod"
+					"serviceTopic": "unreal_engine_mod",
+					"unrealIp": "127.0.0.1",
+					"unrealPort":6069
 				},
 				"VizEngineConnector":{
 					"serviceName":"viz_engine_con",

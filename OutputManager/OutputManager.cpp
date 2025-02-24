@@ -17,7 +17,6 @@ int main()
 
 	eventsManager.registerCallback(EN_STREAM_DATA_UPDATE, streamCb);
 
-
 	eventsManager.startEventLoop(true);
 
 	return 0;
