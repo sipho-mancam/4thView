@@ -16,12 +16,9 @@ void UECStreamCallback::execute(KEvents::Event e)
 {
 	if (e.getEventName() == EN_STREAM_DATA_UPDATE)
 	{
-		json eventData = e.getEventData();
-
 		json unrealEvent;
-		unrealEvent["payload"] = eventData;
+		unrealEvent["payload"] = e.getEventData();
 		unrealEvent["event_type"] = EventTypes::PLAYER_CONTROL;
-
 		udpClient->sendJson(unrealEvent);
 	}
 }

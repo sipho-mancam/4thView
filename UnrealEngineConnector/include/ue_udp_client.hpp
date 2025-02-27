@@ -52,7 +52,7 @@ public:
     }
 
     // Method to send JSON data
-    void sendJson(const json& jsonData) {
+    void sendJson(json jsonData) {
         // Convert JSON to string
         std::string jsonString = jsonData.dump();
         retry:
@@ -60,6 +60,7 @@ public:
         // Send the JSON string over the UDP socket
         int bytesSent = sendto(sockfd, jsonString.c_str(), static_cast<int>(jsonString.size()), 0,
             (struct sockaddr*)&server_addr, sizeof(server_addr));
+
         if (bytesSent == SOCKET_ERROR) {
             retryCount += 1;
             goto retry;

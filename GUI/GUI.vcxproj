@@ -115,6 +115,7 @@
     <QtMoc Include="AppMain.h" />
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="include\models\Widget.ui" />
     <QtUic Include="output_console.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="include\state_modification_callback.hpp" />
+    <QtMoc Include="include\models\distance_objects_manager.hpp" />
     <ClInclude Include="include\stream_buffer.hpp" />
     <ClInclude Include="include\stream_callback.hpp" />
     <ClInclude Include="include\data_store_base.hpp" />

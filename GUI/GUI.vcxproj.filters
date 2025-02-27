@@ -67,6 +67,9 @@
     <QtUic Include="output_console.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="include\models\Widget.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\stream_buffer.hpp">
@@ -110,6 +113,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\state_modification_callback.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\models\distance_objects_manager.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
