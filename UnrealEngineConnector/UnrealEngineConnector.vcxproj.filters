@@ -21,12 +21,18 @@
     <ClCompile Include="src\ue_stream_callback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\track_preprocessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ue_stream_callback.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ue_udp_client.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\track_preprocessor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

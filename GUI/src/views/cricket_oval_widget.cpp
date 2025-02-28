@@ -86,13 +86,23 @@ void CricketOvalScene::updateFrameData(json frameData)
 			if (track.contains("track_id"))
 			{
 				auto trackId = track["track_id"];
-				// we need to scale up the coordinates data before we send it through.
-				auto coords = track["coordinates"];
-				double x = coords[0], y = coords[1], xScaled, yScaled;
-				xScaled = x * _boundingRect.width()/2;
-				yScaled = y * _boundingRect.height()/2;
-				track["coordinates"] = std::vector<double>({ xScaled, yScaled });
-				this->updateId(trackId, track);
+				try {
+					//std::cout << track << std::endl;
+					// we need to scale up the coordinates data before we send it through.
+					auto coords = track["coordinates"];
+					double x = coords[0], y = coords[1], xScaled, yScaled;
+					xScaled = x * _boundingRect.width() / 2;
+					yScaled = y * _boundingRect.height() / 2;
+					track["coordinates"] = std::vector<double>({ xScaled, yScaled });
+					this->updateId(trackId, track);
+				}
+				catch (json::type_error& pe) {
+					// These are invalid tracks, just ignore the error and move on
+				}
+				catch (std::exception& e) {
+					
+				}
+				
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 #pragma once
 #include "kevents.hpp"
 #include "ue_udp_client.hpp"
+#include "track_preprocessor.hpp"
 
 class UECStreamCallback : public KEvents::CallBackBase
 {

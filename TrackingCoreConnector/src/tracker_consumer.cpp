@@ -5,10 +5,10 @@ TrackerConsumer::TrackerConsumer(json globConfig, std::string servName)
 	serviceName(servName),
 	messageStatus(false)
 {
-	std::string broker = globalConfig["systemSettings"]["kafka"]["broker"];
-	kConsumer = KEvents::buildConsumer(broker, serviceName);
 	json& moduleConfig = globalConfig["TrackingCoreConnector"];
-
+	std::string broker = moduleConfig["kafkaBroker"];
+	kConsumer = KEvents::buildConsumer(broker, serviceName);
+	
 	std::string trackerTopic = moduleConfig["trackerAddress"];
 
 	kConsumer->subscribe(std::vector<std::string>({ trackerTopic }));

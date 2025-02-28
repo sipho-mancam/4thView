@@ -17,7 +17,9 @@ void UECStreamCallback::execute(KEvents::Event e)
 	if (e.getEventName() == EN_STREAM_DATA_UPDATE)
 	{
 		json unrealEvent;
-		unrealEvent["payload"] = e.getEventData();
+		// This converts from screen coordinates to cartesian coordinates
+		json eventData = CoordinateSpaceTransform::convertFromFrameData(e.getEventData());
+		unrealEvent["payload"] = eventData;
 		unrealEvent["event_type"] = EventTypes::PLAYER_CONTROL;
 		udpClient->sendJson(unrealEvent);
 	}

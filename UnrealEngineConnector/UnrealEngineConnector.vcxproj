@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\track_preprocessor.cpp" />
     <ClCompile Include="src\ue_stream_callback.cpp" />
     <ClCompile Include="UnrealEngineConnector.cpp" />
   </ItemGroup>
@@ -144,6 +145,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\track_preprocessor.hpp" />
     <ClInclude Include="include\ue_stream_callback.hpp" />
     <ClInclude Include="include\ue_udp_client.hpp" />
   </ItemGroup>
