@@ -63,17 +63,10 @@ namespace KEvents
 			eventConsumerPtr->update();
 			if (eventsQueue->empty())
 			{
-				// reduce the query overhead ...
-				// Need to find a clever way to do this ...
-				std::this_thread::sleep_for(std::chrono::milliseconds(20));
 				continue;
 			}
 
 			Event currentEvent = eventsQueue->pull();
-#ifdef _DEBUG
-			/*std::cout << currentEvent.getEventName() << std::endl;
-			std::cout << currentEvent.getEventData() << std::endl;*/
-#endif
 			executorTreePtr->enqueueEvent(currentEvent);
 		}
 	}

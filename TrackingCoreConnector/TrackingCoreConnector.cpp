@@ -36,10 +36,12 @@ int main()
             e.setEventType(KEvents::EventType::E_INPUT);
             e.setEventName(EN_STREAM_DATA);
             e.setSourceModule(serviceName);
+            message["stream_type"] = KEvents::STREAM_TYPES::TRACKER;
             e.setEventData(message);
             // This is a cheat, hacking the callback system to execute events on our own.
             // But should be common for data generators
             outputCb->execute(e);
+            
         }
     }
     return 0;

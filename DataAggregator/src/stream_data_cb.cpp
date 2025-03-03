@@ -20,7 +20,9 @@ void StreamCallback::execute(KEvents::Event e)
 	{
 		if (streamCapture)
 		{
-			eventProducerPtr->sendMessage(globalConfig[sportEventProcessorName]["serviceTopic"], e);
+			std::string sEPStreamTopic = globalConfig[sportEventProcessorName]["serviceTopic"];
+			sEPStreamTopic += TE_STREAM_EXT;
+			eventProducerPtr->sendMessage(sEPStreamTopic, e);
 		}
 		// Update the states that need updating
 		json eventData = e.getEventData();
@@ -30,13 +32,19 @@ void StreamCallback::execute(KEvents::Event e)
 		e.setSourceModule(serviceName);
 		e.setEventData(updatedEventData);
 
-		eventProducerPtr->sendMessage(globalConfig[outputManagerName]["serviceTopic"], e);
-		eventProducerPtr->sendMessage(globalConfig[processorName]["serviceTopic"], e);	
+		std::string omStreamTopic = globalConfig[outputManagerName]["serviceTopic"];
+		omStreamTopic += TE_STREAM_EXT;
+		eventProducerPtr->sendMessage(omStreamTopic, e);
+
+		std::string procStreamTopic = globalConfig[processorName]["serviceTopic"];
+		procStreamTopic += TE_STREAM_EXT;
+		eventProducerPtr->sendMessage(procStreamTopic, e);	
 
 	}
 	else if (e.getEventName() == EN_STATE_MOD)
 	{
 		stateManager->updateState(e.getEventData());
+		std::cout << "Received State Modification event." << std::endl;
 	}
 	else if (e.getEventName() == EN_STATE_CAPTURE_START)
 	{

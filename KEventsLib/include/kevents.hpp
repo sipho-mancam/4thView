@@ -31,7 +31,7 @@ namespace KEvents
 	class EventsManager
 	{
 	public:
-		EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize=1);
+		EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize=3);
 		~EventsManager();
 
 		void startEventLoop(bool sync=false);

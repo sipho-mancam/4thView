@@ -23,6 +23,7 @@
 #define EN_STATE_CAPTURE_START "state_capture_start"
 #define EN_STATE_CAPTURE_STOP "state_capture_stop"
 #define EN_STATE_CAPTURE_LOAD "state_capture_load" // pull the data from the stored state and load.
+#define TE_STREAM_EXT "_stream"
 
 using json = nlohmann::json;
 using namespace nlohmann::literals;

@@ -2,7 +2,7 @@
 
 
 StreamDataCallback::StreamDataCallback(std::string processor_topic, std::string servName)
-	:processorTopic(processor_topic),
+	:processorTopic(processor_topic + TE_STREAM_EXT),
 	serviceName(servName)
 {
 }

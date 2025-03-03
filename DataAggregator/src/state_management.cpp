@@ -32,22 +32,30 @@ json StateManager::updateTrackData(json frame)
 		json& tracks = frame["tracks"];
 		for (auto& track : tracks)
 		{
-			int trackId = track["track_id"];
-			if (playerHighlight.contains(trackId))
-			{
-				track["highlight"] = true;
-				track["state"] = KEvents::STATES_DEF::HIGHLIGHT;
-			}
+			try {
+				int trackId = track["track_id"];
+				if (playerHighlight.contains(trackId))
+				{
+					track["highlight"] = true;
+					track["state"] = KEvents::STATES_DEF::HIGHLIGHT;
+				}
 
-			if (playerAnnotions.contains(trackId))
-			{
-				track["annotation"] = playerAnnotions[trackId];
-				track["state"] = KEvents::STATES_DEF::ANNOTATION;
-			}
+				if (playerAnnotions.contains(trackId))
+				{
+					track["annotation"] = playerAnnotions[trackId];
+					track["state"] = KEvents::STATES_DEF::ANNOTATION;
+				}
 
-			if (playerPositions.contains(trackId))
-			{
-				track["position"] = playerPositions[trackId];
+				if (playerPositions.contains(trackId))
+				{
+					track["position"] = playerPositions[trackId];
+				}
+			}
+			catch (json::type_error& te) {
+				
+			}
+			catch (std::exception& ex) {
+
 			}
 		}
 		//4. Append Distance information

@@ -13,8 +13,11 @@ namespace KEvents
 	void RouterBase::executeEvent(Event e)
 	{
 		if (!threadPoolPtr)
+		{
+			std::cout << "No Thread Pool present in the Router " << std::endl;
 			return;
-
+		}
+			
 		std::string eventName = e.getEventName();
 		if (routingMap.contains(eventName))
 		{

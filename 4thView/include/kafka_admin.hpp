@@ -25,6 +25,7 @@ public:
             initEvent.setEventType(KEvents::DEFAULT);
             initEvent.setEventName("start_up_event");
             prod->sendMessage(topic, initEvent);
+            prod->sendMessage(topic+TE_STREAM_EXT, initEvent);
        }
     }
 

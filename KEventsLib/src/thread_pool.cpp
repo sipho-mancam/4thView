@@ -74,7 +74,7 @@ namespace KEvents
 						else
 						{
 							// retry durations ... 50ms intervals
-							std::this_thread::sleep_for(std::chrono::milliseconds(50));
+							std::this_thread::sleep_for(std::chrono::milliseconds(10));
 						}
 					}
 					// This means that strategy 1 failed, we couldn't find any free thread, now we

@@ -25,7 +25,7 @@ namespace KEvents
 			throw std::runtime_error("Invalid kafka Config for Auto Offset Reset");
 		}
 
-		if (config->set("enable.auto.commit", "true", err) != Conf::CONF_OK)
+		if (config->set("enable.auto.commit", "false", err) != Conf::CONF_OK)
 		{
 			std::cerr << err << std::endl;
 			throw std::runtime_error("Invalid kafka Config for Enable Auto Commit Offset");
@@ -168,7 +168,8 @@ namespace KEvents
 		: _callBackHandler()
 	{
 		kConsumer = buildConsumer(broker, group_id, &_callBackHandler);
-		kConsumer->subscribe(std::vector<std::string>({ consumerTopic }));
+
+		kConsumer->subscribe(std::vector<std::string>({ consumerTopic, consumerTopic + TE_STREAM_EXT }));
 	}
 
 	EventConsumer::~EventConsumer()
@@ -180,7 +181,7 @@ namespace KEvents
 
 	void EventConsumer::update()
 	{	
-		kConsumer->poll(100);
+		kConsumer->poll(50);
 	}
 
 	void EventConsumer::subscribeEventsQueue(EventQueuePtr eq)
@@ -195,9 +196,6 @@ namespace KEvents
 		{
 			std::string message_ = std::string(static_cast<const char*>(message.payload()), message.len());
 			Event e = Event::deserializeEvent(message_);
-
-			if (e.getEventName() == EN_STATE_MOD)
-				std::cout << "Received a mod event ... \n";
 
 			for (EventQueuePtr q : qsList)
 			{

@@ -15,15 +15,22 @@ void StreamDataCallback::execute(KEvents::Event e)
 	if (eventProducerPtr)
 	{
 		e.setSourceModule(serviceName);
-		if (e.getEventName() == EN_STREAM_DATA || e.getEventName() == EN_STATE_MOD)
+		if (e.getEventName() == EN_STREAM_DATA) 
 		{
-			eventProducerPtr->sendMessage(globalConfig[dataAggregator]["serviceTopic"], e);
-			/*if (e.getEventName() == EN_STATE_MOD)
-				std::cout << "Recieved state modification event." << std::endl;*/
+			std::string daStreamTopic = globalConfig[dataAggregator]["serviceTopic"];
+			daStreamTopic += TE_STREAM_EXT;
+			eventProducerPtr->sendMessage(daStreamTopic, e);
+			
 		}
 		else if (e.getEventName() == EN_STREAM_DATA_UPDATE)
 		{
-			eventProducerPtr->sendMessage(globalConfig[gui]["serviceTopic"], e);
+			std::string guiStreamTopic = globalConfig[gui]["serviceTopic"];
+			guiStreamTopic += TE_STREAM_EXT;
+			eventProducerPtr->sendMessage(guiStreamTopic, e);
+		}else if (e.getEventName() == EN_STATE_MOD)
+		{
+			eventProducerPtr->sendMessage(globalConfig[dataAggregator]["serviceTopic"], e);
+			std::cout << "Processor Received the state modification event" << std::endl;
 		}
 	}
 }
