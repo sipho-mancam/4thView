@@ -182,7 +182,7 @@ namespace KEvents
 					]
 				},
 				"UnrealEngineConnector":{
-					"serviceName":"unreal_engine_con",
+					"serviceName":"UnrealEngineConnector",
 					"serviceTopic": "unreal_engine_mod",
 					"unrealIp": "127.0.0.1",
 					"unrealPort":6069
@@ -198,7 +198,8 @@ namespace KEvents
 				"TrackingCoreConnector":{
 					"serviceName":"tracking_core_connector",
 					"serviceTopic": "tracking_core_connector_mod",
-					"trackerAddress":"system-output"
+					"trackerAddress":"system-output",
+					"kafkaBroker":"10.0.0.50:9092"
 				},
 				"InputManager":{
 					"serviceName":"input_manager",

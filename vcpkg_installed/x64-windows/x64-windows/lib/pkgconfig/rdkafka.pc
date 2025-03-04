@@ -1,0 +1,13 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: librdkafka
+Description: The Apache Kafka C/C++ library
+Version: 2.6.0
+Requires.private: liblz4 
+Cflags: "-I${includedir}"
+Libs: "-L${libdir}" -lrdkafka
+Libs.private: -lws2_32 -lsecur32 -lcrypt32
+
