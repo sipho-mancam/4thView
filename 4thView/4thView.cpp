@@ -33,6 +33,10 @@ int main()
     std::vector<std::string> moduleTopics;
     KafkaTopicCreator topicInit(systemSettings["kafka"]["broker"]);
 
+    std::string localEventBusAddress = systemSettings["kafka"]["broker"];
+
+    KEvents::kEventsLogger->info("Local event bus running at address: {}", localEventBusAddress);
+
     for (std::string module : registeredModules)
     {
         std::string topic = globalConfig[module]["serviceTopic"];

@@ -8,7 +8,7 @@ TrackerConsumer::TrackerConsumer(json globConfig, std::string servName)
 	json& moduleConfig = globalConfig["TrackingCoreConnector"];
 	std::string broker = moduleConfig["kafkaBroker"];
 	kConsumer = KEvents::buildConsumer(broker, serviceName);
-	std::cout << "Connecting to tracking core kafka at address: " << broker << std::endl;
+	KEvents::kEventsLogger->info("Connecting to tracking core kafka at address: {}", broker);
 	
 	std::string trackerTopic = moduleConfig["trackerAddress"];
 
@@ -40,8 +40,8 @@ json TrackerConsumer::getCurrentMessage()
 			return msg;
 		}
 		catch (json::parse_error& pe) {
-			std::cerr << "Failed to parse json incoming message from tracker..." << std::flush;
-			std::cerr << pe.what() << std::flush;
+			KEvents::kEventsLogger->error( "Failed to parse json incoming message from tracker...");
+			KEvents::kEventsLogger->error("{}", pe.what());
 			return json();
 		}
 	}

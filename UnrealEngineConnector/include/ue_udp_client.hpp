@@ -47,7 +47,7 @@ public:
             throw std::runtime_error("Invalid IP address");
         }
 
-        std::cout << "Connecting to unreal engine at Address: " << ipAddress << ":" << port << std::endl;
+        KEvents::kEventsLogger->info("Connecting to unreal engine at Address: {}:{}" ,ipAddress ,port);
     }
 
     // Destructor to close the socket and clean up Winsock
