@@ -15,6 +15,7 @@
 
 #include "types.hpp"
 
+
 namespace KEvents
 {
 
@@ -31,7 +32,7 @@ namespace KEvents
 	class EventsManager
 	{
 	public:
-		EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize=3);
+		EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize=3, std::shared_ptr<spdlog::logger> logger=spdlog::stdout_color_mt("Events Manager"));
 		~EventsManager();
 
 		void startEventLoop(bool sync=false);
@@ -43,9 +44,11 @@ namespace KEvents
 		EventQueuePtr eventsQueue;
 		std::shared_ptr<EventConsumer> eventConsumerPtr;
 		std::shared_ptr<EventProducer> eventProducerPtr;
+		std::shared_ptr<spdlog::logger> logger;
 		ExecutorTreePtr executorTreePtr;
 		std::atomic<bool> exitFlag;
 		std::unique_ptr<std::thread> worker;
+		
 		virtual void __run();
 
 		

@@ -12,7 +12,7 @@ namespace KEvents
 	}
 	ExecutorTree::~ExecutorTree()
 	{
-		std::cout << "Shutting down executor tree ..." << std::endl;
+		kEventsLogger->info("Shutting down executor tree ...");
 		exit();
 	}
 	void ExecutorTree::enqueueEvent(Event event)

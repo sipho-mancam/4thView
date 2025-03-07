@@ -5,6 +5,8 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <filesystem>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 using json = nlohmann::json;
 
@@ -16,7 +18,7 @@ using json = nlohmann::json;
 class ProcessesManager
 {
 public:
-	ProcessesManager(json globalConfig);
+	ProcessesManager(json globalConfig, std::shared_ptr<spdlog::logger> logger=spdlog::stdout_color_mt("Process Manager"));
 	~ProcessesManager();
 	void init();
 
@@ -27,7 +29,7 @@ private:
 	std::vector<std::string> processesStrNames;
 	std::vector<PROCESS_INFORMATION> procInfoList;
 	std::vector<STARTUPINFO> procStartupInfoList;
-
+	std::shared_ptr<spdlog::logger> logger;
 	json globalConfig;
 };
 

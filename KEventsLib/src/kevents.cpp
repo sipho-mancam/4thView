@@ -2,8 +2,9 @@
 
 namespace KEvents
 {
-	EventsManager::EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize)
-		: worker(nullptr)
+	EventsManager::EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize, std::shared_ptr<spdlog::logger>logger)
+		: worker(nullptr),
+		logger(logger)
 	{
 		json config = __load_config__();
 		json& libConfig = config["kEventslib"];
@@ -19,13 +20,13 @@ namespace KEvents
 	EventsManager::~EventsManager()
 	{
 		exitFlag = true;
-		std::cout << "Shutting down events manager ..." << std::endl;
-		exit();
+		logger->info("Shutting down events manager ..." );
+		this->exit();
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 		if (worker->joinable())
 			worker->join();
-		std::cout << "Events manager shutdown complete ... " << std::endl;
+		logger->info("Events manager shutdown complete ... ");
 	}
 
 	void EventsManager::startEventLoop(bool sync)

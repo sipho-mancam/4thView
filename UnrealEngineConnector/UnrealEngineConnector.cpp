@@ -12,6 +12,7 @@ int main()
     serviceName = moduleConfig["serviceName"];
     serviceTopic = moduleConfig["serviceTopic"];
 
+    KEvents::kEventsLogger->info("Starting {}", serviceName);
     KEvents::EventsManager eventManager(serviceTopic, serviceName);
    
     std::shared_ptr<UECStreamCallback> ueStreamCb = KEvents::createCallback<UECStreamCallback>(globalConfig, serviceName);

@@ -15,10 +15,13 @@ class UdpSocket {
 private:
     SOCKET sockfd;
     sockaddr_in server_addr;
+    std::string ipAddress;
 
 public:
     // Constructor to initialize the UDP socket
-    UdpSocket(const std::string& ipAddress, int port) {
+    UdpSocket(const std::string& ipAddr, int port) 
+        :ipAddress(ipAddr)
+    {
         // Initialize Winsock
         WSADATA wsaData;
         if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -36,13 +39,15 @@ public:
         memset(&server_addr, 0, sizeof(server_addr));
         server_addr.sin_family = AF_INET;
         server_addr.sin_port = htons(port);
-
+      
         // Convert IP address from string to binary form
         if (inet_pton(AF_INET, ipAddress.c_str(), &server_addr.sin_addr) <= 0) {
             closesocket(sockfd);
             WSACleanup();
             throw std::runtime_error("Invalid IP address");
         }
+
+        std::cout << "Connecting to unreal engine at Address: " << ipAddress << ":" << port << std::endl;
     }
 
     // Destructor to close the socket and clean up Winsock
@@ -60,7 +65,7 @@ public:
         // Send the JSON string over the UDP socket
         int bytesSent = sendto(sockfd, jsonString.c_str(), static_cast<int>(jsonString.size()), 0,
             (struct sockaddr*)&server_addr, sizeof(server_addr));
-
+      
         if (bytesSent == SOCKET_ERROR) {
             retryCount += 1;
             goto retry;

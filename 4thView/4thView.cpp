@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include "processes_manager.hpp"
 #include "kafka_admin.hpp"
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 int main()
 {
@@ -24,6 +26,7 @@ int main()
    */
 
     /*This function takes care of the dumping of the config file.*/
+    std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("4th View Main");
     json globalConfig = KEvents::__load_config__();
     json systemSettings = globalConfig["systemSettings"];
     std::vector<std::string> registeredModules = systemSettings["registeredModules"];
@@ -33,7 +36,7 @@ int main()
     for (std::string module : registeredModules)
     {
         std::string topic = globalConfig[module]["serviceTopic"];
-        std::cout <<"[info] Registering Topic " << topic << std::endl;
+        logger->info("Registering Topic {}", topic);
         moduleTopics.push_back(topic);
     }
     topicInit.createTopics(moduleTopics);
@@ -42,6 +45,6 @@ int main()
 
     ProcessesManager procMan(globalConfig);
     procMan.init();
-    std::cout << "[info] Manager Shuting down ..." << std::endl;
+    logger->info("[info] Manager Shuting down ...");
     return 0;
 }

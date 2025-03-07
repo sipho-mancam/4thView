@@ -2,14 +2,15 @@
 
 UECStreamCallback::UECStreamCallback(json globConfig, std::string servName)
 	:globalConfig(globConfig),
-	serviceName(servName),
-	udpClient(nullptr)
+	serviceName(servName)
 {
 	int port = globalConfig[serviceName]["unrealPort"];
-	std::string ip = globalConfig[serviceName]["unrealIp"];
-
-	udpClient = new UdpSocket(ip, port);
-
+	std::vector<std::string> ips = globalConfig[serviceName]["unrealIp"];
+	for (std::string addr : ips)
+	{
+		UdpSocket* udpClient = new UdpSocket(addr, port);
+		udpClients.push_back(udpClient);
+	}
 }
 
 void UECStreamCallback::execute(KEvents::Event e)
@@ -21,12 +22,14 @@ void UECStreamCallback::execute(KEvents::Event e)
 		json eventData = CoordinateSpaceTransform::convertFromFrameData(e.getEventData());
 		unrealEvent["payload"] = eventData;
 		unrealEvent["event_type"] = EventTypes::PLAYER_CONTROL;
-		udpClient->sendJson(unrealEvent);
+
+		for(auto udpClient : udpClients)
+			udpClient->sendJson(unrealEvent);
 	}
 }
 
 UECStreamCallback::~UECStreamCallback()
 {
-	if(udpClient)
+	for(UdpSocket* udpClient: udpClients)
 		delete udpClient;
 }

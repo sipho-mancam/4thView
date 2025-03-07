@@ -9,34 +9,34 @@ namespace KEvents
 		std::string err;
 		if (config->set("bootstrap.servers", broker, err) != Conf::CONF_OK)
 		{
-			std::cerr << err << std::endl;
+			kEventsLogger->error("Invalid Kafka Config for Bootsrap Server");
 			throw std::runtime_error("Invalid Kafka Config for Bootsrap Server");
 		}
 
 		if (config->set("group.id", group_id, err) != Conf::CONF_OK)
 		{
-			std::cerr << err << std::endl;
+			kEventsLogger->error("{}",err);
 			throw std::runtime_error("Invalid Kafka Config for Group Id");
 		}
 
 		if (config->set("auto.offset.reset", "latest", err) != Conf::CONF_OK)
 		{
-			std::cerr << err << std::endl;
+			kEventsLogger->error("{}", err);
 			throw std::runtime_error("Invalid kafka Config for Auto Offset Reset");
 		}
 
 		if (config->set("enable.auto.commit", "false", err) != Conf::CONF_OK)
 		{
-			std::cerr << err << std::endl;
+			kEventsLogger->error("{}", err);
 			throw std::runtime_error("Invalid kafka Config for Enable Auto Commit Offset");
 		}
 
 		if (_messageCb)
 		{
-			std::cout << "Registering message callback" << std::endl;
+			kEventsLogger->info("Registering kafka message callback");
 			if (config->set("consume_cb", _messageCb, err) != Conf::CONF_OK)
 			{
-				std::cerr << err << std::endl;
+				kEventsLogger->error("{}", err);
 				throw std::runtime_error("Couldn't set message callback");
 			}
 		}
@@ -44,7 +44,7 @@ namespace KEvents
 		KafkaConsumer* consumer = KafkaConsumer::create(config, err);
 		if (!consumer)
 		{
-			std::cerr << "Failed to create consumer. Reason: " << err << std::endl;
+			kEventsLogger->error("{} {}", "Failed to create consumer. Reason: ", err);
 			throw std::runtime_error("failed to build consumer.");
 		}
 		std::shared_ptr<KafkaConsumer> sConsumer = std::shared_ptr<KafkaConsumer>(consumer);
@@ -58,21 +58,21 @@ namespace KEvents
 
 		if (conf->set("bootstrap.servers", broker, err) != RdKafka::Conf::CONF_OK)
 		{
-			std::cerr << "Failed to set bootstrap.servers config" << std::endl;
+			kEventsLogger->error("Failed to set bootstrap.servers config");
 			throw std::runtime_error("Failed to set bootstrap.servers config.");
 		}
 		if (_deliveryCb)
 		{
 			if (conf->set("dr_cb", _deliveryCb, err) != RdKafka::Conf::CONF_OK)
 			{
-				std::cerr << "Could not configure delivery callback" << std::endl;
-				std::cerr << "Error: " << err << std::endl;
+				kEventsLogger->error( "Could not configure delivery callback" );
+				kEventsLogger->error("Error: {}" , err );
 			}
 		}
 		RdKafka::Producer* producer = RdKafka::Producer::create(conf, err);
 		if (!producer)
 		{
-			std::cerr << "Failed to create producer. Reason: " << err << std::endl;
+			kEventsLogger->error("Failed to create producer. Reason: {}", err );
 			throw std::runtime_error("Failed to create event producer ...");
 		}
 		std::shared_ptr<RdKafka::Producer> sProducer = std::shared_ptr<RdKafka::Producer>(producer);
@@ -168,15 +168,14 @@ namespace KEvents
 		: _callBackHandler()
 	{
 		kConsumer = buildConsumer(broker, group_id, &_callBackHandler);
-
 		kConsumer->subscribe(std::vector<std::string>({ consumerTopic, consumerTopic + TE_STREAM_EXT }));
 	}
 
 	EventConsumer::~EventConsumer()
 	{
-		std::cout << "Shutting down events consumer" << std::endl;
+		kEventsLogger->info("Shutting down events consumer");
 		kConsumer->close();
-		std::cout << "Shutting down events consumer complete" << std::endl;
+		kEventsLogger->info("Shutting down events consumer complete");
 	}
 
 	void EventConsumer::update()
@@ -222,7 +221,7 @@ namespace KEvents
 	{
 		if (message.err() != RdKafka::ERR_NO_ERROR)
 		{
-			std::cout << message.errstr() << std::endl;
+			kEventsLogger->error("{}", message.errstr());
 		}
 	}
 }

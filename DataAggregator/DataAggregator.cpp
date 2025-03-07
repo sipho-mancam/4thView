@@ -9,9 +9,12 @@ int main()
 	json moduleConfig = config["DataAggregator"];
 	json systemSettings = config["systemSettings"];
 
+	
+
 	std::string serviceTopic = moduleConfig["serviceTopic"];
 	std::string serviceName = moduleConfig["serviceName"];
 
+	KEvents::kEventsLogger->info("Starting {}", serviceName);
 	KEvents::EventsManager eventsManager(serviceTopic, serviceName);
 	std::shared_ptr<StateManager> stateManager = std::make_shared<StateManager>();
 	

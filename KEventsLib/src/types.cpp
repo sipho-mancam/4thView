@@ -1,8 +1,10 @@
 #include "types.hpp"
 #include <Bits.h>
 
+
 namespace KEvents
 {
+	std::shared_ptr<spdlog::logger> kEventsLogger = spdlog::stdout_color_mt("KEventsLib Logger");
 	json Event::getEventAsJson()
 	{
 		json result;
@@ -27,7 +29,7 @@ namespace KEvents
 		}
 		catch (json::parse_error& ex)
 		{
-			std::cerr << "Parse error at byte: " << ex.byte << std::endl;
+			kEventsLogger->error("Parse error at byte: {} " ,ex.byte);
 			return;
 		}
 		
@@ -184,8 +186,8 @@ namespace KEvents
 				"UnrealEngineConnector":{
 					"serviceName":"UnrealEngineConnector",
 					"serviceTopic": "unreal_engine_mod",
-					"unrealIp": "127.0.0.1",
-					"unrealPort":6069
+					"unrealIp": ["10.0.0.131","10.0.0.157"],
+					"unrealPort":6000
 				},
 				"VizEngineConnector":{
 					"serviceName":"viz_engine_con",
@@ -199,7 +201,7 @@ namespace KEvents
 					"serviceName":"tracking_core_connector",
 					"serviceTopic": "tracking_core_connector_mod",
 					"trackerAddress":"system-output",
-					"kafkaBroker":"10.0.0.50:9092"
+					"kafkaBroker":"10.0.0.158:9092"
 				},
 				"InputManager":{
 					"serviceName":"input_manager",
@@ -234,6 +236,12 @@ namespace KEvents
 			// dump the default config and return
 			std::string dstPath = "C:/ProgramData/Player Tracking Software/4th_view_config.json";
 			std::string confStr = defaultConfig.dump();
+
+			if (!std::filesystem::create_directory("C:/ProgramData/Player Tracking Software/"))
+			{
+				kEventsLogger->error("Failed to create config directory at: {}", "C:/ProgramData/Player Tracking Software/");
+			}
+
 			std::ofstream file(dstPath);
 			file.write(const_cast<char*>(confStr.c_str()), confStr.size());
 			file.close();

@@ -19,5 +19,5 @@ public:
 private:
 	json globalConfig;
 	std::string serviceName;
-	UdpSocket* udpClient;
+	std::vector<UdpSocket*> udpClients;
 };

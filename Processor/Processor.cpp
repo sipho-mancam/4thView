@@ -12,6 +12,7 @@ int main()
 	std::string serviceTopic = moduleConfig["serviceTopic"];
 	std::string serviceName = moduleConfig["serviceName"];
 
+	KEvents::kEventsLogger->info("Starting {}", serviceName);
 	KEvents::EventsManager eventsManager(serviceTopic, serviceName);
 
 	std::shared_ptr<StreamDataCallback> streamCb = KEvents::createCallback<StreamDataCallback>(config, serviceName);

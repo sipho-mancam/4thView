@@ -14,6 +14,8 @@
 #include <string>
 
 #include "concurrent_queue.hpp"
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #define EN_DATA_REQUEST "data_request"
 #define EN_DATA_RESPONSE "data_response"
@@ -30,6 +32,7 @@ using namespace nlohmann::literals;
 
 namespace KEvents
 {
+	extern "C" std::shared_ptr<spdlog::logger> kEventsLogger;
 	/**
 	* @brief
 	* Forward declarations for most of the defined types in seperate files

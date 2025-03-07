@@ -1,7 +1,8 @@
 #include "processes_manager.hpp"
 
-ProcessesManager::ProcessesManager(json globConfig)
-	:globalConfig(globConfig)
+ProcessesManager::ProcessesManager(json globConfig, std::shared_ptr<spdlog::logger>logger)
+	:globalConfig(globConfig),
+	logger(logger)
 {
 	json system = globConfig["systemSettings"];
 	std::vector<std::string> mods = system["registeredModules"];
@@ -13,7 +14,7 @@ ProcessesManager::ProcessesManager(json globConfig)
 
 ProcessesManager::~ProcessesManager()
 {
-	std::cout << "[info] " << "Initiating manager shutdown ..." << std::endl;
+	logger->info("Initiating manager shutdown ...");
 	for (size_t i = 0; i < procInfoList.size(); i++)
 	{
 		// Close process and thread handles. 
@@ -21,7 +22,7 @@ ProcessesManager::~ProcessesManager()
 		CloseHandle(procInfoList[i].hThread);
 	}
 
-	std::cout << "[info] " << "Manager shutdown complete ..." << std::endl;
+	logger->info("Manager shutdown complete ...");
 }
 
 void ProcessesManager::init()
@@ -30,6 +31,7 @@ void ProcessesManager::init()
 	{
 		__start_process(proc);
 	}
+	logger->info("Started {} modules.", processesStrNames.size());
 }
 
 void ProcessesManager::__start_process(std::string processName)
@@ -61,7 +63,7 @@ void ProcessesManager::__start_process(std::string processName)
 		&si,
 		&pi))
 	{
-		std::cout << "Failed to start process: " << processName << " Error code: (" << GetLastError() << ")" << std::endl;
+		logger->error("Failed to start process: {} Error Code: ({})" , processName,  GetLastError() );
 		throw std::exception("Failed to create process.");
 	}
 

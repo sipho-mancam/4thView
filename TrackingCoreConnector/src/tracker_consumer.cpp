@@ -8,6 +8,7 @@ TrackerConsumer::TrackerConsumer(json globConfig, std::string servName)
 	json& moduleConfig = globalConfig["TrackingCoreConnector"];
 	std::string broker = moduleConfig["kafkaBroker"];
 	kConsumer = KEvents::buildConsumer(broker, serviceName);
+	std::cout << "Connecting to tracking core kafka at address: " << broker << std::endl;
 	
 	std::string trackerTopic = moduleConfig["trackerAddress"];
 

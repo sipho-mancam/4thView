@@ -14,7 +14,7 @@ namespace KEvents
 	{
 		if (!threadPoolPtr)
 		{
-			std::cout << "No Thread Pool present in the Router " << std::endl;
+			kEventsLogger->error("No Thread Pool present in the Router ");
 			return;
 		}
 			

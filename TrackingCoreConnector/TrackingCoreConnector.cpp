@@ -14,6 +14,8 @@ int main()
     serviceTopic = moduleConfig["serviceTopic"];
 
     std::shared_ptr<OutputCallback> outputCb = KEvents::createCallback<OutputCallback>(globalConfig, serviceName);
+
+    KEvents::kEventsLogger->info("Starting {}", serviceName);
     KEvents::EventsManager eventManager(serviceTopic, serviceName);
     /**
     * register callbacks here.
