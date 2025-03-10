@@ -1,6 +1,7 @@
 #pragma once
 #include <QtCore/QObject>
-
+#include "distance_widget.h"
+#include <QGraphicsEllipseItem>
 
 /**
 * @brief
@@ -10,7 +11,50 @@
 * 3. Add Player 2 
 */
 
-class DistanceObjectsManager : public QObject
+class DistanceWidget : public QWidget
 {
 	Q_OBJECT
+public:
+	explicit DistanceWidget(int id, QWidget* parent = nullptr);
+	~DistanceWidget();
+	int getObjectId() { return objectId; }
+
+	void setColor(QColor col);
+
+	void deletePressed();
+
+signals:
+	void distanceObjectDeleted(int objectId);
+
+private:
+	Ui::distance_widget* ui;
+	int objectId;
+	QGraphicsScene* iconScene;
+	QGraphicsEllipseItem* distanceColorIcon;
+};
+
+
+class DistanceObjectsManager : public QWidget
+{
+	Q_OBJECT
+
+public:
+	explicit DistanceObjectsManager(QWidget* layoutObject,QScrollArea *scoll ,QWidget* parent = nullptr);
+
+
+public slots:
+	void distanceObjectDeleted(int objectId);
+
+signals:
+	void distanceObjectDeletedSignal(int objectId);
+
+private:
+	std::vector<DistanceWidget*> distanceObjects;
+	QWidget* listLayout;
+	QVBoxLayout* distanceList;
+	QScrollArea* scrollArea;
+
+	std::vector<QColor> colorsList;
+
+
 };

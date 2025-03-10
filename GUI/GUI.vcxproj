@@ -106,6 +106,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\models\distance_objects_manager.cpp" />
     <ClCompile Include="src\state_modification_callback.cpp" />
     <ClCompile Include="include\stream_data_store.cpp" />
     <ClCompile Include="src\stream_callback.cpp" />
@@ -132,6 +133,7 @@
   <ItemGroup>
     <QtMoc Include="include\state_modification_callback.hpp" />
     <QtMoc Include="include\models\distance_objects_manager.hpp" />
+    <ClInclude Include="include\models\distance_widget.h" />
     <ClInclude Include="include\stream_buffer.hpp" />
     <ClInclude Include="include\stream_callback.hpp" />
     <ClInclude Include="include\data_store_base.hpp" />

@@ -33,6 +33,12 @@ AppMain::AppMain(QWidget *parent)
         ui->comboBox,
         ui->pushButton
     );
+
+    distanceObjectsGroup = new DistanceObjectsManager(
+        ui->objectsList,
+        ui->scrollArea
+    );
+
 }
 
 AppMain::~AppMain()

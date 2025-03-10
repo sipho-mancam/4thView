@@ -9,6 +9,7 @@
 #include "stream_data_store.hpp"
 #include "views/cricket_oval_widget.hpp"
 #include "views/player_state_mod.hpp"
+#include "models/distance_objects_manager.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -95,6 +96,7 @@ private:
     QGraphicsScene* scene;
     PlayerPropertiesGroup* propsGroup;
     PlayerStateModifierGroup* playerStateModifier;
+    DistanceObjectsManager* distanceObjectsGroup;
     StdoutStreamBuffer* outputHandle;
     KEvents::EventsManager* eventMan;
 

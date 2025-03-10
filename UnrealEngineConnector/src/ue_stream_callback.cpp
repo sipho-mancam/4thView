@@ -23,6 +23,8 @@ void UECStreamCallback::execute(KEvents::Event e)
 		unrealEvent["payload"] = eventData;
 		unrealEvent["event_type"] = EventTypes::PLAYER_CONTROL;
 
+		//std::cout << eventData << "\n\n" << std::endl;
+
 		for(auto udpClient : udpClients)
 			udpClient->sendJson(unrealEvent);
 	}

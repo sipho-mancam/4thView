@@ -30,6 +30,7 @@ json StateManager::updateTrackData(json frame)
 	if (frame["stream_type"] == KEvents::STREAM_TYPES::TRACKER)
 	{
 		json& tracks = frame["tracks"];
+		std::vector<json> processedTracks;
 		for (auto& track : tracks)
 		{
 			try {
@@ -50,14 +51,17 @@ json StateManager::updateTrackData(json frame)
 				{
 					track["position"] = playerPositions[trackId];
 				}
+
+				processedTracks.push_back(track);
 			}
 			catch (json::type_error& te) {
 				
 			}
 			catch (std::exception& ex) {
 
-			}
+			}	
 		}
+		frame["tracks"] = processedTracks;
 		//4. Append Distance information
 	}
 	

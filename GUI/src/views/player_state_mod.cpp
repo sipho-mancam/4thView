@@ -26,14 +26,14 @@ void PlayerStateModifierGroup::updateState()
 	playerId = playerState["track_id"];
 	
 	// read the GUI state of a highlight
-	if (highlight->isChecked())
-	{
+	
+	
 		json highlighObject;
 		highlighObject["id"] = playerId;
-		highlighObject["activate"] = true;
+		highlighObject["activate"] = highlight->isChecked();
 		highlighObject["set"] = highlight->isChecked();
 		stateObject["highlight"] = highlighObject;
-	}
+	
 
 	if (!annotationText->text().isEmpty())
 	{
