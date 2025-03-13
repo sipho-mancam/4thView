@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1159</width>
-    <height>683</height>
+    <width>1270</width>
+    <height>862</height>
    </rect>
   </property>
   <property name="font">
@@ -58,7 +58,7 @@ QDockWidget{
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1159</width>
+     <width>1270</width>
      <height>21</height>
     </rect>
    </property>
@@ -179,7 +179,7 @@ QDockWidget{
           <x>0</x>
           <y>0</y>
           <width>279</width>
-          <height>410</height>
+          <height>478</height>
          </rect>
         </property>
        </widget>

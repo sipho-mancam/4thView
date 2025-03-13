@@ -51,6 +51,13 @@ json StateManager::updateTrackData(json frame)
 				{
 					track["position"] = playerPositions[trackId];
 				}
+				else {
+					json pos;
+					pos["position"] = KEvents::EPLAYER_POSITIONS::FIELDER;
+					pos["set"] = true;
+					pos["activate"] = true;
+					track["position"] = pos;
+				}
 
 				processedTracks.push_back(track);
 			}

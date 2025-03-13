@@ -58,7 +58,7 @@ void AppMain::setStreamDataStore(StreamDataStore* sDs)
     streamDs = sDs;
     CricketOvalScene* cS = static_cast<CricketOvalScene*>(scene);
     QMetaObject::Connection con = connect(sDs, &StreamDataStore::dataChanged, 
-        cS , &CricketOvalScene::dataChangeUpdate, Qt::QueuedConnection);
+        cS , &CricketOvalScene::dataChangeUpdate);
 
    con = connect(cS, &CricketOvalScene::selectedIdChangedSig, sDs, &StreamDataStore::setCurrentClicked);
 

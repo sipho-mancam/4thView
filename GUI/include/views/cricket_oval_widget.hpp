@@ -86,6 +86,7 @@ public:
 	void updateFrameData(json frameData);
 	void updateId(int id, json data);
 	std::tuple<qreal, qreal> getDimensions() { return { _width, _height }; }
+	void updateScene();
 
 public slots:
 	void dataChangeUpdate(json data);

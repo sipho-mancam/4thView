@@ -106,6 +106,7 @@ void CricketOvalScene::updateFrameData(json frameData)
 			}
 		}
 	}
+	updateScene();
 }
 
 void CricketOvalScene::updateId(int id, json data)
@@ -146,6 +147,14 @@ void CricketOvalScene::updateId(int id, json data)
 	}
 }
 
+void CricketOvalScene::updateScene()
+{
+	for (auto item : playersMap)
+	{
+		item.second->updateGraphic();
+	}
+}
+
 void CricketOvalScene::selectedIdChanged(int trackId)
 {
 	emit selectedIdChangedSig(trackId);
@@ -165,7 +174,7 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, QGr
 	this->setRect(rect);
 	this->setBrush(QBrush(__state2color__(state)));
 	this->setPen(__state2pen__(state));
-	this->setPos(x, y);
+	//this->setPos(x, y);
 
 	idText = new QGraphicsTextItem(this);
 	std::string idTextStr;
@@ -200,11 +209,14 @@ void PlayerItemWidget::updateGraphic()
 {
 	const auto [x, y] = coordinates;
 	idText->setDefaultTextColor(__state2text__(state));
-	
+
+	//std::cout << trackId << " X Y" << x << " : " <<  y << std::endl;
 	this->prepareGeometryChange();
+	this->setRect(QRect(x, y, width, height));
 	this->setPos(x, y);
 	this->setBrush(QBrush(__state2color__(state)));
 	this->setPen(__state2pen__(state));
+	idText->setPos(x - 2, y - 3);
 	
 }
 
