@@ -10,7 +10,13 @@
 AppMain::AppMain(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AppMainClass()),
-    eventMan(nullptr)
+    eventMan(nullptr),
+    event_proc_dialog(new EventProcessorDialog(this)),
+    pauseIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackPause)),
+    playIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart)),
+    currentIcon(true),
+	replayPaused(true),
+	liveMode(true)
 {
     ui->setupUi(this);
     outputHandle = new StdoutStreamBuffer(this);
@@ -38,7 +44,13 @@ AppMain::AppMain(QWidget *parent)
         ui->objectsList,
         ui->scrollArea
     );
-
+    connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
+    connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
+    connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
+	connect(ui->live_mode_button, &QPushButton::clicked, this, &AppMain::setLiveMode);
+	connect(ui->seeker_bar, &QSlider::sliderPressed, this, &AppMain::setReplayMode);
+	connect(ui->seeker_bar, &QSlider::sliderReleased, this, &AppMain::setSeekerPosition);
+	connect(ui->replay_control, &QPushButton::clicked, this, &AppMain::replayControl);
 }
 
 AppMain::~AppMain()
@@ -93,4 +105,101 @@ void AppMain::setStatePlayerStateModifier(std::shared_ptr<StateModificationCb> s
         std::cout << "Failed to make the connection!!!!!!!!!!\n";
     }
 
+}
+
+void AppMain::openEventProcessorDialog()
+{
+    if (event_proc_dialog)
+    {
+        event_proc_dialog->open();
+    }
+}
+
+void AppMain::PauseOutputStreamTrigger()
+{
+    
+    QAction* aToggleOutStream = ui->actionPause_Output_Stream;
+    // flip the icon
+    KEvents::Event e;
+    e.setEventData({});
+    e.setSourceModule("gui");
+    if (currentIcon)
+    {
+        aToggleOutStream->setIcon(playIcon);
+        e.setEventName(EN_STREAM_PAUSE);
+        std::cout << "Stream Pause pressed" << std::endl;
+       
+        aToggleOutStream->setText("Resume Output Stream");
+    }
+    else {
+        aToggleOutStream->setIcon(pauseIcon);
+        e.setEventName(EN_STREAM_RESUME);
+        std::cout << "Stream Resume pressed" << std::endl;
+        aToggleOutStream->setText("Pause Output Stream");
+    }
+    currentIcon = !currentIcon;
+
+    json config = KEvents::__load_config__();
+    eventMan->sendEvent(config["DataAggregator"]["serviceTopic"], e);
+   
+}
+
+void AppMain::setLiveMode()
+{
+    ui->live_mode_button->setDisabled(true);
+	ui->seeker_bar->setSliderPosition(ui->seeker_bar->maximum());
+	int sliderPosition = ui->seeker_bar->maximum();
+	liveMode = true;
+
+    KEvents::Event e;
+    e.setEventData({ {"live_mode", liveMode } });
+    e.setSourceModule("gui");
+    e.setEventName(EN_SET_STREAM_MODE);
+    json config = KEvents::__load_config__();
+    eventMan->sendEvent(config["SportEventProcessor"]["serviceTopic"], e);
+	
+}
+
+void AppMain::setReplayMode()
+{
+	ui->live_mode_button->setDisabled(false);
+    int sliderPosition = ui->seeker_bar->sliderPosition();
+	liveMode = false;
+	std::cout << sliderPosition << std::endl;
+    sendSeekerEvent(sliderPosition);
+}
+
+void AppMain::setSeekerPosition()
+{
+	int sliderPosition = ui->seeker_bar->sliderPosition();
+	sendSeekerEvent(sliderPosition);
+}
+
+void AppMain::sendSeekerEvent(int seekerPosition)
+{
+	KEvents::Event e;
+    e.setEventData({ {"seeker_position", seekerPosition}, {"live_mode" , false} });
+	e.setSourceModule("gui");
+	e.setEventName(EN_SET_SEEKER_POSITION);
+	json config = KEvents::__load_config__();
+	eventMan->sendEvent(config["SportEventProcessor"]["serviceTopic"], e);
+}
+
+void AppMain::replayControl()
+{
+	replayPaused = !replayPaused;
+    if (!replayPaused)
+    {
+        ui->replay_control->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackPause));
+	}
+	else {
+		ui->replay_control->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart));
+    }
+
+    KEvents::Event e;
+    e.setEventData({ {"playerbackpaused", replayPaused } });
+    e.setSourceModule("gui");
+    e.setEventName(EN_PLAYBACK_CONTROL);
+    json config = KEvents::__load_config__();
+    eventMan->sendEvent(config["SportEventProcessor"]["serviceTopic"], e);
 }

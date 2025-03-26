@@ -130,8 +130,8 @@ void CricketOvalScene::updateId(int id, json data)
 
 		if (data.contains("position"))
 		{
-			/*PlayerItemWidget::E_POSITION pos = (PlayerItemWidget::E_POSITION)data["position"];
-			player->setPosition(pos);*/
+			PlayerItemWidget::E_POSITION pos = (PlayerItemWidget::E_POSITION)data["position"];
+			player->setPosition(pos);
 		}
 		player->updateGraphic();
 	}
@@ -214,10 +214,26 @@ void PlayerItemWidget::updateGraphic()
 	this->prepareGeometryChange();
 	this->setRect(QRect(x, y, width, height));
 	this->setPos(x, y);
-	this->setBrush(QBrush(__state2color__(state)));
+	if (state == PlayerItemWidget::DEFAULT)
+	{
+		if (playerPosition == BATTER || playerPosition == BATTER_FACING)
+		{
+			this->setBrush(QColorConstants::Green);
+		}
+		else if (playerPosition == UMPIRE)
+		{
+			this->setBrush(QColorConstants::Cyan);
+		}
+		else {
+			this->setBrush(QBrush(__state2color__(state)));
+		}
+	}
+	else {
+		this->setBrush(QBrush(__state2color__(state)));
+	}
+	
 	this->setPen(__state2pen__(state));
 	idText->setPos(x - 2, y - 3);
-	
 }
 
 bool PlayerItemWidget::operator==(int& trackId)

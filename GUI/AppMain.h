@@ -10,6 +10,7 @@
 #include "views/cricket_oval_widget.hpp"
 #include "views/player_state_mod.hpp"
 #include "models/distance_objects_manager.hpp"
+#include "models/event_processor_dialog.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -84,6 +85,15 @@ public:
     void setStreamDataStore(StreamDataStore* sDs);
     void setStatePlayerStateModifier(std::shared_ptr<StateModificationCb> stMod);
 
+    void openEventProcessorDialog();
+    void PauseOutputStreamTrigger();
+    void setLiveMode();
+    void setReplayMode();
+	void setSeekerPosition();
+
+    void sendSeekerEvent(int seekerPosition);
+    void replayControl();
+
 private slots:
     void appendOutput(const QString& text)
     {
@@ -91,14 +101,37 @@ private slots:
         ui->plainTextEdit->insertPlainText(text);
     }
 
+   
+
+    void sendEventProcessorName(json eventProcData)
+    {
+      
+        if (eventMan)
+        {
+            KEvents::Event e;
+            e.setEventData(eventProcData)->
+            setEventName(EN_STATE_CAPTURE_START)->
+            setSourceModule("gui")->
+            setEventType(KEvents::E_GUI);
+            json config = KEvents::__load_config__();
+            eventMan->sendEvent(config["Processor"]["serviceTopic"], e);
+        }
+    }
+
+   
+
 private:
     Ui::AppMainClass *ui;
     QGraphicsScene* scene;
     PlayerPropertiesGroup* propsGroup;
     PlayerStateModifierGroup* playerStateModifier;
     DistanceObjectsManager* distanceObjectsGroup;
+    EventProcessorDialog* event_proc_dialog;
+
     StdoutStreamBuffer* outputHandle;
     KEvents::EventsManager* eventMan;
+    QIcon playIcon, pauseIcon;
+    bool currentIcon, replayPaused, liveMode;
 
 
     StreamDataStore* streamDs;

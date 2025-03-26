@@ -118,8 +118,8 @@ namespace KEvents
 			kafkaProducer->poll(100);
 			goto Retry;
 		}
-
 		kafkaProducer->poll(10);
+
 	}
 
 	void EventProducer::sendMessage(std::string _topic, std::string _message)

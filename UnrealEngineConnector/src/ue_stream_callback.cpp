@@ -15,6 +15,7 @@ UECStreamCallback::UECStreamCallback(json globConfig, std::string servName)
 
 void UECStreamCallback::execute(KEvents::Event e)
 {
+	static long long frameCount = 0;
 	if (e.getEventName() == EN_STREAM_DATA_UPDATE)
 	{
 		json unrealEvent;
@@ -24,9 +25,12 @@ void UECStreamCallback::execute(KEvents::Event e)
 		unrealEvent["event_type"] = EventTypes::PLAYER_CONTROL;
 
 		//std::cout << eventData << "\n\n" << std::endl;
+		printf("\rJson payload sent to engine ... (%lld)", frameCount);
 
 		for(auto udpClient : udpClients)
 			udpClient->sendJson(unrealEvent);
+		
+		frameCount += 1;
 	}
 }
 

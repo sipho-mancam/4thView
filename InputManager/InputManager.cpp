@@ -18,7 +18,7 @@ int main()
 	KEvents::EventsManager eventsManager(serviceTopic, serviceName);
 
 	std::shared_ptr<StreamDataCallback> streamCb = KEvents::createCallback<StreamDataCallback>(
-		config["Processor"]["serviceTopic"],
+		config["SportEventProcessor"]["serviceTopic"],
 		serviceName);
 
 	eventsManager.registerCallback(EN_STREAM_DATA, streamCb);

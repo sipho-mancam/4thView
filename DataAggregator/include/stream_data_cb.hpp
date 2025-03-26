@@ -11,7 +11,7 @@ public:
 
 private:
 	std::string serviceName, processorName, outputManagerName, sportEventProcessorName;
-	json globalConfig;
+	json globalConfig, currentFrame, capturedFrame;
 	std::shared_ptr<StateManager> stateManager;
-	bool streamCapture;
+	bool streamCapture, streamPaused;
 };

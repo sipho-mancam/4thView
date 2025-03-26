@@ -9,8 +9,6 @@ int main()
 	json moduleConfig = config["DataAggregator"];
 	json systemSettings = config["systemSettings"];
 
-	
-
 	std::string serviceTopic = moduleConfig["serviceTopic"];
 	std::string serviceName = moduleConfig["serviceName"];
 
@@ -24,6 +22,8 @@ int main()
 	eventsManager.registerCallback(EN_STATE_MOD, streamCb);
 	eventsManager.registerCallback(EN_STATE_CAPTURE_START, streamCb);
 	eventsManager.registerCallback(EN_STATE_CAPTURE_STOP, streamCb);
+	eventsManager.registerCallback(EN_STREAM_PAUSE, streamCb);
+	eventsManager.registerCallback(EN_STREAM_RESUME, streamCb);
 
 	eventsManager.startEventLoop(true);
 	return 0;

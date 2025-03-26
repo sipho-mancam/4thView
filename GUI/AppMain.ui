@@ -51,6 +51,95 @@ QDockWidget{
     <item>
      <widget class="QGraphicsView" name="graphicsView"/>
     </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="replay_control">
+        <property name="styleSheet">
+         <string notr="true">QPushButton#replay_control{
+	background:none;
+	border:none;
+}
+
+QPushButton#replay_control:hover{
+	width:20px;
+	height: 20px;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="seeker_bar">
+        <property name="styleSheet">
+         <string notr="true">QSlider#seeker_bar::handle:horizontal{
+	width: 8px;
+    height: 8px;
+     margin: -4px 0; /* Centers the handle vertically */
+     border-radius: 8px;
+     background: #3498db;
+}
+
+/*
+QSlider#seeker_bar::handle:horizontal:hover{
+ 	  width: 24px;
+     height: 24px;
+     margin: -12px 0;
+     border-radius: 12px;
+     background: #2980b9;
+}
+*/
+
+QSlider#seeker_bar::add-page:horizontal {
+    background: grey;
+}
+
+QSlider#seeker_bar::sub-page:horizontal {
+    background: red;
+}
+
+</string>
+        </property>
+        <property name="maximum">
+         <number>999</number>
+        </property>
+        <property name="sliderPosition">
+         <number>500</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="live_mode_button">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#live_mode_button{
+	background-color: rgb(202, 0, 0);
+}</string>
+        </property>
+        <property name="text">
+         <string>Live</string>
+        </property>
+        <property name="icon">
+         <iconset resource="AppMain.qrc">
+          <normaloff>:/AppMain/resources/icons8-live-50.png</normaloff>:/AppMain/resources/icons8-live-50.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -179,7 +268,7 @@ QDockWidget{
           <x>0</x>
           <y>0</y>
           <width>279</width>
-          <height>478</height>
+          <height>555</height>
          </rect>
         </property>
        </widget>
@@ -245,6 +334,7 @@ QDockWidget{
    <addaction name="actionAdd_Distance"/>
    <addaction name="actionSwitch_Camera_View"/>
    <addaction name="actionStart_Live_Data_Capture"/>
+   <addaction name="actionPause_Output_Stream"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_5">
    <property name="windowTitle">
@@ -710,6 +800,17 @@ QDockWidget{
   <action name="actionPing_Modulees">
    <property name="text">
     <string>Ping Modules</string>
+   </property>
+  </action>
+  <action name="actionPause_Output_Stream">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::MediaPlaybackPause"/>
+   </property>
+   <property name="text">
+    <string>Pause Output Stream</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>

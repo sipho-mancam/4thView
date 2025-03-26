@@ -39,6 +39,7 @@ namespace KEvents
 		void exit();
 		void registerCallback(std::string eventName, CallBackBasePtr _cbPtr);
 		void registerExecutor(EventType t, ExecutorBasePtr _executor);
+		void sendEvent(std::string topic_name, Event e);
 
 	private:
 		EventQueuePtr eventsQueue;

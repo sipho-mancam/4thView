@@ -21,6 +21,9 @@ int main()
 	eventsManager.registerCallback(EN_STREAM_DATA, streamCb);
 	eventsManager.registerCallback(EN_STREAM_DATA_UPDATE, streamCb);
 	eventsManager.registerCallback(EN_STATE_MOD, streamCb);
+	eventsManager.registerCallback(EN_STATE_CAPTURE_START, streamCb);
+	eventsManager.registerCallback(EN_STATE_CAPTURE_LOAD, streamCb);
+	eventsManager.registerCallback(EN_STATE_CAPTURE_STOP, streamCb);
 
 
 	eventsManager.startEventLoop(true);

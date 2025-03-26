@@ -140,97 +140,80 @@ namespace KEvents
 			DefaultConfig:
 			json defaultConfig = json::parse(R"(
 			{
-				"systemSettings":{
-					"kafka":{
-						"broker":"127.0.0.1:9092"
-					},
-					"registeredModules":[
-						"InputManager",
-						"Processor",
-						"DataAggregator",
-						"OutputManager",
-						"SportEventProcessor",
-						"TrackingCoreConnector",
-						"UnrealEngineConnector"
-					]
+			  "DataAggregator": {
+				"serviceName": "data_aggregator",
+				"serviceTopic": "data_aggregator_mod"
+			  },
+			  "GUI": 
+			  { 
+				"serviceName": "gui", 
+				"serviceTopic": "gui_mod" 
+			  },
+			  "InputManager": {
+				"connectors": {
+				  "db_query_processor": {
+					"address": "db_query_processor_con",
+					"description": "facilitates communications between database and the clients, and implements the query generator"
+				  },
+				  "file_sys": {
+					"address": "file_sys_con",
+					"description": "Handles file system data requests, abstracts the underlying OS file system from the system."
+				  },
+				  "plotter": {
+					"address": "plotter_con",
+					"description": "Generates input data from the field position plotter GUI"
+				  },
+				  "st_data": {
+					"address": "st_data_con",
+					"description": "Receives live data from the seb tracker and feeds it to the system for processing and view."
+				  }
 				},
-    
-				"kEventslib":{
-					"poolSize": 3,
-					"kafka":{
-						"broker":"127.0.0.1:9092"
-					}
-				},
-
-				"GUI":{
-					"serviceName":"gui",
-					"serviceTopic":"gui_mod"
-				},
-
-				"Processor":{
-					"serviceName":"processor",
-					"serviceTopic":"processor_mod"
-				},
-				"DataAggregator":{
-					"serviceName":"data_aggregator",
-					"serviceTopic":"data_aggregator_mod"
-				},
-				"OutputManager":{
-					"serviceName":"output_manager",
-					"serviceTopic":"output_manager_mod",
-					"connectors_list":[
-						"unrealEngine",
-						"vizEngine"
-					]
-				},
-				"UnrealEngineConnector":{
-					"serviceName":"UnrealEngineConnector",
-					"serviceTopic": "unreal_engine_mod",
-					"unrealIp": ["10.0.0.131","10.0.0.157"],
-					"unrealPort":6000
-				},
-				"VizEngineConnector":{
-					"serviceName":"viz_engine_con",
-					"serviceTopic": "viz_engine_mod"
-				},
-				"SportEventProcessor":{
-					"serviceName":"sport_event_processor",
-					"serviceTopic": "sport_event_processor_mod"
-				},
-				"TrackingCoreConnector":{
-					"serviceName":"tracking_core_connector",
-					"serviceTopic": "tracking_core_connector_mod",
-					"trackerAddress":"system-output",
-					"kafkaBroker":"10.0.0.158:9092"
-				},
-				"InputManager":{
-					"serviceName":"input_manager",
-					"serviceTopic":"input_manager_mod",
-					"connectors_list":[
-						"plotter",
-						"db_query_processor",
-						"file_sys",
-						"st_data"
-					],
-					"connectors":{
-						"plotter":{
-							"address":"plotter_con",
-							"description":"Generates input data from the field position plotter GUI"
-						},
-						"db_query_processor":{
-							"address":"db_query_processor_con",
-							"description":"facilitates communications between database and the clients, and implements the query generator"
-						},
-						"file_sys":{
-							"address":"file_sys_con",
-							"description":"Handles file system data requests, abstracts the underlying OS file system from the system."
-						},
-						"st_data":{
-							"address":"st_data_con",
-							"description": "Receives live data from the seb tracker and feeds it to the system for processing and view."
-						}
-					}
-				}
+				"connectors_list": ["plotter", "db_query_processor", "file_sys", "st_data"],
+				"serviceName": "input_manager",
+				"serviceTopic": "input_manager_mod"
+			  },
+			  "OutputManager": {
+				"connectors_list": ["unrealEngine", "vizEngine"],
+				"serviceName": "output_manager",
+				"serviceTopic": "output_manager_mod"
+			  },
+			  "Processor": { "serviceName": "processor", "serviceTopic": "processor_mod" },
+			  "SportEventProcessor": {
+				"serviceName": "sport_event_processor",
+				"serviceTopic":"sport_event_processor_mod",
+				"clock_tick_interval_ms":100,
+				"buffer_length":18000,
+				"persistent_store_dir":"C:\\ProgramData\\Player Tracking Software\\4th_view_frame_store\\"
+			  },
+			  "TrackingCoreConnector": {
+				"kafkaBroker": "127.0.0.1:9092",
+				"serviceName": "tracking_core_connector",
+				"serviceTopic": "tracking_core_connector_mod",
+				"trackerAddress": "system-output"
+			  },
+			  "UnrealEngineConnector": {
+				"serviceName": "UnrealEngineConnector",
+				"serviceTopic": "unreal_engine_mod",
+				"unrealIp": ["10.0.100.131", "10.0.0.157", "127.0.0.1"],
+				"unrealPort": 6000
+			  },
+			  "VizEngineConnector": {
+				"serviceName": "viz_engine_con",
+				"serviceTopic": "viz_engine_mod"
+			  },
+			  "kEventslib": { "kafka": { "broker": "127.0.0.1:9092" }, "poolSize": 3 },
+			  "systemSettings": {
+				"kafka": { "broker": "127.0.0.1:9092" },
+				"registeredModules": [
+				  "InputManager",
+				  "Processor",
+				  "DataAggregator",
+				  "OutputManager",
+				  "SportEventProcessor",
+				  "TrackingCoreConnector",
+				  "UnrealEngineConnector"
+				]
+			  }
 			}
 			)");
 			// dump the default config and return

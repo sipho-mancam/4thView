@@ -56,6 +56,14 @@ namespace KEvents
 	{
 		executorTreePtr->registerExecutor(_executor, typ);
 	}
+	
+	void EventsManager::sendEvent(std::string topic_name, Event e)
+	{
+		if (eventProducerPtr)
+		{
+			eventProducerPtr->sendMessage(topic_name, e);
+		}
+	}
 
 	void EventsManager::__run()
 	{

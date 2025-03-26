@@ -139,12 +139,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\control_callback.cpp" />
+    <ClCompile Include="src\frames_manager.cpp" />
+    <ClCompile Include="src\persistentFrameStore.cpp" />
+    <ClCompile Include="src\frame_buffer.cpp" />
+    <ClCompile Include="src\event_data_store.cpp" />
+    <ClCompile Include="src\state_capture_callback.cpp" />
     <ClCompile Include="SportEventProcessor.cpp" />
+    <ClCompile Include="src\streamCallback.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KEventsLib\KEventsLib.vcxproj">
       <Project>{ac241c1c-2d3d-469f-983b-3d935287bc7d}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\control_callback.hpp" />
+    <ClInclude Include="include\event_data_store.hpp" />
+    <ClInclude Include="include\frames_manager.hpp" />
+    <ClInclude Include="include\frame_buffer.hpp" />
+    <ClInclude Include="include\state_capture_callback.hpp" />
+    <ClInclude Include="include\persistentFrameStore.hpp" />
+    <ClInclude Include="include\streamCallback.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

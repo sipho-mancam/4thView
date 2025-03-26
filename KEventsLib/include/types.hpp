@@ -25,7 +25,13 @@
 #define EN_STATE_CAPTURE_START "state_capture_start"
 #define EN_STATE_CAPTURE_STOP "state_capture_stop"
 #define EN_STATE_CAPTURE_LOAD "state_capture_load" // pull the data from the stored state and load.
+#define EN_STREAM_PAUSE "stream_pause"
+#define EN_STREAM_RESUME "stream_resume"
 #define TE_STREAM_EXT "_stream"
+#define EN_SET_STREAM_MODE "set_stream_mode"
+#define EN_SET_SEEKER_POSITION "set_seeker_position"
+#define EN_PLAYBACK_CONTROL "playback_control"
+
 
 using json = nlohmann::json;
 using namespace nlohmann::literals;
