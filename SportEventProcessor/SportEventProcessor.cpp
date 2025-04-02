@@ -6,8 +6,17 @@
 #include "control_callback.hpp"
 #include <conio.h>
 
+#include "output_clock.hpp"
+
 int main()
 {
+
+
+	OutputClock outputClock;
+
+	outputClock.__run_internalClock();
+
+
 	json config = KEvents::__load_config__();
 	std::string moduleName = "SportEventProcessor";
 	json moduleConfig = config[moduleName];
@@ -20,11 +29,11 @@ int main()
 	KEvents::EventsManager eventsManager(serviceTopic, serviceName);
 	FramesManager framesManager(eventsManager);
 
-	/*std::shared_ptr<StateCapture> stateCapCb = KEvents::createCallback<StateCapture>(config, moduleName);
+	std::shared_ptr<StateCapture> stateCapCb = KEvents::createCallback<StateCapture>(config, moduleName);
 	eventsManager.registerCallback(EN_STATE_CAPTURE_START, stateCapCb);
 	eventsManager.registerCallback(EN_STATE_CAPTURE_STOP, stateCapCb);
 	eventsManager.registerCallback(EN_STATE_CAPTURE_LOAD, stateCapCb);
-	eventsManager.registerCallback(EN_STREAM_DATA, stateCapCb);*/
+	eventsManager.registerCallback(EN_STREAM_DATA, stateCapCb);
 
 	std::shared_ptr<StreamDataCallback> streamDataCb = KEvents::createCallback<StreamDataCallback>(config, moduleName, framesManager);
 	eventsManager.registerCallback(EN_STREAM_DATA, streamDataCb);

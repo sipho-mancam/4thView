@@ -111,6 +111,9 @@ namespace KEvents
 					continue;
 				}
 			}
+			else {
+				lck.wait();
+			}
 			execTimeEnd = std::chrono::steady_clock::now();
 			long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(execTimeEnd - execTimeStart).count();
 			//printf("Elapsed time for a single runnable callback: %lld ms\n", elapsedTime);

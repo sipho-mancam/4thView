@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\output_clock.cpp" />
     <ClCompile Include="src\control_callback.cpp" />
     <ClCompile Include="src\frames_manager.cpp" />
     <ClCompile Include="src\persistentFrameStore.cpp" />
@@ -158,6 +159,11 @@
     <ClInclude Include="include\event_data_store.hpp" />
     <ClInclude Include="include\frames_manager.hpp" />
     <ClInclude Include="include\frame_buffer.hpp" />
+    <ClInclude Include="include\live_mode.hpp" />
+    <ClInclude Include="include\mode_base.hpp" />
+    <ClInclude Include="include\output_clock.hpp" />
+    <ClInclude Include="include\play_state_interface.hpp" />
+    <ClInclude Include="include\replay_mode.hpp" />
     <ClInclude Include="include\state_capture_callback.hpp" />
     <ClInclude Include="include\persistentFrameStore.hpp" />
     <ClInclude Include="include\streamCallback.hpp" />
