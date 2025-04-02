@@ -1,6 +1,6 @@
 #pragma once
 #include "kevents.hpp"
-
+#include "frame_output_event_dispatch.hpp"
 
 #define INTERMEDIATE_WAKES 10
 #define MAX_EXTERNAL_TICK_WAIT_COUNT 5
@@ -14,7 +14,7 @@
 class OutputClock
 {
 public:
-	OutputClock();
+	OutputClock(std::shared_ptr<FrameOutputEventDispatch> fo);
 	~OutputClock();
 
 	/**
@@ -35,6 +35,8 @@ private:
 	int tickInterval;
 	std::string moduleName;
 	std::chrono::time_point<std::chrono::high_resolution_clock> startPoint, currentPoint;
+	std::thread* clockWorker;
+	std::shared_ptr<FrameOutputEventDispatch> frameOutputEventDispatch;
 
 	void __dispatchOutputEvent();
 

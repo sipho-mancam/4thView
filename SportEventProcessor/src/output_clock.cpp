@@ -1,28 +1,34 @@
 #include "output_clock.hpp"
 
-OutputClock::OutputClock()
+OutputClock::OutputClock(std::shared_ptr<FrameOutputEventDispatch> fo)
 	: isInternalClockSource(false), 
 	isExternalAlive(true), 
 	exit(false),
 	internalClockFrequency(0), 
-	maxClockWaitCount(0)
+	maxClockWaitCount(0),
+	frameOutputEventDispatch(fo)
 {
 	config = KEvents::__load_config__();
 	moduleName = "SportEventProcessor";
 	tickInterval = config[moduleName]["clock_tick_interval_ms"];
-
+	clockWorker = new std::thread(&OutputClock::__run_internalClock, this);
 }
 
 OutputClock::~OutputClock()
 {
-
+	if (clockWorker && clockWorker->joinable())
+	{
+		exit = true;
+		clockWorker->join();
+		delete clockWorker;
+		KEvents::kEventsLogger->info("Output Clock Stopped");
+	}
 }
 
 
 void OutputClock::externalFrameUpdate()
 {
 	isExternalAlive = true;
-
 	std::lock_guard<std::mutex> lock(clockMutex);
 	maxClockWaitCount = 0;
 	// fire the output event...
@@ -78,12 +84,16 @@ void OutputClock::__run_internalClock()
 
 void OutputClock::__dispatchOutputEvent()
 {
-	if (maxClockWaitCount == 0 || maxClockWaitCount >= MAX_EXTERNAL_TICK_WAIT_COUNT)
+	if (maxClockWaitCount == 0 || maxClockWaitCount >= MAX_EXTERNAL_TICK_WAIT_COUNT || !isExternalAlive)
 	{
 		// dispatch the event
-		std::cout << "Output Event Dispatched" << std::endl;
+		if (frameOutputEventDispatch)
+		{
+			frameOutputEventDispatch->tick();
+		}
+		maxClockWaitCount = 0;
+		isExternalAlive = false;
 	}
 	// Any call happening here, is just the internal clock running along side the external clock, 
 	// we ignore it.
-	maxClockWaitCount = 0;
 }
