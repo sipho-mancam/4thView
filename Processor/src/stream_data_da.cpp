@@ -12,6 +12,7 @@ StreamDataCallback::StreamDataCallback(json globConf,  std::string servName)
 void StreamDataCallback::execute(KEvents::Event e)
 {
 	// pass the input through to the processor
+	static long long frameCounter = 0;
 	if (eventProducerPtr)
 	{
 		e.setSourceModule(serviceName);
@@ -21,7 +22,8 @@ void StreamDataCallback::execute(KEvents::Event e)
 			daStreamTopic += TE_STREAM_EXT;
 			eventProducerPtr->sendMessage(daStreamTopic, e);
 			
-			
+			//printf("\rFrame count: %lld ...", frameCounter);
+			frameCounter += 1;
 		}
 		else if (e.getEventName() == EN_STREAM_DATA_UPDATE)
 		{

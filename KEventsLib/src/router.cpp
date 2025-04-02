@@ -1,5 +1,5 @@
 #include "router.hpp"
-
+#include "kafka.hpp"
 
 namespace KEvents
 {
@@ -12,6 +12,7 @@ namespace KEvents
 	*/
 	void RouterBase::executeEvent(Event e)
 	{
+		execTimeStart = std::chrono::steady_clock::now();
 		if (!threadPoolPtr)
 		{
 			kEventsLogger->error("No Thread Pool present in the Router ");
@@ -27,9 +28,14 @@ namespace KEvents
 			{
 				auto callableTask = std::bind(&CallBackBase::execute, _cbPtr, e);
 				// Send thhe task off to the pool
+			
 				threadPoolPtr->appendTask(std::move(callableTask));
 			}
 		}
+
+		execTimeEnd = std::chrono::steady_clock::now();
+		long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(execTimeEnd - execTimeStart).count();
+		//printf("Elapsed time for router to route event: %lld ms\n", elapsedTime);
 	}
 
 	void RouterBase::registerCallback(CallBackBasePtr _cbPtr, std::string& eventName)

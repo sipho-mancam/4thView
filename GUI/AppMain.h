@@ -91,6 +91,8 @@ public:
     void setReplayMode();
 	void setSeekerPosition();
 
+    void updateStatusBarFrameCount();
+
     void sendSeekerEvent(int seekerPosition);
     void replayControl();
 

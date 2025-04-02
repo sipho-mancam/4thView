@@ -22,9 +22,7 @@ int main()
 		serviceName);
 
 	eventsManager.registerCallback(EN_STREAM_DATA, streamCb);
-
 	eventsManager.startEventLoop(true);
-
 	return 0;
 	
 }

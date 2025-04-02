@@ -7,7 +7,7 @@ CoordinateSpaceTransform::CoordinateSpaceTransform()
 std::tuple<double, double> CoordinateSpaceTransform::screen2Catersian_n(std::tuple<double, double> coordinates)
 {
 	const auto [x, y] = coordinates;
-	double x_c = x - 0.5;
+	double x_c = 0.5 - x;
 	double y_c = 0.5 - y;
 	return { x_c, y_c };
 }

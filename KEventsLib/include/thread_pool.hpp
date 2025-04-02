@@ -54,7 +54,7 @@ namespace KEvents
 	class RunnableThread
 	{
 	public:
-		RunnableThread();
+		RunnableThread(int id=0);
 		RunnableThread(RunnableThread&& other) noexcept;
 		/**
 		* @brief
@@ -83,8 +83,9 @@ namespace KEvents
 		template<typename F>
 		void appendTask(F func)
 		{
-			task_q.emplace(func);
-			notify();
+			func();
+			/*task_q.emplace(func);
+			notify();*/
 		}
 		/**
 		* @brief
@@ -103,6 +104,9 @@ namespace KEvents
 	private:
 		std::queue<std::function<void()>> task_q;
 		std::atomic<bool> taskStatus, exitFlag;
+		std::chrono::time_point<std::chrono::steady_clock> execTimeStart, execTimeEnd;
+		int runnableId;
+		short frameCount;
 		Lock lck;
 	};
 
@@ -110,13 +114,18 @@ namespace KEvents
 	class ThreadPool
 	{
 	public:
-		ThreadPool(ulong poolSize=1);
+		ThreadPool(ulong poolSize=6);
 		~ThreadPool();
 		void run();
 		void start();
 		void stop();
 		template<typename F>
-		void appendTask(F task) { taskQ.emplace(task); lck.notify(); }
+		void appendTask(F task) 
+		{ 
+
+			taskQ.push(task); 
+			lck.notify(); 
+		}
 		
 	private:
 		concurrent::ConcurrentQueue<std::function<void()>> taskQ;
@@ -127,5 +136,6 @@ namespace KEvents
 		std::thread* poolWorker;
 		long maxTries;
 		Lock lck;
+		std::chrono::time_point<std::chrono::steady_clock> execTimeStart, execTimeEnd;
 	};
 }

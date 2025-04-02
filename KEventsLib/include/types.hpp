@@ -16,6 +16,7 @@
 #include "concurrent_queue.hpp"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <chrono>
 
 #define EN_DATA_REQUEST "data_request"
 #define EN_DATA_RESPONSE "data_response"
@@ -31,6 +32,7 @@
 #define EN_SET_STREAM_MODE "set_stream_mode"
 #define EN_SET_SEEKER_POSITION "set_seeker_position"
 #define EN_PLAYBACK_CONTROL "playback_control"
+#define EN_ERROR "error"
 
 
 using json = nlohmann::json;

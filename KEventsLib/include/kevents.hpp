@@ -32,7 +32,7 @@ namespace KEvents
 	class EventsManager
 	{
 	public:
-		EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize=3, std::shared_ptr<spdlog::logger> logger=spdlog::stdout_color_mt("Events Manager"));
+		EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize=6, std::shared_ptr<spdlog::logger> logger=spdlog::stdout_color_mt("Events Manager"));
 		~EventsManager();
 
 		void startEventLoop(bool sync=false);
@@ -49,7 +49,8 @@ namespace KEvents
 		ExecutorTreePtr executorTreePtr;
 		std::atomic<bool> exitFlag;
 		std::unique_ptr<std::thread> worker;
-		
+		std::chrono::time_point<std::chrono::steady_clock> execTimeStart, execTimeEnd;
+		int frameCounter;
 		virtual void __run();
 
 		

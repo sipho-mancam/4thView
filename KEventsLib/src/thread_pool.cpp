@@ -11,7 +11,7 @@ namespace KEvents
 	{
 		for (int i = 0; i < poolSize; i++)
 		{
-			RunnableThreadPtr runnable = std::make_shared<RunnableThread>();
+			RunnableThreadPtr runnable = std::make_shared<RunnableThread>(i);
 			if(runnable->init())
 			{
 				workers.push_back(new std::thread(&RunnableThread::run, runnable));
@@ -42,14 +42,14 @@ namespace KEvents
 	{
 		while (!exitFlag)
 		{
-			lck.wait();
+			execTimeStart = std::chrono::steady_clock::now();
 			if (!taskQ.empty())
 			{
 				try
 				{
 					std::function<void()> task;
 					task = taskQ.pull();
-
+				
 					// find a runnable that's currently done with work
 					bool escape = false;
 
@@ -111,11 +111,15 @@ namespace KEvents
 					continue;
 				}
 			}
+			execTimeEnd = std::chrono::steady_clock::now();
+			long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(execTimeEnd - execTimeStart).count();
+			//printf("Elapsed time for a single runnable callback: %lld ms\n", elapsedTime);
 		}
 	}
 
 	void ThreadPool::start()
 	{
+		KEvents::kEventsLogger->info("Starting thread pool ... with {} runnables.", runnables.size());
 		if (!poolWorker)
 		{
 			poolWorker = new std::thread(&ThreadPool::run, this);
@@ -134,9 +138,11 @@ namespace KEvents
 	}
 
 	
-	RunnableThread::RunnableThread()
+	RunnableThread::RunnableThread(int id)
 		:taskStatus(false),
-		exitFlag(false)
+		exitFlag(false),
+		runnableId(id),
+		frameCount(0)
 	{
 	}
 
@@ -144,6 +150,8 @@ namespace KEvents
 	{
 		taskStatus = false;
 		exitFlag = false;
+		runnableId = other.runnableId;
+		frameCount = 0;
 	}
 
 	bool RunnableThread::init()
@@ -157,20 +165,29 @@ namespace KEvents
 		{
 			// wait to be notified that you have a task to execute .. 
 			// this is meant to reduce the processor time used for polling an empty queue.
-			lck.wait();
+			long long elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(execTimeEnd - execTimeStart).count();
+			if (elapsedTime >= 1)
+			{
+				execTimeStart = std::chrono::steady_clock::now();
+				double frameRate = (frameCount * 1.0) /(elapsedTime * 1.0) ;
+				//KEvents::kEventsLogger->info("Runnable Id:{}, Frame rate:{} fps ... elapsed Time: {} seconds. Queue Length: {}", runnableId, frameRate, elapsedTime, task_q.size());
+				frameCount = 0;
+			}
+
+			
 			if (task_q.empty())
 			{
 				taskStatus = true;
-				lck.wait_until(20);
-				continue;
+				lck.wait();
 			}
 
 			auto currentTask = task_q.front();
 			taskStatus = false;
-			currentTask();
 			task_q.pop();
-			//notifyAll();
+			currentTask();
 			taskStatus = true;
+			execTimeEnd = std::chrono::steady_clock::now();
+			frameCount++;
 		}
 	}
 
@@ -182,7 +199,7 @@ namespace KEvents
 
 	bool RunnableThread::isTaskComplete()
 	{
-		return taskStatus;
+		return task_q.empty();
 	}
 
 	void RunnableThread::waitFor(uint time)

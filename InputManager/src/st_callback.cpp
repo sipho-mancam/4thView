@@ -9,10 +9,13 @@ StreamDataCallback::StreamDataCallback(std::string processor_topic, std::string 
 
 void StreamDataCallback::execute(KEvents::Event e)
 {
-	// pass the input through to the processor
+	static long long frameCounter = 0;
+	// pass the input through to the SportEventProcessor
 	if (eventProducerPtr)
 	{
 		e.setSourceModule(serviceName);
 		eventProducerPtr->sendMessage(processorTopic, e);
+		//printf("\rFrame count: %lld ...", frameCounter);
+		frameCounter += 1;
 	}
 }

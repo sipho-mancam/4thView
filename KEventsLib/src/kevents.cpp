@@ -4,7 +4,8 @@ namespace KEvents
 {
 	EventsManager::EventsManager(std::string consumerTopic, std::string service_name, ulong poolSize, std::shared_ptr<spdlog::logger>logger)
 		: worker(nullptr),
-		logger(logger)
+		logger(logger),
+		frameCounter(0)
 	{
 		json config = __load_config__();
 		json& libConfig = config["kEventslib"];
@@ -13,6 +14,7 @@ namespace KEvents
 		eventProducerPtr = std::make_shared<EventProducer>(libConfig["kafka"]["broker"]);
 		executorTreePtr = std::make_shared<ExecutorTree>(eventProducerPtr, poolSize);
 		eventsQueue = std::make_shared<EventQueue>();
+
 		eventConsumerPtr->subscribeEventsQueue(eventsQueue);
 	}
 	
@@ -31,10 +33,12 @@ namespace KEvents
 
 	void EventsManager::startEventLoop(bool sync)
 	{
-		if (!worker && !sync)
+		if (!worker && !sync){
 			worker = std::make_unique<std::thread>(&EventsManager::__run, this);
-		else
+		}else {
 			__run();
+		}
+			
 	}
 
 	void EventsManager::exit()
@@ -67,16 +71,28 @@ namespace KEvents
 
 	void EventsManager::__run()
 	{
+		
 		while (!exitFlag)
 		{
-			eventConsumerPtr->update();
-			if (eventsQueue->empty())
+			long long elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(execTimeEnd - execTimeStart).count();
+			if (elapsedTime >= 1)
 			{
-				continue;
+				execTimeStart = std::chrono::steady_clock::now();
+				double frameRate = (frameCounter * 1.0) / (elapsedTime * 1.0);
+				//KEvents::kEventsLogger->info("Frame rate:{} fps ... elapsed Time: {} seconds.", frameRate, elapsedTime);
+				frameCounter = 0;
 			}
+			Event currentEvent = eventConsumerPtr->update();
+			
+			if (currentEvent.getEventName() == EN_ERROR)
+				continue;
 
-			Event currentEvent = eventsQueue->pull();
 			executorTreePtr->enqueueEvent(currentEvent);
+			//this->sendEvent("sport_event_processor_mod_stream", currentEvent);
+			frameCounter += 1;
+			execTimeEnd = std::chrono::steady_clock::now();
+			
+			
 		}
 	}
 	

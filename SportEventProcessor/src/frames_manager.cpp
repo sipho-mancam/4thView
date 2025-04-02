@@ -16,10 +16,10 @@ FramesManager::~FramesManager()
 
 void FramesManager::pushFrame(json frame)
 {
-	frameBuffer->pushFrame(frame);
-	if (frameBuffer->isLive())
+	//frameBuffer->pushFrame(frame);
+	//if (frameBuffer->isLive())
 	{
-		json currentFrame = frameBuffer->currentFrame();
+		json currentFrame = frame; // frameBuffer->currentFrame();
 		sendFrameEvent(processorTopic, currentFrame);
 	}
 }

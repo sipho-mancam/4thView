@@ -44,6 +44,9 @@ AppMain::AppMain(QWidget *parent)
         ui->objectsList,
         ui->scrollArea
     );
+
+   
+
     connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
     connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
     connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
@@ -51,6 +54,8 @@ AppMain::AppMain(QWidget *parent)
 	connect(ui->seeker_bar, &QSlider::sliderPressed, this, &AppMain::setReplayMode);
 	connect(ui->seeker_bar, &QSlider::sliderReleased, this, &AppMain::setSeekerPosition);
 	connect(ui->replay_control, &QPushButton::clicked, this, &AppMain::replayControl);
+
+    setLiveMode();
 }
 
 AppMain::~AppMain()
@@ -71,6 +76,10 @@ void AppMain::setStreamDataStore(StreamDataStore* sDs)
     CricketOvalScene* cS = static_cast<CricketOvalScene*>(scene);
     QMetaObject::Connection con = connect(sDs, &StreamDataStore::dataChanged, 
         cS , &CricketOvalScene::dataChangeUpdate);
+
+    connect(sDs, &StreamDataStore::dataChanged,
+        this, &AppMain::updateStatusBarFrameCount);
+
 
    con = connect(cS, &CricketOvalScene::selectedIdChangedSig, sDs, &StreamDataStore::setCurrentClicked);
 
@@ -156,7 +165,9 @@ void AppMain::setLiveMode()
     e.setSourceModule("gui");
     e.setEventName(EN_SET_STREAM_MODE);
     json config = KEvents::__load_config__();
-    eventMan->sendEvent(config["SportEventProcessor"]["serviceTopic"], e);
+
+    if(eventMan)
+        eventMan->sendEvent(config["SportEventProcessor"]["serviceTopic"], e);
 	
 }
 
@@ -173,6 +184,11 @@ void AppMain::setSeekerPosition()
 {
 	int sliderPosition = ui->seeker_bar->sliderPosition();
 	sendSeekerEvent(sliderPosition);
+}
+
+void AppMain::updateStatusBarFrameCount()
+{
+  
 }
 
 void AppMain::sendSeekerEvent(int seekerPosition)

@@ -24,5 +24,6 @@ namespace KEvents
 		std::map<std::string, std::vector<CallBackBasePtr>> routingMap;
 		ThreadPoolPtr threadPoolPtr;
 		EventProducerPtr eventProducer;
+		std::chrono::time_point<std::chrono::steady_clock> execTimeStart, execTimeEnd;
 	};
 }

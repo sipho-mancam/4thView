@@ -78,7 +78,7 @@ namespace KEvents
 	public:
 		EventConsumer(std::string broker, std::string consumerTopic, std::string group_id);
 		~EventConsumer();
-		void update();
+		KEvents::Event update();
 		void subscribeEventsQueue(EventQueuePtr eq);
 
 	private:

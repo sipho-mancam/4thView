@@ -251,23 +251,7 @@ namespace KEvents
 
             Type pull()
             {
-                static_assert(std::is_nothrow_move_constructible<Type>::value, "Type pull() method requires noexcept move-constructible type");
-
-                std::lock_guard<std::mutex> lock(mx);
-                if (is_terminated_flag) {
-                    throw QueueIsClosed("queue is closed");
-                }
-                if (queue.empty()) {
-                    if (is_shutdown_flag) {
-                        throw QueueIsClosed("queue is closed");
-                    }
-                    else {
-                        throw QueueIsEmpty("queue is empty");
-                    }
-                }
-
                 Type value = std::move(queue.front()); queue.pop();
-
                 return std::move(value);
             }
 

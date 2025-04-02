@@ -7,7 +7,7 @@ class TrackerConsumer
 {
 public:
 	TrackerConsumer(json globConfig, std::string serviceName);
-	bool waitForMessage();
+	json waitForMessage();
 	json getCurrentMessage();
 
 private:

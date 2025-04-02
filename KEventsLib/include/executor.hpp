@@ -70,7 +70,7 @@ namespace KEvents
 	class ExecutorTree final
 	{
 	public:
-		ExecutorTree(EventProducerPtr producer, ulong poolSize=1);
+		ExecutorTree(EventProducerPtr producer, ulong poolSize=6);
 		~ExecutorTree();
 
 		void enqueueEvent(Event event);
@@ -90,5 +90,6 @@ namespace KEvents
 		DefaultExecutor defaultExecutor;
 		ThreadPoolPtr threadPool;
 		EventProducerPtr eventProducer;
+		std::chrono::time_point<std::chrono::steady_clock> execTimeStart, execTimeEnd;
 	};
 }

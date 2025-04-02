@@ -1,4 +1,5 @@
 #include "executor.hpp"
+#include "kafka.hpp"
 
 namespace KEvents
 {
@@ -17,10 +18,14 @@ namespace KEvents
 	}
 	void ExecutorTree::enqueueEvent(Event event)
 	{
+		execTimeStart = std::chrono::steady_clock::now();
 
 		// Every event gets passed to the default executor
 		defaultExecutor.executeEvent(event);
+		execTimeEnd = std::chrono::steady_clock::now();
 
+		long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(execTimeEnd - execTimeStart).count();
+		//printf("Elapsed time to queue event: %lld ms\n", elapsedTime);
 		// This is for specialized Executors
 		EventType key = event.getEventType();
 		if (executionTree.contains(key))
@@ -31,6 +36,8 @@ namespace KEvents
 				exec->executeEvent(event);
 			}
 		}
+
+		
 	}
 
 	void ExecutorTree::registerExecutor(ExecutorBasePtr execPtr, EventType type)
@@ -90,6 +97,7 @@ namespace KEvents
 		* @note
 		* Receive the event object, pass it to the router and return.
 		*/
+		//eventProducer->sendMessage("sport_event_processor_mod_stream", e);
 		router->executeEvent(e);
 	}
 	void ExecutorBase::registerCallBack(CallBackBasePtr _cbPtr, std::string eventName)

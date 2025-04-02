@@ -109,17 +109,17 @@ namespace KEvents
 			message.size(), // payload_size
 			const_cast<char*>(e.getSourceModuleName().c_str()),// Key
 			e.getSourceModuleName().size(), // key size
-			(int64_t)time(NULL), // time_stamp
+			NULL, // time_stamp
 			NULL // message_opaque
 		);
-
 		if (err != RdKafka::ERR_NO_ERROR && retryCount < RETRY_COUNT)
 		{
-			kafkaProducer->poll(100);
+			KEvents::kEventsLogger->error("Failed to send message to kafka. Retrying ...");
+			kafkaProducer->flush(10);
 			goto Retry;
 		}
+		//kafkaProducer->flush(100);
 		kafkaProducer->poll(10);
-
 	}
 
 	void EventProducer::sendMessage(std::string _topic, std::string _message)
@@ -146,10 +146,9 @@ namespace KEvents
 
 		if (err != RdKafka::ERR_NO_ERROR && retryCount < RETRY_COUNT)
 		{
-			kafkaProducer->poll(100);
+			kafkaProducer->poll(10);
 			goto Retry;
 		}
-
 		kafkaProducer->poll(10);
 	}
 
@@ -167,7 +166,7 @@ namespace KEvents
 	EventConsumer::EventConsumer(std::string broker, std::string consumerTopic, std::string group_id)
 		: _callBackHandler()
 	{
-		kConsumer = buildConsumer(broker, group_id, &_callBackHandler);
+		kConsumer = buildConsumer(broker, group_id);
 		kConsumer->subscribe(std::vector<std::string>({ consumerTopic, consumerTopic + TE_STREAM_EXT }));
 	}
 
@@ -178,14 +177,28 @@ namespace KEvents
 		kEventsLogger->info("Shutting down events consumer complete");
 	}
 
-	void EventConsumer::update()
+	KEvents::Event EventConsumer::update()
 	{	
-		kConsumer->poll(50);
+		RdKafka::Message* message = kConsumer->consume(100);
+		if (message->err() == ERR_NO_ERROR)
+		{
+			std::string message_ = std::string(static_cast<const char*>(message->payload()), message->len());
+			Event e = Event::deserializeEvent(message_);
+			delete message;
+			return e;
+		}
+		else
+		{
+			Event e;
+			e.setEventName(EN_ERROR);
+			return e;
+		}
 	}
 
 	void EventConsumer::subscribeEventsQueue(EventQueuePtr eq)
 	{
 		_callBackHandler.subscribeEventsQueue(eq);
+		eventQ = eq;
 	}
 
 
