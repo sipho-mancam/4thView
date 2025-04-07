@@ -42,6 +42,8 @@ public:
 			if (currentFrame.empty())
 				continue;
 
+			
+
 			KEvents::Event ev = buildFrameEvent(currentFrame);
 			eventsManager->sendEvent(OutputTopic, ev);
 		}	

@@ -119,7 +119,7 @@ namespace KEvents
 			goto Retry;
 		}
 		//kafkaProducer->flush(100);
-		kafkaProducer->poll(10);
+		//kafkaProducer->poll(10);
 	}
 
 	void EventProducer::sendMessage(std::string _topic, std::string _message)
@@ -149,7 +149,7 @@ namespace KEvents
 			kafkaProducer->poll(10);
 			goto Retry;
 		}
-		kafkaProducer->poll(10);
+		//kafkaProducer->poll(10);
 	}
 
 	std::string EventProducer::__create_message__(Event e)

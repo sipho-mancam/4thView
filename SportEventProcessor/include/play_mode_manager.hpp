@@ -37,5 +37,6 @@ private:
 	std::shared_ptr<LiveMode> m_liveMode;
 	std::shared_ptr<ReplayMode> m_replayMode;
 	std::shared_ptr<PlaybackModeBase> currentMode;
+	std::mutex mux;
 	bool live_mode;
 };

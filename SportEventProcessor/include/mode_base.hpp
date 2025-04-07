@@ -1,5 +1,6 @@
 #pragma once
 #include <nlohmann/json.hpp>
+#include <mutex>
 
 using json = nlohmann::json;
 
@@ -24,4 +25,5 @@ public:
 
 protected:
 	bool m_playStatePaused = false;
+	std::mutex mux;
 };
