@@ -1,6 +1,7 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <mutex>
+#include "kevents.hpp"
 
 using json = nlohmann::json;
 
@@ -10,8 +11,13 @@ public:
 	PlaybackModeBase() = default;
 	virtual ~PlaybackModeBase() = default;
 
-	void setPlayStatePaused(bool paused)
+	virtual void setPlayStatePaused(bool paused)
 	{
+		if(paused)
+			KEvents::kEventsLogger->info("Playback paused");
+		else
+			KEvents::kEventsLogger->info("Playback resumed");
+
 		m_playStatePaused = paused;
 	}
 
@@ -22,8 +28,9 @@ public:
 
 	virtual json getCurrentFrame() = 0;
 	virtual void appendFrame(json frame) = 0;
+	virtual void setCurrentlyActive(bool mode) { currentlyActive = mode; }
 
 protected:
-	bool m_playStatePaused = false;
+	bool m_playStatePaused = false, currentlyActive;
 	std::mutex mux;
 };

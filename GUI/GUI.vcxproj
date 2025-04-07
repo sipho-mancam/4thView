@@ -106,10 +106,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\external_control_events_cb.cpp" />
     <ClCompile Include="include\models\distance_objects_manager.cpp" />
     <ClCompile Include="include\models\event_processor_dialog.cpp" />
     <ClCompile Include="src\state_modification_callback.cpp" />
-    <ClCompile Include="include\stream_data_store.cpp" />
+    <ClCompile Include="src\stream_data_store.cpp" />
     <ClCompile Include="src\stream_callback.cpp" />
     <ClCompile Include="src\views\cricket_oval_widget.cpp" />
     <ClCompile Include="src\views\player_props_widget.cpp" />
@@ -135,6 +136,7 @@
   <ItemGroup>
     <QtMoc Include="include\state_modification_callback.hpp" />
     <QtMoc Include="include\models\distance_objects_manager.hpp" />
+    <QtMoc Include="include\external_control_events_cb.hpp" />
     <ClInclude Include="include\models\distance_widget.h" />
     <QtMoc Include="include\models\event_processor_dialog.hpp" />
     <ClInclude Include="include\models\ui_event_proc_giu.h" />

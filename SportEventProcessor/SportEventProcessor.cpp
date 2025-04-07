@@ -40,7 +40,12 @@ int main()
 	);
 	eventsManager.registerCallback(EN_STREAM_DATA, streamDataCb);
 
-	std::shared_ptr<ControlCallback> controlCb = KEvents::createCallback<ControlCallback>(config, moduleName, framesManager);
+	std::shared_ptr<ControlCallback> controlCb = KEvents::createCallback<ControlCallback>(
+		config, 
+		moduleName, 
+		framesManager, 
+		&playStateInterface
+	);
 	eventsManager.registerCallback(EN_SET_STREAM_MODE, controlCb);
 	eventsManager.registerCallback(EN_SET_SEEKER_POSITION, controlCb);
 	eventsManager.registerCallback(EN_PLAYBACK_CONTROL, controlCb);

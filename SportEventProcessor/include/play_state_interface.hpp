@@ -17,6 +17,7 @@ public:
 	virtual void setPlayStatePaused(bool paused);
 	void setLiveMode(bool liveMode);
 	void appendFrame(json frame);
+	void setSeekerPosition(int position);
 
 private:
 	std::shared_ptr<LiveMode> m_liveMode;

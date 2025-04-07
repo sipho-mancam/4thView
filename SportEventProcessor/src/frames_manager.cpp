@@ -26,11 +26,8 @@ void FramesManager::pushFrame(json frame)
 
 json FramesManager::currentFrame()
 {
-	if (frameBuffer->isLive())
-	{
-		return frameBuffer->currentFrame();
-	}
 	return frameBuffer->currentFrame();
+	
 }
 
 bool FramesManager::isEmpty()
@@ -50,7 +47,7 @@ int FramesManager::size()
 
 void FramesManager::setLiveMode(bool mode)
 {
-	frameBuffer->setLiveMode(mode);
+	frameBuffer->setCurrentlyActive(mode);
 }
 
 void FramesManager::setPlaybackPaused(bool paused)

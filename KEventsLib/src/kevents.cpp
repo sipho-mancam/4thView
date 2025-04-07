@@ -79,7 +79,7 @@ namespace KEvents
 			{
 				execTimeStart = std::chrono::steady_clock::now();
 				double frameRate = (frameCounter * 1.0) / (elapsedTime * 1.0);
-				KEvents::kEventsLogger->info("Frame rate:{} fps ... elapsed Time: {} seconds.", frameRate, elapsedTime);
+				//KEvents::kEventsLogger->info("Frame rate:{} fps ... elapsed Time: {} seconds.", frameRate, elapsedTime);
 				frameCounter = 0;
 			}
 			Event currentEvent = eventConsumerPtr->update();

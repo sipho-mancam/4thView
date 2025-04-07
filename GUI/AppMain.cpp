@@ -15,8 +15,10 @@ AppMain::AppMain(QWidget *parent)
     pauseIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackPause)),
     playIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart)),
     currentIcon(true),
-	replayPaused(true),
-	liveMode(true)
+	replayPaused(false),
+	liveMode(true),
+    seekingBack(false),
+	currentSliderPosition(0)
 {
     ui->setupUi(this);
     outputHandle = new StdoutStreamBuffer(this);
@@ -53,8 +55,8 @@ AppMain::AppMain(QWidget *parent)
 	connect(ui->live_mode_button, &QPushButton::clicked, this, &AppMain::setLiveMode);
 	connect(ui->seeker_bar, &QSlider::sliderPressed, this, &AppMain::setReplayMode);
 	connect(ui->seeker_bar, &QSlider::sliderReleased, this, &AppMain::setSeekerPosition);
+	connect(ui->seeker_bar, &QSlider::sliderMoved, this, &AppMain::setSeekerPosition_1);
 	connect(ui->replay_control, &QPushButton::clicked, this, &AppMain::replayControl);
-
     setLiveMode();
 }
 
@@ -116,6 +118,19 @@ void AppMain::setStatePlayerStateModifier(std::shared_ptr<StateModificationCb> s
 
 }
 
+void AppMain::setExtGuiControl(std::shared_ptr<ExternalGUIControlEvents> extGuiControl)
+{
+	this->extGuiControl = extGuiControl;
+	QMetaObject::Connection con;
+
+	con = connect(this->extGuiControl.get(), &ExternalGUIControlEvents::frameStoreSizeChanged,
+		this, &AppMain::updateSeekerInterval, Qt::QueuedConnection);
+
+
+    con = connect(this->extGuiControl.get(), &ExternalGUIControlEvents::seekerPositionChanged,
+        this, &AppMain::updateSeekerPosition, Qt::QueuedConnection);
+}
+
 void AppMain::openEventProcessorDialog()
 {
     if (event_proc_dialog)
@@ -175,15 +190,47 @@ void AppMain::setReplayMode()
 {
 	ui->live_mode_button->setDisabled(false);
     int sliderPosition = ui->seeker_bar->sliderPosition();
+    // We are coming from live mode, we need to switch to replay mode first 
+   
+    if (liveMode)
+    {
+        KEvents::Event e;
+        e.setEventData({ {"live_mode", false } });
+        e.setSourceModule("gui");
+        e.setEventName(EN_SET_STREAM_MODE);
+        json config = KEvents::__load_config__();
+
+        if (eventMan)
+            eventMan->sendEvent(config["SportEventProcessor"]["serviceTopic"], e);
+    }
+
 	liveMode = false;
-	std::cout << sliderPosition << std::endl;
     sendSeekerEvent(sliderPosition);
+}
+
+void AppMain::setSeekerPosition_1(int position)
+{
+    int sliderPosition = position;
+	sendSeekerEvent(sliderPosition);
 }
 
 void AppMain::setSeekerPosition()
 {
-	int sliderPosition = ui->seeker_bar->sliderPosition();
-	sendSeekerEvent(sliderPosition);
+    int sliderPosition = ui->seeker_bar->sliderPosition();
+    sendSeekerEvent(sliderPosition);
+}
+
+void AppMain::__updateSeekerTracker(int seekerPos)
+{
+    if (seekerPos > currentSliderPosition)
+    {
+        seekingBack = false; // we are seeking forward
+    }
+    else {
+		seekingBack = true; // we are seeking backward
+    }
+
+    currentSliderPosition = seekerPos;
 }
 
 void AppMain::updateStatusBarFrameCount()
@@ -193,6 +240,8 @@ void AppMain::updateStatusBarFrameCount()
 
 void AppMain::sendSeekerEvent(int seekerPosition)
 {
+	__updateSeekerTracker(seekerPosition);
+
 	KEvents::Event e;
     e.setEventData({ {"seeker_position", seekerPosition}, {"live_mode" , false} });
 	e.setSourceModule("gui");

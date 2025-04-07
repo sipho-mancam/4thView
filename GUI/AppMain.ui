@@ -70,7 +70,7 @@ QPushButton#replay_control:hover{
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="QIcon::ThemeIcon::MediaPlaybackStart"/>
+         <iconset theme="QIcon::ThemeIcon::MediaPlaybackPause"/>
         </property>
        </widget>
       </item>
@@ -268,7 +268,7 @@ QDockWidget{
           <x>0</x>
           <y>0</y>
           <width>279</width>
-          <height>555</height>
+          <height>478</height>
          </rect>
         </property>
        </widget>

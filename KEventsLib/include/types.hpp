@@ -33,6 +33,7 @@
 #define EN_SET_SEEKER_POSITION "set_seeker_position"
 #define EN_PLAYBACK_CONTROL "playback_control"
 #define EN_ERROR "error"
+#define EN_FRAME_STORE_SIZE "frame_store_size"
 
 
 using json = nlohmann::json;

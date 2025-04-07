@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\replay_mode.cpp" />
     <ClCompile Include="src\play_state_interface.cpp" />
     <ClCompile Include="src\output_clock.cpp" />
     <ClCompile Include="src\control_callback.cpp" />

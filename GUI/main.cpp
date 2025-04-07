@@ -6,6 +6,7 @@
 #include "stream_callback.hpp"
 #include "stream_data_store.hpp"
 #include "state_modification_callback.hpp"
+#include "external_control_events_cb.hpp"
 #include <Windows.h>
 
 
@@ -36,6 +37,11 @@ int main(int argc, char *argv[])
     w.setStatePlayerStateModifier(stateMod);
     eventsManager.registerCallback(EN_STREAM_DATA_UPDATE, streamCb);
     eventsManager.registerCallback(EN_STATE_MOD, stateMod);
+
+    std::shared_ptr<ExternalGUIControlEvents> extGuiControlCb = KEvents::createCallback<ExternalGUIControlEvents>();
+    eventsManager.registerCallback(EN_FRAME_STORE_SIZE, extGuiControlCb);
+    eventsManager.registerCallback(EN_SET_SEEKER_POSITION, extGuiControlCb);
+    w.setExtGuiControl(extGuiControlCb);
 
     eventsManager.startEventLoop();
 

@@ -29,3 +29,8 @@ void PlayerStateInteface::appendFrame(json frame)
 	m_replayMode->appendFrame(frame);
 	m_outputClock->externalFrameUpdate();
 }
+
+void PlayerStateInteface::setSeekerPosition(int position)
+{
+	m_replayMode->setSeekerPosition(position);
+}

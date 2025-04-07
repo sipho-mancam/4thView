@@ -4,8 +4,11 @@ FrameBuffer::FrameBuffer()
 	: currentFrameIndex(0), 
 	maxBufferSize(MAX_BUFFER_SIZE), 
 	liveMode(true), 
-	playbackPaused(false)
+	playbackPaused(false),
+	currentlyActive(false)
 {
+	json globalConfig = KEvents::__load_config__();
+	maxBufferSize = globalConfig["SportEventProcessor"]["buffer_length"];
 	frameStore = std::make_shared<persistentFrameStore>();
 }
 
@@ -15,63 +18,59 @@ FrameBuffer::~FrameBuffer()
 
 void FrameBuffer::pushFrame(json frame)
 {
-	// our in memory frame buffer is full, we need to store the frame in the persistent store. if we are not in live mode
-	if (frames.size() >= maxBufferSize)
-	{
-		if (liveMode)
-		{
-			frames.erase(frames.begin(), frames.begin() + 1);
-			frames.emplace_back(frame);
-			currentFrameIndex = currentFrameIndex > 0 ? currentFrameIndex - 1 : 0;
-		}
-		else { // we in replay mode
-			frameStore->dumpFrame(frame);
-			return;
-		}
-	}
 
-	frames.push_back(frame);
-	if (liveMode)
+	// In transient state where the frame buffer has not reached it's max capacity
+	/**
+	* 1. We append a frame, and send the updated frame buffer size to update seeker interval
+	*	a. In this state we have access to live frames, when you seek forward you'll get newer frames
+	* 2. In steady state mode:
+	*	a. The frame buffer is always full, and we just replace the last frame with the new one and delete the first one.
+	*		if we are currently not the ones played.
+	*	b. if we are currently active (replaying) then we keep the buffer as it is and we send the new 
+	*		frames straight to the frame store, they will be retrieved when we switch but to inactive.
+	*/
+	// our in memory frame buffer is full, we need to store the frame in the persistent store.
+
+	//we are in transient state.
+	if (frames.size() < maxBufferSize)
 	{
-		currentFrameIndex = frames.size() - 1;
+		frames.emplace_back(frame);
+		return;
+	}
+	// we are in steady state, we need to replace the first frame with the new one.
+	/**
+	* In steady state we need to know if we are currently active, that way we send frames straight to the frame store
+	* or we are currently inactive, that way we replace the first frame with the new one.
+	*/
+	if (currentlyActive)
+	{
+		frameStore->dumpFrame(frame);
+	}
+	else
+	{
+		frames.erase(frames.begin(), frames.begin() + 1);
+		frames.emplace_back(frame);
 	}
 }
 
 json FrameBuffer::currentFrame()
 {
-	if (liveMode)
+	if (frames.size() == 0)
 	{
-		if (frames.size() > 0) {
-			json Frame = frames[currentFrameIndex];
-			Frame["frame_index"] = currentFrameIndex;
-			Frame["live_mode"] = liveMode;
-			return Frame;
-
-		} else {
-			return json();
-		}
-	}else // we are in replay mode, and two things control the frame seeker, 1. playback pause state, 2. user seeker update.
-	{
-		if (frames.size() == 0)
-		{
-			return json();
-		}
-
-		if (currentFrameIndex >= frames.size())
-		{
-			currentFrameIndex = frames.size() - 1; // point to the last frame
-		}
-
-		json Frame = frames[currentFrameIndex];
-		Frame["frame_index"] = currentFrameIndex;
-		Frame["live_mode"] = liveMode;
-
-		if (!playbackPaused)
-		{
-			currentFrameIndex += 1;
-		}
-		return Frame;
+		return json();
 	}
+
+	if (currentFrameIndex >= frames.size())
+	{
+		currentFrameIndex = frames.size() - 1;
+	}
+
+	json currentFrame = frames[currentFrameIndex];
+	if (currentlyActive && !playbackPaused)
+	{
+		currentFrameIndex += 1;
+	}
+	return currentFrame;
 }
 
 bool FrameBuffer::isEmpty()
@@ -90,24 +89,23 @@ int FrameBuffer::size()
 	return frames.size();
 }
 
-void FrameBuffer::setLiveMode(bool mode)
+void FrameBuffer::setCurrentlyActive(bool mode)
 {
-	liveMode = mode;
-	
-	/**
-	* On Live mode when we make the switch to go live, we need to do a few things:
-	* 1. Get Frames from the frame store 
-	* 2. Append the frames from the store to the current frame buffer, to have a continuations from the lost time
-	* 3. 
-	*/
-	if (liveMode)
+	currentlyActive = mode;
+	// if we are not currently active, we need to load the frames from the frame store
+	if (!currentlyActive)
 	{
 		std::vector<json> storedFrames = frameStore->loadStore();
 		// how far are we from buffer being full since our last live mode
 		int startIndex = maxBufferSize - storedFrames.size();
+
 		for (json frame : storedFrames)
 		{
 			frames.insert(frames.begin() + startIndex, frame);
+			startIndex++;
 		}
 	}
+	
 }
+
+

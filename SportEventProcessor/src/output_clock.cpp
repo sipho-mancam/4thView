@@ -12,6 +12,7 @@ OutputClock::OutputClock(std::shared_ptr<FrameOutputEventDispatch> fo)
 	moduleName = "SportEventProcessor";
 	tickInterval = config[moduleName]["clock_tick_interval_ms"];
 	clockWorker = new std::thread(&OutputClock::__run_internalClock, this);
+	mStartPoint = std::chrono::high_resolution_clock::now();
 }
 
 OutputClock::~OutputClock()
@@ -84,16 +85,29 @@ void OutputClock::__run_internalClock()
 
 void OutputClock::__dispatchOutputEvent()
 {
+	static long frameCount = 0;
+	mEndPoint = std::chrono::high_resolution_clock::now();
+	if (std::chrono::duration_cast<std::chrono::seconds>(mEndPoint - mStartPoint).count() >= 1)
+	{
+		KEvents::kEventsLogger->info("Output frame rate: {} fps", frameCount);
+		mStartPoint = std::chrono::high_resolution_clock::now();
+		frameCount = 0;
+	}
+	
+	
 	if (maxClockWaitCount == 0 || maxClockWaitCount >= MAX_EXTERNAL_TICK_WAIT_COUNT || !isExternalAlive)
 	{
 		// dispatch the event
 		if (frameOutputEventDispatch)
 		{
 			frameOutputEventDispatch->tick();
+			frameCount += 1;
 		}
 		maxClockWaitCount = 0;
 		isExternalAlive = false;
 	}
+
+	
 	// Any call happening here, is just the internal clock running along side the external clock, 
 	// we ignore it.
 }

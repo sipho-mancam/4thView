@@ -5,6 +5,7 @@ persistentFrameStore::persistentFrameStore()
 {
 	json globalConfig = KEvents::__load_config__();
 	json moduleConfig = globalConfig["SportEventProcessor"];
+	maxStoreSize = moduleConfig["buffer_length"];
 	storeDirPath = moduleConfig["persistent_store_dir"];
 }
 

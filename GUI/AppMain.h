@@ -11,6 +11,7 @@
 #include "views/player_state_mod.hpp"
 #include "models/distance_objects_manager.hpp"
 #include "models/event_processor_dialog.hpp"
+#include "external_control_events_cb.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -84,12 +85,15 @@ public:
     void setEventManager(KEvents::EventsManager* evMan) { eventMan = evMan; }
     void setStreamDataStore(StreamDataStore* sDs);
     void setStatePlayerStateModifier(std::shared_ptr<StateModificationCb> stMod);
+	void setExtGuiControl(std::shared_ptr<ExternalGUIControlEvents> extGuiControl);
 
     void openEventProcessorDialog();
     void PauseOutputStreamTrigger();
     void setLiveMode();
     void setReplayMode();
+	void setSeekerPosition_1(int position=-1);
 	void setSeekerPosition();
+	void __updateSeekerTracker(int seekerPos);
 
     void updateStatusBarFrameCount();
 
@@ -103,7 +107,35 @@ private slots:
         ui->plainTextEdit->insertPlainText(text);
     }
 
-   
+    void updateSeekerPosition(int seekerPos)
+    {
+		if (!liveMode)
+		{
+            ui->seeker_bar->setSliderPosition(seekerPos);
+            /*if (seekingBack)
+            {
+				if (currentSliderPosition >= seekerPos)
+                    ui->seeker_bar->setSliderPosition(seekerPos);
+            }
+            else {
+				if (currentSliderPosition <= seekerPos)
+					ui->seeker_bar->setSliderPosition(seekerPos);
+            }*/
+			
+		}
+    }
+
+    void updateSeekerInterval(int storeSize)
+    {
+        if(storeSize < 10)
+			storeSize = 10;
+
+		ui->seeker_bar->setMinimum(0);
+        ui->seeker_bar->setMaximum(storeSize);
+
+        if(liveMode)
+			ui->seeker_bar->setSliderPosition(storeSize);
+    }
 
     void sendEventProcessorName(json eventProcData)
     {
@@ -129,13 +161,15 @@ private:
     PlayerStateModifierGroup* playerStateModifier;
     DistanceObjectsManager* distanceObjectsGroup;
     EventProcessorDialog* event_proc_dialog;
+	std::shared_ptr<ExternalGUIControlEvents> extGuiControl;
 
     StdoutStreamBuffer* outputHandle;
     KEvents::EventsManager* eventMan;
     QIcon playIcon, pauseIcon;
-    bool currentIcon, replayPaused, liveMode;
+    bool currentIcon, replayPaused, liveMode, seekingBack;
 
 
     StreamDataStore* streamDs;
     std::shared_ptr<StateModificationCb> stateMod;
+    int currentSliderPosition;
 };

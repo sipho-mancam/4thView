@@ -34,7 +34,7 @@ private:
 	std::mutex clockMutex;
 	int tickInterval;
 	std::string moduleName;
-	std::chrono::time_point<std::chrono::high_resolution_clock> startPoint, currentPoint;
+	std::chrono::time_point<std::chrono::high_resolution_clock> startPoint, currentPoint, mStartPoint, mEndPoint;
 	std::thread* clockWorker;
 	std::shared_ptr<FrameOutputEventDispatch> frameOutputEventDispatch;
 

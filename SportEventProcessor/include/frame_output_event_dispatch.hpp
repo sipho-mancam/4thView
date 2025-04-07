@@ -11,8 +11,10 @@ public:
 		playModeManager(playModeMan)
 	{
 		std::string processorName = "Processor";
+		std::string guiName = "GUI";
 		json globalConfig = KEvents::__load_config__();
 		OutputTopic = globalConfig[processorName]["serviceTopic"];
+		GuiTopic = globalConfig[guiName]["serviceTopic"];
 
 		exit = false;
 		outputWorker = new std::thread(&FrameOutputEventDispatch::dispatchOutput, this);
@@ -37,15 +39,23 @@ public:
 		while (!exit)
 		{
 			lck.wait();
+
+			int storeSize = playModeManager->getCurrentStoreSize();
+			KEvents::Event storeSizeEvent = buildStoreSizeEvent(storeSize);
+			eventsManager->sendEvent(GuiTopic, storeSizeEvent);
+
 			// request the frame here
 			json currentFrame = playModeManager->getCurrentFrame();
 			if (currentFrame.empty())
 				continue;
 
-			
-
 			KEvents::Event ev = buildFrameEvent(currentFrame);
 			eventsManager->sendEvent(OutputTopic, ev);
+
+
+			int currentSeekerPosition = playModeManager->getCurrentSeekerPosition();
+			KEvents::Event seekerEvent = buildCurrentSeekerEvent(currentSeekerPosition);
+			eventsManager->sendEvent(GuiTopic, seekerEvent);
 		}	
 	}
 
@@ -58,6 +68,28 @@ public:
 		ev.setEventType(KEvents::EventType::E_SPORT_EVENT_PROCESSOR);
 		return ev;
 	}
+
+	KEvents::Event buildStoreSizeEvent(int storeSize)
+	{
+		KEvents::Event ev;
+		ev.setEventName(EN_FRAME_STORE_SIZE);
+		ev.setEventData({{"store_size", storeSize}});
+		ev.setSourceModule("SportEventProcessor");
+		ev.setEventType(KEvents::EventType::E_SPORT_EVENT_PROCESSOR);
+		return ev;
+	}
+
+	KEvents::Event buildCurrentSeekerEvent(int currentSeekPosition)
+	{
+		KEvents::Event ev;
+		ev.setEventName(EN_SET_SEEKER_POSITION);
+		ev.setEventData({ {"seeker_position", currentSeekPosition} });
+		ev.setSourceModule("SportEventProcessor");
+		ev.setEventType(KEvents::EventType::E_SPORT_EVENT_PROCESSOR);
+		return ev;
+	}
+
+
 	/**
 	* @brief
 	* This will be called every tick by the OutputClock
@@ -74,5 +106,5 @@ private:
 	std::thread* outputWorker;
 	KEvents::EventsManager* eventsManager;
 	std::shared_ptr<PlayModeManager> playModeManager;
-	std::string OutputTopic;
+	std::string OutputTopic, GuiTopic;
 };

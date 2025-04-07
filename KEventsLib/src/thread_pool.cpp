@@ -47,9 +47,10 @@ namespace KEvents
 			{
 				try
 				{
-					std::function<void()> task;
-					task = taskQ.pull();
-				
+					std::function<void()> task = taskQ.pull();
+					if (!task)
+						continue;
+
 					// find a runnable that's currently done with work
 					bool escape = false;
 
@@ -182,6 +183,12 @@ namespace KEvents
 			{
 				taskStatus = true;
 				lck.wait();
+			}
+
+			// This means that notify was called from somewhere else that doesn't append tasks
+			if (task_q.empty())
+			{
+				continue;
 			}
 
 			auto currentTask = task_q.front();

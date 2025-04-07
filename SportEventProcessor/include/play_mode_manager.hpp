@@ -3,6 +3,7 @@
 #include "live_mode.hpp"
 #include "replay_mode.hpp"
 #include <iostream>
+#include "kevents.hpp"
 
 
 class PlayModeManager
@@ -19,12 +20,18 @@ public:
 	void setLiveMode(bool live)
 	{
 		live_mode = live;
+
+		m_liveMode->setCurrentlyActive(live_mode);
+		m_replayMode->setCurrentlyActive(!live_mode);
+
 		if (live_mode)
 		{
+			KEvents::kEventsLogger->info("Switched to Live Mode");
 			currentMode = m_liveMode;
 		}
 		else
 		{
+			KEvents::kEventsLogger->info("Switched to Replay Mode");
 			currentMode = m_replayMode;
 		}
 	}
@@ -32,6 +39,16 @@ public:
 	json getCurrentFrame()
 	{
 		return currentMode->getCurrentFrame();
+	}
+
+	int getCurrentSeekerPosition()
+	{
+		return m_replayMode->getCurrentSeekerPosition();
+	}
+
+	int getCurrentStoreSize()
+	{
+		return m_replayMode->getCurrentStoreSize();
 	}
 private:
 	std::shared_ptr<LiveMode> m_liveMode;

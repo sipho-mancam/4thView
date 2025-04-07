@@ -251,7 +251,8 @@ namespace KEvents
 
             Type pull()
             {
-                Type value = std::move(queue.front()); queue.pop();
+                Type value = std::move(queue.front()); 
+                queue.pop();
                 return std::move(value);
             }
 
