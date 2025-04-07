@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1270</width>
-    <height>862</height>
+    <width>1145</width>
+    <height>734</height>
    </rect>
   </property>
   <property name="font">
@@ -49,6 +49,39 @@ QDockWidget{
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_7">
     <item>
+     <widget class="QLabel" name="playback_mode_text">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+        <bold>true</bold>
+        <kerning>true</kerning>
+       </font>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel#playback_mode_text{
+	color: rgb(226, 226, 226);
+	background-color: rgb(255, 0, 0);
+
+}</string>
+      </property>
+      <property name="text">
+       <string>Live Mode</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QGraphicsView" name="graphicsView"/>
     </item>
     <item>
@@ -75,14 +108,28 @@ QPushButton#replay_control:hover{
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="elapsed_time">
+        <property name="text">
+         <string>00:00</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QSlider" name="seeker_bar">
         <property name="styleSheet">
          <string notr="true">QSlider#seeker_bar::handle:horizontal{
-	width: 8px;
-    height: 8px;
-     margin: -4px 0; /* Centers the handle vertically */
+	/*width: 4px;
+    height: 4px;*/
+	 height:8px;
+	 width:6px;
+     margin: -2px 0; /* Centers the handle vertically */
      border-radius: 8px;
      background: #3498db;
+}
+
+QSlider#seeker_bar::groove:horizontal {
+    border: 1px solid #999999;
+    height: 4px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
 }
 
 /*
@@ -117,6 +164,13 @@ QSlider#seeker_bar::sub-page:horizontal {
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="max_replay_time">
+        <property name="text">
+         <string>00:00</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="live_mode_button">
         <property name="enabled">
          <bool>false</bool>
@@ -138,6 +192,103 @@ QSlider#seeker_bar::sub-page:horizontal {
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLCDNumber" name="frame_rate_update">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Plain</enum>
+        </property>
+        <property name="smallDecimalPoint">
+         <bool>false</bool>
+        </property>
+        <property name="digitCount">
+         <number>3</number>
+        </property>
+        <property name="segmentStyle">
+         <enum>QLCDNumber::SegmentStyle::Flat</enum>
+        </property>
+        <property name="value" stdset="0">
+         <double>10.600000000000000</double>
+        </property>
+        <property name="intValue" stdset="0">
+         <number>11</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_10">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>FPS</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="QIcon::ThemeIcon::MediaSkipForward"/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Policy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>25</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Policy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>200</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </item>
    </layout>
@@ -147,7 +298,7 @@ QSlider#seeker_bar::sub-page:horizontal {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1270</width>
+     <width>1145</width>
      <height>21</height>
     </rect>
    </property>
@@ -268,7 +419,7 @@ QDockWidget{
           <x>0</x>
           <y>0</y>
           <width>279</width>
-          <height>478</height>
+          <height>409</height>
          </rect>
         </property>
        </widget>
@@ -282,7 +433,7 @@ QDockWidget{
     <string>logs</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>8</number>
+    <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
     <property name="minimumSize">
@@ -506,6 +657,41 @@ QDockWidget{
              <widget class="QCheckBox" name="checkBox_2">
               <property name="text">
                <string>Activate</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Skin Color:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="rb_black">
+              <property name="text">
+               <string>A</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="rb_white">
+              <property name="text">
+               <string>W</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="rb_brown">
+              <property name="text">
+               <string>B</string>
               </property>
              </widget>
             </item>

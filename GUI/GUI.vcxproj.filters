@@ -67,6 +67,9 @@
     <ClCompile Include="src\external_control_events_cb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\time_conversions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -97,6 +100,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\models\ui_event_proc_giu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\time_conversions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

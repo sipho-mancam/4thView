@@ -91,6 +91,9 @@ void AppMain::setStreamDataStore(StreamDataStore* sDs)
    con = connect(sDs, &StreamDataStore::selectedStateChagedSig,
        playerStateModifier, &PlayerStateModifierGroup::laodCurrentState);
 
+   con = connect(sDs, &StreamDataStore::frameRateChangedSig,
+	   this, &AppMain::updateFrameRate);
+
 
   if (con)
   {
@@ -174,6 +177,8 @@ void AppMain::setLiveMode()
 	ui->seeker_bar->setSliderPosition(ui->seeker_bar->maximum());
 	int sliderPosition = ui->seeker_bar->maximum();
 	liveMode = true;
+   
+	ui->playback_mode_text->setText("Live Mode");
 
     KEvents::Event e;
     e.setEventData({ {"live_mode", liveMode } });
@@ -191,7 +196,7 @@ void AppMain::setReplayMode()
 	ui->live_mode_button->setDisabled(false);
     int sliderPosition = ui->seeker_bar->sliderPosition();
     // We are coming from live mode, we need to switch to replay mode first 
-   
+    ui->playback_mode_text->setText("Replay Mode");
     if (liveMode)
     {
         KEvents::Event e;

@@ -2,6 +2,7 @@
 #include "data_store_base.hpp"
 #include <qobject.h>
 #include "kevents.hpp"
+#include <chrono>
 #include <mutex>
 
 class PlayerItemWidget;
@@ -45,10 +46,13 @@ signals:
 	* until the user updates.
 	*/
 	void selectedStateChagedSig(json currentState);
+	void frameRateChangedSig(double frameRate);
 
 private:
 	std::vector<std::function<void(json)>> registeredUICallbacks;
 	json currentState, currentClickedTrack;
 	int currentClickedId;
+	double avgFrameRate;
 	std::mutex mtx;
+	std::chrono::high_resolution_clock::time_point startPoint, endPoint;
 };

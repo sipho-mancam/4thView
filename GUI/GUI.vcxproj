@@ -106,6 +106,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\time_conversions.cpp" />
     <ClCompile Include="src\external_control_events_cb.cpp" />
     <ClCompile Include="include\models\distance_objects_manager.cpp" />
     <ClCompile Include="include\models\event_processor_dialog.cpp" />
@@ -134,6 +135,7 @@
     <None Include="resources\database-icon" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\time_conversions.hpp" />
     <QtMoc Include="include\state_modification_callback.hpp" />
     <QtMoc Include="include\models\distance_objects_manager.hpp" />
     <QtMoc Include="include\external_control_events_cb.hpp" />

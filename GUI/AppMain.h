@@ -12,6 +12,7 @@
 #include "models/distance_objects_manager.hpp"
 #include "models/event_processor_dialog.hpp"
 #include "external_control_events_cb.hpp"
+#include "time_conversions.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -112,17 +113,13 @@ private slots:
 		if (!liveMode)
 		{
             ui->seeker_bar->setSliderPosition(seekerPos);
-            /*if (seekingBack)
-            {
-				if (currentSliderPosition >= seekerPos)
-                    ui->seeker_bar->setSliderPosition(seekerPos);
-            }
-            else {
-				if (currentSliderPosition <= seekerPos)
-					ui->seeker_bar->setSliderPosition(seekerPos);
-            }*/
-			
-		}
+			std::string timeString = Int2TimeString::int2TimeString(seekerPos);
+			ui->elapsed_time->setText(QString::fromStdString(timeString));
+        }
+        else {
+            std::string timeString = Int2TimeString::int2TimeString(ui->seeker_bar->maximum());
+            ui->elapsed_time->setText(QString::fromStdString(timeString));
+        }
     }
 
     void updateSeekerInterval(int storeSize)
@@ -135,6 +132,15 @@ private slots:
 
         if(liveMode)
 			ui->seeker_bar->setSliderPosition(storeSize);
+
+        std::string timeString = Int2TimeString::int2TimeString(storeSize);
+		ui->max_replay_time->setText(QString::fromStdString(timeString));
+    }
+
+    void updateFrameRate(double frameRate)
+    {
+        if(!ui->frame_rate_update->checkOverflow(frameRate))
+            ui->frame_rate_update->display(frameRate);
     }
 
     void sendEventProcessorName(json eventProcData)
