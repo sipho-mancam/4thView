@@ -66,7 +66,12 @@ AppMain::AppMain(QWidget *parent)
 	connect(distanceObjectModel, &DistanceObjectModel::clearPreviewObject, cS, &CricketOvalScene::clearPreviewLine);
 	connect(distance_dialog, &DistanceDialog::previewDistanceDataReady, distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig);
 	connect(distance_dialog, &DistanceDialog::clearDistancePreview, distanceObjectModel, &DistanceObjectModel::clearPreviewObject);
-	/*connect(distance_dialog, &DistanceDialog::previewDistanceDataReady, cS, &CricketOvalScene::previewDistanceLineReady);*/
+
+	connect(distance_dialog, &DistanceDialog::distanceData, distanceObjectModel, &DistanceObjectModel::addDistanceObject);
+
+	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, distanceObjectsGroup, &DistanceObjectsManager::addDistanceObject);
+	connect(distanceObjectsGroup, &DistanceObjectsManager::distanceObjectDeletedSignal, distanceObjectModel, &DistanceObjectModel::deleteDistanceObject);
+
     setLiveMode();
 }
 

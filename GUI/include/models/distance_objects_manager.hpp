@@ -2,6 +2,9 @@
 #include <QtCore/QObject>
 #include "distance_widget.h"
 #include <QGraphicsEllipseItem>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 /**
 * @brief
@@ -41,12 +44,13 @@ class DistanceObjectsManager : public QWidget
 public:
 	explicit DistanceObjectsManager(QWidget* layoutObject,QScrollArea *scoll ,QWidget* parent = nullptr);
 
-
+	void addDistanceObject(json distanceObject);
 public slots:
 	void distanceObjectDeleted(int objectId);
 
 signals:
 	void distanceObjectDeletedSignal(int objectId);
+	
 
 private:
 	std::vector<DistanceWidget*> distanceObjects;

@@ -1,7 +1,7 @@
 #pragma once
 #include <QObject>
 #include <nlohmann/json.hpp>
-
+#include <map>
 
 using json = nlohmann::json;
 
@@ -15,6 +15,8 @@ public:
 public slots:
 	void updateFrameData(json frameData);
 	void updatePreviewData(json previewData);
+	void addDistanceObject(json distanceObject);
+	void deleteDistanceObject(long long id);
 
 signals:
 	void distanceObjectsUpdatedSig(json distanceObjects);
@@ -22,9 +24,10 @@ signals:
 	void clearPreviewObject();
 
 private:
-	json distanceObjects;
+	std::map<long long, json> distanceObjects;
 	json previewData;
 	json frameData;
 	json distanceObject;
+	long long idCount;
 
 };

@@ -18,6 +18,8 @@ DistanceWidget::DistanceWidget(int id, QWidget* parent)
 	ui->graphicsView->setScene(iconScene);
 	distanceColorIcon->setBrush(QBrush(QColorConstants::Red));
 	connect(ui->pushButton, &QPushButton::clicked, this, &DistanceWidget::deletePressed);
+	ui->label_3->setText(QString::number(id));
+	ui->label_4->setText(QString::number(0.0));
 }
 
 
@@ -49,15 +51,21 @@ DistanceObjectsManager::DistanceObjectsManager(QWidget* layoutObject, QScrollAre
 	distanceList->setAlignment(Qt::AlignTop);
 	distanceList->setContentsMargins(0, 0, 0, 0);
 	distanceList->setSpacing(0);
-
-	for (int i = 0; i < 10; i++)
-	{
-		DistanceWidget* testObject = new DistanceWidget(i);
-		distanceList->addWidget(testObject, Qt::AlignTop);
-
-		connect(testObject, &DistanceWidget::distanceObjectDeleted, this, &DistanceObjectsManager::distanceObjectDeleted);
-	}
 }
+
+void DistanceObjectsManager::addDistanceObject(json distanceObject)
+{
+	int objectId = distanceObject["objectId"];
+	QColor col = QColor(distanceObject["lineColor"][0], distanceObject["lineColor"][1], distanceObject["lineColor"][2]);
+	DistanceWidget* dObj = new DistanceWidget(objectId);
+	distanceList->addWidget(dObj, Qt::AlignTop);
+	dObj->setColor(col);
+	connect(dObj, &DistanceWidget::distanceObjectDeleted, this, &DistanceObjectsManager::distanceObjectDeleted);
+	std::cout << "Distance Object added" << std::endl;
+}
+
+
+
 
 void DistanceObjectsManager::distanceObjectDeleted(int objectId)
 {
