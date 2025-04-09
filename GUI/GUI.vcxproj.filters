@@ -70,6 +70,12 @@
     <ClCompile Include="include\time_conversions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\distance_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\distance_object_model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -83,6 +89,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="include\models\event_proc_giu.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="include\models\distance_widget.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -103,6 +112,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\time_conversions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\models\ui_distance_widget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -146,6 +158,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\external_control_events_cb.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\models\distance_dialog.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\models\distance_object_model.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

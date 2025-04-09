@@ -106,6 +106,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\distance_object_model.cpp" />
+    <ClCompile Include="src\distance_dialog.cpp" />
     <ClCompile Include="include\time_conversions.cpp" />
     <ClCompile Include="src\external_control_events_cb.cpp" />
     <ClCompile Include="include\models\distance_objects_manager.cpp" />
@@ -121,6 +123,7 @@
     <QtMoc Include="AppMain.h" />
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="include\models\distance_widget.ui" />
     <QtUic Include="include\models\event_proc_giu.ui" />
     <QtUic Include="include\models\Widget.ui" />
     <QtUic Include="output_console.ui" />
@@ -135,6 +138,9 @@
     <None Include="resources\database-icon" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="include\models\distance_dialog.hpp" />
+    <QtMoc Include="include\models\distance_object_model.hpp" />
+    <ClInclude Include="include\models\ui_distance_widget.h" />
     <ClInclude Include="include\time_conversions.hpp" />
     <QtMoc Include="include\state_modification_callback.hpp" />
     <QtMoc Include="include\models\distance_objects_manager.hpp" />

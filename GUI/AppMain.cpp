@@ -12,13 +12,15 @@ AppMain::AppMain(QWidget *parent)
     , ui(new Ui::AppMainClass()),
     eventMan(nullptr),
     event_proc_dialog(new EventProcessorDialog(this)),
+    distance_dialog(new DistanceDialog(this)),
     pauseIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackPause)),
     playIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart)),
     currentIcon(true),
 	replayPaused(false),
 	liveMode(true),
     seekingBack(false),
-	currentSliderPosition(0)
+	currentSliderPosition(0),
+	distanceObjectModel(new DistanceObjectModel(this))
 {
     ui->setupUi(this);
     outputHandle = new StdoutStreamBuffer(this);
@@ -48,20 +50,31 @@ AppMain::AppMain(QWidget *parent)
     );
 
    
-
     connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
     connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
     connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
+	connect(ui->actionAdd_Distance, &QAction::triggered, this, &AppMain::openDistanceDialog);
 	connect(ui->live_mode_button, &QPushButton::clicked, this, &AppMain::setLiveMode);
 	connect(ui->seeker_bar, &QSlider::sliderPressed, this, &AppMain::setReplayMode);
 	connect(ui->seeker_bar, &QSlider::sliderReleased, this, &AppMain::setSeekerPosition);
 	connect(ui->seeker_bar, &QSlider::sliderMoved, this, &AppMain::setSeekerPosition_1);
 	connect(ui->replay_control, &QPushButton::clicked, this, &AppMain::replayControl);
+
+    CricketOvalScene* cS = static_cast<CricketOvalScene*>(scene);
+    connect(cS, &CricketOvalScene::selectedIdChangedSig, distance_dialog, &DistanceDialog::selectedPlayer);
+	connect(distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig, cS, &CricketOvalScene::previewDistanceLineReady);
+	connect(distanceObjectModel, &DistanceObjectModel::clearPreviewObject, cS, &CricketOvalScene::clearPreviewLine);
+	connect(distance_dialog, &DistanceDialog::previewDistanceDataReady, distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig);
+	connect(distance_dialog, &DistanceDialog::clearDistancePreview, distanceObjectModel, &DistanceObjectModel::clearPreviewObject);
+	/*connect(distance_dialog, &DistanceDialog::previewDistanceDataReady, cS, &CricketOvalScene::previewDistanceLineReady);*/
     setLiveMode();
 }
 
 AppMain::~AppMain()
 {
+	delete event_proc_dialog;
+    delete distance_dialog;
+	delete distanceObjectModel;
     delete ui;
 }
 
@@ -140,6 +153,15 @@ void AppMain::openEventProcessorDialog()
     {
         event_proc_dialog->open();
     }
+}
+
+void AppMain::openDistanceDialog()
+{
+   
+	if (distance_dialog)
+	{
+		distance_dialog->show();
+	}
 }
 
 void AppMain::PauseOutputStreamTrigger()

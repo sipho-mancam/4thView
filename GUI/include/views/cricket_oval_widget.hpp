@@ -43,6 +43,8 @@ public:
 	void setPosition(E_POSITION pos) { playerPosition = pos; }
 	void setState(E_STATE st) { state = st; }
 
+	std::tuple<double, double> getCoordinates() { return coordinates; }
+
 	bool operator== (int& trackId);
 	PlayerItemWidget& operator=(std::tuple<double, double> coord)
 	{
@@ -88,9 +90,14 @@ public:
 	std::tuple<qreal, qreal> getDimensions() { return { _width, _height }; }
 	void updateScene();
 
+	void drawDistanceLines();
+	QGraphicsLineItem* __drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color);
+
 public slots:
 	void dataChangeUpdate(json data);
 	void selectedIdChanged(int trackId);
+	void previewDistanceLineReady(json data);
+	void clearPreviewLine();
 
 signals:
 	void selectedIdChangedSig(int trackId);
@@ -99,6 +106,8 @@ private:
 	qreal _width, _height; // bounding rect
 	QRect _boundingRect;
 	std::map<int, PlayerItemWidget*> playersMap;
+	QGraphicsLineItem* previewDistanceLine;
+	json distancePreviewLine;
 };
 
 QColor __state2color__(PlayerItemWidget::E_STATE);

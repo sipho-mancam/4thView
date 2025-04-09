@@ -11,8 +11,10 @@
 #include "views/player_state_mod.hpp"
 #include "models/distance_objects_manager.hpp"
 #include "models/event_processor_dialog.hpp"
+#include "models/distance_dialog.hpp"
 #include "external_control_events_cb.hpp"
 #include "time_conversions.hpp"
+#include "models/distance_object_model.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -89,6 +91,7 @@ public:
 	void setExtGuiControl(std::shared_ptr<ExternalGUIControlEvents> extGuiControl);
 
     void openEventProcessorDialog();
+	void openDistanceDialog();
     void PauseOutputStreamTrigger();
     void setLiveMode();
     void setReplayMode();
@@ -158,8 +161,6 @@ private slots:
         }
     }
 
-   
-
 private:
     Ui::AppMainClass *ui;
     QGraphicsScene* scene;
@@ -167,6 +168,7 @@ private:
     PlayerStateModifierGroup* playerStateModifier;
     DistanceObjectsManager* distanceObjectsGroup;
     EventProcessorDialog* event_proc_dialog;
+	DistanceDialog* distance_dialog;
 	std::shared_ptr<ExternalGUIControlEvents> extGuiControl;
 
     StdoutStreamBuffer* outputHandle;
@@ -174,7 +176,7 @@ private:
     QIcon playIcon, pauseIcon;
     bool currentIcon, replayPaused, liveMode, seekingBack;
 
-
+	DistanceObjectModel* distanceObjectModel;
     StreamDataStore* streamDs;
     std::shared_ptr<StateModificationCb> stateMod;
     int currentSliderPosition;

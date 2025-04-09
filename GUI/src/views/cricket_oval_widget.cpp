@@ -101,8 +101,7 @@ void CricketOvalScene::updateFrameData(json frameData)
 				}
 				catch (std::exception& e) {
 					
-				}
-				
+				}	
 			}
 		}
 	}
@@ -149,15 +148,80 @@ void CricketOvalScene::updateId(int id, json data)
 
 void CricketOvalScene::updateScene()
 {
+	// check if we have distance preview information
+	drawDistanceLines();
 	for (auto item : playersMap)
 	{
 		item.second->updateGraphic();
 	}
 }
 
+void CricketOvalScene::drawDistanceLines()
+{
+	// Check if we have a preview line to draw
+	if (!distancePreviewLine.empty())
+	{
+		int previewP1 = distancePreviewLine["player1"], previewP2 = distancePreviewLine["player2"];
+		std::tuple<double, double> p1, p2;
+		bool p1Found = false, p2Found = false;
+		auto lineColor = distancePreviewLine["lineColor"];
+
+		for (auto item : playersMap)
+		{
+			if (item.first == previewP1)
+			{
+				p1 = item.second->getCoordinates();
+				p1Found = true;
+			}
+			else if (item.first == previewP2)
+			{
+				p2 = item.second->getCoordinates();
+				p2Found = true;
+			}
+
+			if (p1Found && p2Found)
+				break;
+		}
+		if (p1Found && p2Found)
+		{
+			if (previewDistanceLine)
+				this->removeItem(previewDistanceLine);
+			else
+				previewDistanceLine = nullptr;
+
+			previewDistanceLine = __drawDistanceLine__(p1, p2, QColor(lineColor[0], lineColor[1], lineColor[2]));
+			previewDistanceLine->setZValue(1);
+		}
+			
+	}
+}
+
+QGraphicsLineItem* CricketOvalScene::__drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color)
+{
+	int offset = 10;
+	return addLine(QLineF(
+		std::get<0>(start) * 2 + offset, std::get<1>(start) * 2 + offset,
+		std::get<0>(end) * 2  + offset, std::get<1>(end) * 2 + offset),
+		QPen(color, 3)
+	);
+}
+
 void CricketOvalScene::selectedIdChanged(int trackId)
 {
 	emit selectedIdChangedSig(trackId);
+}
+
+void CricketOvalScene::previewDistanceLineReady(json data)
+{
+	distancePreviewLine = data;
+	std::cout << "Distance Preview Line: " << distancePreviewLine<< std::endl;
+}
+
+void CricketOvalScene::clearPreviewLine()
+{
+	distancePreviewLine = json();
+	if(previewDistanceLine)
+		this->removeItem(previewDistanceLine);
 }
 
 
@@ -191,6 +255,7 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, QGr
 	idText->setZValue(this->zValue() + 2);
 	idText->setDefaultTextColor(__state2text__(state));
 	idText->setPos(x-2, y-3);
+	this->setZValue(3);
 }
 
 void PlayerItemWidget::updateCoordinates(std::tuple<double, double> coord)
