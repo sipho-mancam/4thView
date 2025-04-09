@@ -92,6 +92,7 @@ public:
 
 	void drawDistanceLines();
 	QGraphicsLineItem* __drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color);
+	void addDistanceInfo(json distanceInfo);
 
 public slots:
 	void dataChangeUpdate(json data);
@@ -106,8 +107,10 @@ private:
 	qreal _width, _height; // bounding rect
 	QRect _boundingRect;
 	std::map<int, PlayerItemWidget*> playersMap;
+	std::map<long long, QGraphicsLineItem*> distanceLines;
 	QGraphicsLineItem* previewDistanceLine;
 	json distancePreviewLine;
+	std::map<long long, json> distanceObjects;
 };
 
 QColor __state2color__(PlayerItemWidget::E_STATE);

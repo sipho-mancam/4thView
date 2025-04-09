@@ -194,6 +194,42 @@ void CricketOvalScene::drawDistanceLines()
 		}
 			
 	}
+
+	if (!distanceObjects.empty())
+	{
+		for (auto item : distanceObjects)
+		{
+			auto distanceInfo = item.second;
+			int p1 = distanceInfo["player1"], p2 = distanceInfo["player2"];
+			std::tuple<double, double> p1Coord, p2Coord;
+			bool p1Found = false, p2Found = false;
+			auto lineColor = distanceInfo["lineColor"];
+			for (auto item : playersMap)
+			{
+				if (item.first == p1)
+				{
+					p1Coord = item.second->getCoordinates();
+					p1Found = true;
+				}
+				else if (item.first == p2)
+				{
+					p2Coord = item.second->getCoordinates();
+					p2Found = true;
+				}
+				if (p1Found && p2Found)
+					break;
+			}
+			if (p1Found && p2Found)
+			{
+				if (distanceLines.contains(item.first))
+					this->removeItem(distanceLines[item.first]);
+				else
+					distanceLines[item.first] = nullptr;
+				distanceLines[item.first] = __drawDistanceLine__(p1Coord, p2Coord, QColor(lineColor[0], lineColor[1], lineColor[2]));
+				distanceLines[item.first]->setZValue(0);
+			}
+		}
+	}
 }
 
 QGraphicsLineItem* CricketOvalScene::__drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color)
@@ -204,6 +240,13 @@ QGraphicsLineItem* CricketOvalScene::__drawDistanceLine__(std::tuple<double, dou
 		std::get<0>(end) * 2  + offset, std::get<1>(end) * 2 + offset),
 		QPen(color, 3)
 	);
+}
+
+void CricketOvalScene::addDistanceInfo(json distanceInfo)
+{
+	long long objectId = distanceInfo["objectId"];
+	distanceObjects[objectId] = distanceInfo;
+	
 }
 
 void CricketOvalScene::selectedIdChanged(int trackId)

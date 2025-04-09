@@ -1,4 +1,5 @@
 #include "models/distance_object_model.hpp"
+#include <iostream>
 
 DistanceObjectModel::DistanceObjectModel(QObject* parent)
 	:QObject(parent),
@@ -30,6 +31,11 @@ void DistanceObjectModel::deleteDistanceObject(long long id)
 
 void DistanceObjectModel::updateFrameData(json frameData)
 {
-	json distanceObjects = frameData["distance_objects"];
+	if (frameData.contains("distance_objects"))
+	{
+		json distanceObjects = frameData["distance_objects"];
+		//std::cout << distanceObjects << std::endl;
+	}
+	
 	
 }

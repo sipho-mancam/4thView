@@ -72,6 +72,8 @@ AppMain::AppMain(QWidget *parent)
 	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, distanceObjectsGroup, &DistanceObjectsManager::addDistanceObject);
 	connect(distanceObjectsGroup, &DistanceObjectsManager::distanceObjectDeletedSignal, distanceObjectModel, &DistanceObjectModel::deleteDistanceObject);
 
+	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, this, &AppMain::distanceDataChanged);
+
     setLiveMode();
 }
 
@@ -96,6 +98,9 @@ void AppMain::setStreamDataStore(StreamDataStore* sDs)
     CricketOvalScene* cS = static_cast<CricketOvalScene*>(scene);
     QMetaObject::Connection con = connect(sDs, &StreamDataStore::dataChanged, 
         cS , &CricketOvalScene::dataChangeUpdate);
+
+
+	connect(sDs, &StreamDataStore::dataChanged, distanceObjectModel, &DistanceObjectModel::updateFrameData);
 
     connect(sDs, &StreamDataStore::dataChanged,
         this, &AppMain::updateStatusBarFrameCount);
@@ -299,4 +304,35 @@ void AppMain::replayControl()
     e.setEventName(EN_PLAYBACK_CONTROL);
     json config = KEvents::__load_config__();
     eventMan->sendEvent(config["SportEventProcessor"]["serviceTopic"], e);
+}
+
+void AppMain::distanceDataChanged(json data)
+{
+    json stateData;
+	stateData["state_def"] = KEvents::STATES_DEF::DISTANCE;
+	stateData["data"] = data;
+	stateData["data"]["id"] = data["objectId"];
+    stateData["data"]["set"] = true;
+	
+    KEvents::Event e;
+    e.setEventData(stateData)->
+		setEventName(EN_STATE_MOD)->
+		setSourceModule("gui")->
+		setEventType(KEvents::E_GUI);
+	json config = KEvents::__load_config__();
+
+	if (eventMan)
+	{
+        std::cout << stateData << std::endl;
+        eventMan->sendEvent(config["DataAggregator"]["serviceTopic"], e);
+	}
+    std::cout << "Distance information sent\n";
+}
+
+void AppMain::outputEventData(std::string topic_, KEvents::Event e)
+{
+	if (eventMan)
+	{
+		eventMan->sendEvent(topic_, e);
+	}
 }

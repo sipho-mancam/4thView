@@ -104,7 +104,13 @@ public:
     void sendSeekerEvent(int seekerPosition);
     void replayControl();
 
+	
+
 private slots:
+
+    void outputEventData(std::string topic_, KEvents::Event e);
+    void distanceDataChanged(json data);
+
     void appendOutput(const QString& text)
     {
         ui->plainTextEdit->moveCursor(QTextCursor::End);
