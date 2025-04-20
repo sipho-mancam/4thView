@@ -118,7 +118,6 @@ void CricketOvalScene::updateId(int id, json data)
 		if (data.contains("state"))
 		{
 			PlayerItemWidget::E_STATE state = (PlayerItemWidget::E_STATE)data["state"];
-			//std::cout << "State for player ID: " << id << " Changed \n";
 			player->setState(state);
 		}
 		if (data.contains("coordinates"))
@@ -129,7 +128,7 @@ void CricketOvalScene::updateId(int id, json data)
 
 		if (data.contains("position"))
 		{
-			PlayerItemWidget::E_POSITION pos = (PlayerItemWidget::E_POSITION)data["position"];
+			int pos = data["position"]["position"];
 			player->setPosition(pos);
 		}
 		player->updateGraphic();
@@ -246,7 +245,24 @@ void CricketOvalScene::addDistanceInfo(json distanceInfo)
 {
 	long long objectId = distanceInfo["objectId"];
 	distanceObjects[objectId] = distanceInfo;
+	std::cout << "Distance Object with ID: " << distanceInfo["objectId"] << " is added to the map." << std::endl;
 	
+}
+
+void CricketOvalScene::deleteDistanceLine(long long id)
+{
+	if (distanceObjects.contains(id))
+	{
+		distanceObjects.erase(id);
+	}
+	if (distanceLines.contains(id))
+	{
+		auto line = distanceLines[id];
+		this->removeItem(line);
+		distanceLines.erase(id);
+
+	}
+	std::cout << "Distance Object with ID: " << id << " deleted.\n";
 }
 
 void CricketOvalScene::selectedIdChanged(int trackId)
@@ -317,30 +333,39 @@ void PlayerItemWidget::updateGraphic()
 {
 	const auto [x, y] = coordinates;
 	idText->setDefaultTextColor(__state2text__(state));
-
-	//std::cout << trackId << " X Y" << x << " : " <<  y << std::endl;
 	this->prepareGeometryChange();
 	this->setRect(QRect(x, y, width, height));
 	this->setPos(x, y);
-	if (state == PlayerItemWidget::DEFAULT)
+
+	if (playerPosition == KEvents::EPLAYER_POSITIONS::BATMAN || playerPosition == KEvents::EPLAYER_POSITIONS::BATMAN_A)
 	{
-		if (playerPosition == BATTER || playerPosition == BATTER_FACING)
+		QColor c = QColorConstants::Red;
+		this->setBrush(c);
+		if (state == E_STATE::SELECTED)
 		{
-			this->setBrush(QColorConstants::Green);
-		}
-		else if (playerPosition == UMPIRE)
-		{
-			this->setBrush(QColorConstants::Cyan);
+			this->setPen(QPen(QColorConstants::Yellow, 3));
 		}
 		else {
-			this->setBrush(QBrush(__state2color__(state)));
+			this->setPen(c);
+		}
+	}
+	else if (playerPosition == KEvents::EPLAYER_POSITIONS::UMPIRE)
+	{
+		QColor c = QColor::fromRgb(51, 255, 255);
+		this->setBrush(c);
+		if (state == E_STATE::SELECTED)
+		{
+			this->setPen(QPen(QColorConstants::Yellow, 3));
+		}
+		else {
+			this->setPen(c);
 		}
 	}
 	else {
+
 		this->setBrush(QBrush(__state2color__(state)));
+		this->setPen(__state2pen__(state));
 	}
-	
-	this->setPen(__state2pen__(state));
 	idText->setPos(x - 2, y - 3);
 }
 

@@ -49,9 +49,13 @@ AppMain::AppMain(QWidget *parent)
         ui->scrollArea
     );
 
+	storedEventsManager = new StoredEventsViewManager(ui->storedEventsListWidget, this
+	);
+
    
     connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
     connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
+	connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, storedEventsManager, &StoredEventsViewManager::addEvent);
     connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
 	connect(ui->actionAdd_Distance, &QAction::triggered, this, &AppMain::openDistanceDialog);
 	connect(ui->live_mode_button, &QPushButton::clicked, this, &AppMain::setLiveMode);
@@ -62,17 +66,27 @@ AppMain::AppMain(QWidget *parent)
 
     CricketOvalScene* cS = static_cast<CricketOvalScene*>(scene);
     connect(cS, &CricketOvalScene::selectedIdChangedSig, distance_dialog, &DistanceDialog::selectedPlayer);
+
+    /*Distance Preview Line Information*/
 	connect(distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig, cS, &CricketOvalScene::previewDistanceLineReady);
 	connect(distanceObjectModel, &DistanceObjectModel::clearPreviewObject, cS, &CricketOvalScene::clearPreviewLine);
 	connect(distance_dialog, &DistanceDialog::previewDistanceDataReady, distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig);
 	connect(distance_dialog, &DistanceDialog::clearDistancePreview, distanceObjectModel, &DistanceObjectModel::clearPreviewObject);
 
+    /*Distance Lines to be drawn*/
 	connect(distance_dialog, &DistanceDialog::distanceData, distanceObjectModel, &DistanceObjectModel::addDistanceObject);
-
 	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, distanceObjectsGroup, &DistanceObjectsManager::addDistanceObject);
+    connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, cS, &CricketOvalScene::addDistanceInfo);
+    
+    connect(distanceObjectModel, &DistanceObjectModel::computedDistanceUpdate, distanceObjectsGroup, &DistanceObjectsManager::computedDistanceUpdate);
 	connect(distanceObjectsGroup, &DistanceObjectsManager::distanceObjectDeletedSignal, distanceObjectModel, &DistanceObjectModel::deleteDistanceObject);
+    connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, cS, &CricketOvalScene::deleteDistanceLine);
 
+
+    /*The connections here, handle data leaving the app going to the event-bus (Output)*/
 	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, this, &AppMain::distanceDataChanged);
+    connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, this, &AppMain::deleteDistanceId);
+
 
     setLiveMode();
 }
@@ -327,6 +341,28 @@ void AppMain::distanceDataChanged(json data)
         eventMan->sendEvent(config["DataAggregator"]["serviceTopic"], e);
 	}
     std::cout << "Distance information sent\n";
+}
+
+void AppMain::deleteDistanceId(int id)
+{
+    json stateData;
+    stateData["state_def"] = KEvents::STATES_DEF::DISTANCE;
+    stateData["data"] = json();
+    stateData["data"]["id"] = id;
+    stateData["data"]["set"] = false;
+
+    KEvents::Event e;
+    e.setEventData(stateData)->
+        setEventName(EN_STATE_MOD)->
+        setSourceModule("gui")->
+        setEventType(KEvents::E_GUI);
+    json config = KEvents::__load_config__();
+
+    if (eventMan)
+    {
+        eventMan->sendEvent(config["DataAggregator"]["serviceTopic"], e);
+    }
+    std::cout << "Distance With ID: " << id << " deleted.\n";
 }
 
 void AppMain::outputEventData(std::string topic_, KEvents::Event e)

@@ -99,28 +99,29 @@ void PlayerStateModifierGroup::laodCurrentState(json plState)
 	if (playerState.contains("position"))
 	{
 		KEvents::EPLAYER_POSITIONS pos = playerState["position"]["position"];
+		
 		int idx = -1;
 		if (pos == KEvents::EPLAYER_POSITIONS::FIELDER)
 		{
 			idx = 0;
 		}
-		else if (KEvents::EPLAYER_POSITIONS::BOWLER)
+		else if (pos == KEvents::EPLAYER_POSITIONS::BOWLER)
 		{
 			idx = 1;
 		}
-		else if (KEvents::EPLAYER_POSITIONS::BATMAN_A)
+		else if (pos == KEvents::EPLAYER_POSITIONS::BATMAN_A)
 		{
 			idx = 2;
+			
 		}
-		else if (KEvents::EPLAYER_POSITIONS::BATMAN)
+		else if (pos == KEvents::EPLAYER_POSITIONS::BATMAN)
 		{
 			idx = 3;
 		}
-		else if (KEvents::EPLAYER_POSITIONS::UMPIRE)
+		else if (pos == KEvents::EPLAYER_POSITIONS::UMPIRE)
 		{
 			idx = 4;
 		}
-
 
 		if (idx >= 0)
 		{

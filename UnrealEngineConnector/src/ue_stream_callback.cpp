@@ -24,6 +24,17 @@ void UECStreamCallback::execute(KEvents::Event e)
 		unrealEvent["payload"] = eventData;
 		unrealEvent["event_type"] = EventTypes::PLAYER_CONTROL;
 
+		if (eventData.contains("distance_objects"))
+		{
+			//std::cout << "We have some distance objects " << std::endl;
+			json distanceEvent;
+			distanceEvent["payload"] = { {"control_type", "distance"}, { "distance_objects", eventData["distance_objects"] }};
+			distanceEvent["event_type"] = EventTypes::SYSTEM_CONTROL;
+
+			for (auto udpClient : udpClients)
+				udpClient->sendJson(distanceEvent);
+		}
+
 		//std::cout << eventData << "\n\n" << std::endl;
 		printf("\rJson payload sent to engine ... (%lld)", frameCount);
 

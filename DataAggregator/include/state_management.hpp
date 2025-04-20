@@ -26,5 +26,7 @@ private:
 	std::map<int, json> playerHighlight;
 	std::map<int, json> playerPositions;
 
+	double fieldWidth, fieldHeight;
+
 	void __addStateInfo__(std::map<int, json>& _map, int id, json& data);
 };

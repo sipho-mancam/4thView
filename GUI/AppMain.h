@@ -15,6 +15,7 @@
 #include "external_control_events_cb.hpp"
 #include "time_conversions.hpp"
 #include "models/distance_object_model.hpp"
+#include "models/stored_events_manager.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -110,6 +111,7 @@ private slots:
 
     void outputEventData(std::string topic_, KEvents::Event e);
     void distanceDataChanged(json data);
+    void deleteDistanceId(int id);
 
     void appendOutput(const QString& text)
     {
@@ -174,6 +176,7 @@ private:
     PlayerStateModifierGroup* playerStateModifier;
     DistanceObjectsManager* distanceObjectsGroup;
     EventProcessorDialog* event_proc_dialog;
+    StoredEventsViewManager* storedEventsManager;
 	DistanceDialog* distance_dialog;
 	std::shared_ptr<ExternalGUIControlEvents> extGuiControl;
 

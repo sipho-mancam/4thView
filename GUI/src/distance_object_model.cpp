@@ -27,6 +27,7 @@ void DistanceObjectModel::deleteDistanceObject(long long id)
 		distanceObjects.erase(id);
 	}
 	// Send an Event to the DA to tell them distance with ID must be deleted
+	Q_EMIT deleteDistanceObjectSig(id);
 }
 
 void DistanceObjectModel::updateFrameData(json frameData)
@@ -34,7 +35,7 @@ void DistanceObjectModel::updateFrameData(json frameData)
 	if (frameData.contains("distance_objects"))
 	{
 		json distanceObjects = frameData["distance_objects"];
-		//std::cout << distanceObjects << std::endl;
+		Q_EMIT computedDistanceUpdate(distanceObjects);
 	}
 	
 	

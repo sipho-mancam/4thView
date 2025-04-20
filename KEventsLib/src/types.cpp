@@ -182,11 +182,11 @@ namespace KEvents
 				"serviceName": "sport_event_processor",
 				"serviceTopic":"sport_event_processor_mod",
 				"clock_tick_interval_ms":100,
-				"buffer_length":18000,
+				"buffer_length":3600,
 				"persistent_store_dir":"C:\\ProgramData\\Player Tracking Software\\4th_view_frame_store\\"
 			  },
 			  "TrackingCoreConnector": {
-				"kafkaBroker": "127.0.0.1:9092",
+				"kafkaBroker": "10.0.100.96:9092",
 				"serviceName": "tracking_core_connector",
 				"serviceTopic": "tracking_core_connector_mod",
 				"trackerAddress": "system-output"
@@ -194,23 +194,28 @@ namespace KEvents
 			  "UnrealEngineConnector": {
 				"serviceName": "UnrealEngineConnector",
 				"serviceTopic": "unreal_engine_mod",
-				"unrealIp": ["10.0.100.131", "10.0.0.157", "127.0.0.1"],
+				"unrealIp": ["10.0.100.200"],
 				"unrealPort": 6000
 			  },
 			  "VizEngineConnector": {
 				"serviceName": "viz_engine_con",
 				"serviceTopic": "viz_engine_mod"
 			  },
-			  "kEventslib": { "kafka": { "broker": "127.0.0.1:9092" }, "poolSize": 3 },
+			  "kEventslib": { "kafka": { "broker": "127.0.0.1:9092" }, "poolSize": 6 },
 			  "systemSettings": {
 				"kafka": { "broker": "127.0.0.1:9092" },
+				"frameRate": 10.6,
+				"fieldDimensions":{
+				  "width":110,
+				  "height":130
+				},
 				"registeredModules": [
+				  "TrackingCoreConnector",
 				  "InputManager",
+				  "SportEventProcessor",
 				  "Processor",
 				  "DataAggregator",
 				  "OutputManager",
-				  "SportEventProcessor",
-				  "TrackingCoreConnector",
 				  "UnrealEngineConnector"
 				]
 			  }

@@ -22,6 +22,8 @@ signals:
 	void distanceObjectsUpdatedSig(json distanceObjects);
 	void distancePreviewObjectReadySig(json distanceObject);
 	void clearPreviewObject();
+	void deleteDistanceObjectSig(long long id);
+	void computedDistanceUpdate(json computedDistance);
 
 private:
 	std::map<long long, json> distanceObjects;

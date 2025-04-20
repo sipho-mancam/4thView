@@ -1,5 +1,7 @@
 #include "distance_objects_manager.hpp"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 
 DistanceWidget::DistanceWidget(int id, QWidget* parent)
@@ -35,6 +37,13 @@ void DistanceWidget::setColor(QColor col)
 	distanceColorIcon->setPen(QPen(col, 1));
 }
 
+void DistanceWidget::setDistanceText(double d)
+{
+	std::ostringstream oss;
+	oss << std::setw(4) << std::setfill('0') << std::to_string(d) << std::endl;
+	ui->label_4->setText(QString::fromStdString(oss.str()));
+}
+
 void DistanceWidget::deletePressed()
 {
 	emit distanceObjectDeleted(objectId);
@@ -61,10 +70,29 @@ void DistanceObjectsManager::addDistanceObject(json distanceObject)
 	distanceList->addWidget(dObj, Qt::AlignTop);
 	dObj->setColor(col);
 	connect(dObj, &DistanceWidget::distanceObjectDeleted, this, &DistanceObjectsManager::distanceObjectDeleted);
-	std::cout << "Distance Object added" << std::endl;
+	distanceObjects.push_back(dObj);
 }
 
-
+void DistanceObjectsManager::computedDistanceUpdate(json jDistObj)
+{
+	if (jDistObj.is_array())
+	{
+		for (json& d : jDistObj)
+		{
+			int objId = d["objectId"];
+			for (DistanceWidget* widget : distanceObjects)
+			{
+				if (widget->getObjectId() == objId)
+				{
+					double dist = d["distance"];
+					widget->setDistanceText(dist);
+					break;
+				}
+			}
+		}
+	}
+	
+}
 
 
 void DistanceObjectsManager::distanceObjectDeleted(int objectId)

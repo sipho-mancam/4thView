@@ -2,7 +2,12 @@
 #include "types.hpp"
 
 StateManager::StateManager()
+	:fieldWidth(0),
+	fieldHeight(0)
 {
+	json config = KEvents::__load_config__();
+	fieldWidth = config["systemSettings"]["fieldDimensions"]["width"];
+	fieldHeight = config["systemSettings"]["fieldDimensions"]["height"];
 }
 
 void StateManager::addDistance(int distanceID, json distanceData)
@@ -59,8 +64,6 @@ json StateManager::updateTrackData(json frame)
 					track["position"] = pos;
 				}
 
-				
-
 				processedTracks.push_back(track);
 			}
 			catch (json::type_error& te) {
@@ -104,7 +107,7 @@ json StateManager::updateTrackData(json frame)
 				{
 					std::vector<double> coord1 = t1["coordinates"];
 					std::vector<double> coord2 = t2["coordinates"];
-					double dist = sqrt(pow(coord1[0] - coord2[0], 2) + pow(coord1[1] - coord2[1], 2));
+					double dist = sqrt(pow((coord1[0] - coord2[0])*fieldWidth, 2) + pow((coord1[1] - coord2[1])*fieldHeight, 2));
 					distData["distance"] = dist;
 					distData["objectId"] = distId;
 					computedDistances.push_back(distData);

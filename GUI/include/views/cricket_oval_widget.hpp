@@ -40,7 +40,7 @@ public:
 	void updateCoordinates(double x, double y);
 	void updateGraphic();
 
-	void setPosition(E_POSITION pos) { playerPosition = pos; }
+	void setPosition(int pos) { playerPosition = pos; }
 	void setState(E_STATE st) { state = st; }
 
 	std::tuple<double, double> getCoordinates() { return coordinates; }
@@ -70,7 +70,7 @@ private:
 	std::tuple<double, double> coordinates;
 	PlayerItemWidget::E_STATE state;
 	QGraphicsTextItem* idText;
-	E_POSITION playerPosition;
+	int playerPosition;
 	double width, height;
 };
 
@@ -93,6 +93,7 @@ public:
 	void drawDistanceLines();
 	QGraphicsLineItem* __drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color);
 	void addDistanceInfo(json distanceInfo);
+	void deleteDistanceLine(long long id);
 
 public slots:
 	void dataChangeUpdate(json data);

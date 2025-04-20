@@ -76,6 +76,9 @@
     <ClCompile Include="src\distance_object_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\stored_events_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -164,6 +167,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\models\distance_object_model.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\models\stored_events_manager.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

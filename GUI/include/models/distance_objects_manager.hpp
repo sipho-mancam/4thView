@@ -23,6 +23,7 @@ public:
 	int getObjectId() { return objectId; }
 
 	void setColor(QColor col);
+	void setDistanceText(double d);
 
 	void deletePressed();
 
@@ -43,15 +44,16 @@ class DistanceObjectsManager : public QWidget
 
 public:
 	explicit DistanceObjectsManager(QWidget* layoutObject,QScrollArea *scoll ,QWidget* parent = nullptr);
-
 	void addDistanceObject(json distanceObject);
+
+	void computedDistanceUpdate(json distanceObjects);
+	
 public slots:
 	void distanceObjectDeleted(int objectId);
 
 signals:
 	void distanceObjectDeletedSignal(int objectId);
 	
-
 private:
 	std::vector<DistanceWidget*> distanceObjects;
 	QWidget* listLayout;
