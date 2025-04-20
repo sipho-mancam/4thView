@@ -118,7 +118,6 @@ void FrameBuffer::setCurrentlyActive(bool mode)
 			startIndex++;
 		}
 	}
-	
 }
 
 void FrameBuffer::switchToStoreState(std::string eventName)
@@ -128,6 +127,7 @@ void FrameBuffer::switchToStoreState(std::string eventName)
 
 	// we need to load the frames from the frame store
 	std::vector<json> storedFrames = m_eventDataStore->loadEvent(eventName);
+	KEvents::kEventsLogger->info("Loading event with: {} stored frames", storedFrames.size());
 	if (storedFrames.size() == 0)
 	{
 		return;

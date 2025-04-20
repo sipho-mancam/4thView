@@ -37,6 +37,12 @@ void ControlCallback::execute(KEvents::Event e)
 		playStateInterface->setSeekerPosition(seekerPosition);
 		KEvents::kEventsLogger->info("Seeker position set to: {}", seekerPosition);
 	}
+	else if (e.getEventName() == EN_LOAD_STORED_STATE)
+	{
+		std::string evtName = e.getEventData()["sport_event_name"];
+		KEvents::kEventsLogger->info("Switching to stored state playback for event: {}", evtName);
+		playStateInterface->switchToStoredStatePlayback(e.getEventData()["sport_event_name"]);
+	}
 }
 
 ControlCallback::~ControlCallback()

@@ -54,6 +54,7 @@ void StoredEventsViewManager::ItemPressedSlot(QListWidgetItem* item)
 			/*Load Event Data to replay Buffer and trigger play*/
 			currentItem = item;
 			loadedEvent = true;
+			Q_EMIT loadEventSignal(evtName);
 		}
 		else if (btn == QMessageBox::StandardButton::Cancel)
 		{

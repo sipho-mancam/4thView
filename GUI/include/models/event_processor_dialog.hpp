@@ -16,7 +16,7 @@ public:
 	~EventProcessorDialog();
 
 	void DialogAccepted();
-	void switchInnings();
+
 
 signals:
 	void event_processor_name(json data);

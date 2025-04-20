@@ -34,6 +34,7 @@
 #define EN_PLAYBACK_CONTROL "playback_control"
 #define EN_ERROR "error"
 #define EN_FRAME_STORE_SIZE "frame_store_size"
+#define EN_LOAD_STORED_STATE "load_stored_state"
 
 
 using json = nlohmann::json;

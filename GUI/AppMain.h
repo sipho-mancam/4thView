@@ -169,6 +169,21 @@ private slots:
         }
     }
 
+
+	void switchToStoredStateSlot(std::string eventName)
+	{
+		if (eventMan)
+		{
+			KEvents::Event e;
+			e.setEventData({ {"sport_event_name", eventName} })->
+				setEventName(EN_LOAD_STORED_STATE)->
+				setSourceModule("gui")->
+				setEventType(KEvents::E_GUI);
+			json config = KEvents::__load_config__();
+			eventMan->sendEvent(config["SportEventProcessor"]["serviceTopic"], e);
+		}
+	}
+
 private:
     Ui::AppMainClass *ui;
     QGraphicsScene* scene;

@@ -27,8 +27,8 @@ void StreamCallback::execute(KEvents::Event e)
 			sEPStreamTopic += TE_STREAM_EXT;
 			eventProducerPtr->sendMessage(sEPStreamTopic, e);
 			frameCounter += 1;
-
-			if (frameCounter > 50)
+			int frameCounterLimit = globalConfig["systemSettings"]["stored_event_buffer_length"];
+			if (frameCounter > frameCounterLimit)
 			{
 				streamCapture = false;
 				frameCounter = 0;

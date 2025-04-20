@@ -49,6 +49,7 @@ int main()
 	eventsManager.registerCallback(EN_SET_STREAM_MODE, controlCb);
 	eventsManager.registerCallback(EN_SET_SEEKER_POSITION, controlCb);
 	eventsManager.registerCallback(EN_PLAYBACK_CONTROL, controlCb);
+	eventsManager.registerCallback(EN_LOAD_STORED_STATE, controlCb);
 
 	eventsManager.startEventLoop(true);
 	

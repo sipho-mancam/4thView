@@ -56,6 +56,7 @@ AppMain::AppMain(QWidget *parent)
     connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
     connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
 	connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, storedEventsManager, &StoredEventsViewManager::addEvent);
+	connect(storedEventsManager, &StoredEventsViewManager::loadEventSignal, this, &AppMain::switchToStoredStateSlot);
     connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
 	connect(ui->actionAdd_Distance, &QAction::triggered, this, &AppMain::openDistanceDialog);
 	connect(ui->live_mode_button, &QPushButton::clicked, this, &AppMain::setLiveMode);

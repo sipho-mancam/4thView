@@ -205,6 +205,7 @@ namespace KEvents
 			  "systemSettings": {
 				"kafka": { "broker": "127.0.0.1:9092" },
 				"frameRate": 10.6,
+				"stored_event_buffer_length":3600,
 				"fieldDimensions":{
 				  "width":110,
 				  "height":130

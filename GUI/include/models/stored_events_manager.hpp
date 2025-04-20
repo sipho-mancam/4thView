@@ -26,6 +26,9 @@ public:
 	void currentSelectedItemChangedSlot(QListWidgetItem* newItem, QListWidgetItem* oldItem);
 	void ItemPressedSlot(QListWidgetItem* item);
 
+signals:
+	void loadEventSignal(std::string eventName);
+
 private:
 	QListWidget* listWidget;
 	std::map<std::string, bool> eventMap;
