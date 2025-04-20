@@ -1,9 +1,22 @@
 #include "frame_buffer.hpp"
 
-FrameBuffer::FrameBuffer()
+FrameBuffer::FrameBuffer(std::shared_ptr<EventDataStore> evDs)
 	: currentFrameIndex(0), 
 	maxBufferSize(MAX_BUFFER_SIZE), 
 	liveMode(true), 
+	playbackPaused(false),
+	currentlyActive(false),
+	m_eventDataStore(evDs)
+{
+	json globalConfig = KEvents::__load_config__();
+	maxBufferSize = globalConfig["SportEventProcessor"]["buffer_length"];
+	frameStore = std::make_shared<persistentFrameStore>();
+}
+
+FrameBuffer::FrameBuffer()
+	: currentFrameIndex(0),
+	maxBufferSize(MAX_BUFFER_SIZE),
+	liveMode(true),
 	playbackPaused(false),
 	currentlyActive(false)
 {
@@ -106,6 +119,26 @@ void FrameBuffer::setCurrentlyActive(bool mode)
 		}
 	}
 	
+}
+
+void FrameBuffer::switchToStoreState(std::string eventName)
+{
+	// we are in replay mode now.
+	currentlyActive = true;
+
+	// we need to load the frames from the frame store
+	std::vector<json> storedFrames = m_eventDataStore->loadEvent(eventName);
+	if (storedFrames.size() == 0)
+	{
+		return;
+	}
+	int startIndex = maxBufferSize - storedFrames.size();
+
+	for (json frame : storedFrames)
+	{
+		frames.insert(frames.begin() + startIndex, frame);
+		startIndex++;
+	}
 }
 
 

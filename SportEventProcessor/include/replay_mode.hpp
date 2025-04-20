@@ -1,11 +1,12 @@
 #pragma once
 #include "mode_base.hpp"
 #include "frames_manager.hpp"
+#include "event_data_store.hpp"
 
 class ReplayMode : public PlaybackModeBase
 {
 public:
-	ReplayMode();
+	ReplayMode(std::shared_ptr<EventDataStore> evDs);
 	~ReplayMode() = default;
 	json getCurrentFrame() override
 	{
@@ -34,6 +35,11 @@ public:
 		m_frameBuffer->setCurrentlyActive(isReplay);
 	}
 
+	void switchToStoredPlayback(std::string eventName)
+	{
+		m_frameBuffer->switchToStoreState(eventName);
+	}
+
 	void setSeekerPosition(int position);
 
 	int getCurrentStoreSize()
@@ -44,4 +50,5 @@ public:
 private:
 	json currentFrame;
 	std::shared_ptr<FrameBuffer> m_frameBuffer;
+	std::shared_ptr<EventDataStore> m_eventDataStore;
 };

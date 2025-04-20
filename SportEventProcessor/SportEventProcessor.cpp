@@ -24,13 +24,13 @@ int main()
 	KEvents::EventsManager eventsManager(serviceTopic, serviceName);
 	FramesManager framesManager(eventsManager);
 
-	PlayerStateInteface playStateInterface(&eventsManager);
-
 	std::shared_ptr<StateCapture> stateCapCb = KEvents::createCallback<StateCapture>(config, moduleName);
 	eventsManager.registerCallback(EN_STATE_CAPTURE_START, stateCapCb);
 	eventsManager.registerCallback(EN_STATE_CAPTURE_STOP, stateCapCb);
 	eventsManager.registerCallback(EN_STATE_CAPTURE_LOAD, stateCapCb);
 	eventsManager.registerCallback(EN_STREAM_DATA, stateCapCb);
+
+	PlayerStateInteface playStateInterface(&eventsManager, stateCapCb->GetEventDataStore());
 
 	std::shared_ptr<StreamDataCallback> streamDataCb = KEvents::createCallback<StreamDataCallback>(
 		config, 

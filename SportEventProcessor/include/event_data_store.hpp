@@ -14,6 +14,7 @@ public:
 	void setCurrentEvent(json eventData);
 	json getEventsList();
 	void seekCurrentEvent(int ptr);
+	std::vector<json> loadEvent(std::string eventName);
 
 private:
 	std::string __get_file_name__(uint16_t cptr, int ballN);

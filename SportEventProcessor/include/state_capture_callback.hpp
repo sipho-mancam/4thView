@@ -10,6 +10,9 @@ public:
 	virtual void execute(KEvents::Event) override;
 
 	~StateCapture();
+	std::shared_ptr<EventDataStore> GetEventDataStore() {
+		return eventDataManager;
+	}
 
 private:
 	std::string moduleName;

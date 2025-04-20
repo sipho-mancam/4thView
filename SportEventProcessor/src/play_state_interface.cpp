@@ -1,11 +1,12 @@
 #include "play_state_interface.hpp"
 
-PlayerStateInteface::PlayerStateInteface(KEvents::EventsManager* evMan)
+PlayerStateInteface::PlayerStateInteface(KEvents::EventsManager* evMan, std::shared_ptr<EventDataStore> evDs)
 	:eventsManager(evMan),
-	isLiveMode(true)
+	isLiveMode(true),
+	m_eventDataStore(evDs)
 {
 	m_liveMode = std::make_shared<LiveMode>();
-	m_replayMode = std::make_shared<ReplayMode>();
+	m_replayMode = std::make_shared<ReplayMode>(m_eventDataStore);
 	m_playModeManager = std::make_shared<PlayModeManager>(m_liveMode, m_replayMode);
 
 	m_frameOutputEventDispatch = std::make_shared<FrameOutputEventDispatch>(m_playModeManager, eventsManager);
@@ -21,6 +22,12 @@ void PlayerStateInteface::setPlayStatePaused(bool paused)
 void PlayerStateInteface::setLiveMode(bool liveMode)
 {
 	m_playModeManager->setLiveMode(liveMode);
+}
+
+void PlayerStateInteface::switchToStoredStatePlayback(std::string eventName)
+{
+	m_playModeManager->setLiveMode(false);
+	m_replayMode->switchToStoredPlayback(eventName);
 }
 
 void PlayerStateInteface::appendFrame(json frame)

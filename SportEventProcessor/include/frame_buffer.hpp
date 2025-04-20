@@ -3,12 +3,13 @@
 #include "kevents.hpp"
 #include "persistentFrameStore.hpp"
 #include "thread_pool.hpp"
-
+#include "event_data_store.hpp"
 
 
 class FrameBuffer
 {
 public:
+	FrameBuffer(std::shared_ptr<EventDataStore> evDs);
 	FrameBuffer();
 	~FrameBuffer();
 	void pushFrame(json frame);
@@ -22,11 +23,13 @@ public:
 	void setCurrentFrameIndex(int index) { currentFrameIndex = index; }
 	int getCurrentFrameIndex() { return currentFrameIndex; }
 	bool isCurrentlyActive() { return currentlyActive; }
+	void switchToStoreState(std::string eventName);
 
 private:
 	std::vector<json> frames;
 	int currentFrameIndex, maxBufferSize;
 	bool liveMode, playbackPaused, currentlyActive;
 	std::shared_ptr<persistentFrameStore> frameStore;
+	std::shared_ptr<EventDataStore> m_eventDataStore;
 	KEvents::Lock lck;
 };
