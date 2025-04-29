@@ -194,6 +194,7 @@ private:
     StoredEventsViewManager* storedEventsManager;
 	DistanceDialog* distance_dialog;
 	std::shared_ptr<ExternalGUIControlEvents> extGuiControl;
+    QAction* selectedSportingCode;
 
     StdoutStreamBuffer* outputHandle;
     KEvents::EventsManager* eventMan;

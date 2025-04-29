@@ -11,6 +11,15 @@
 
 using json = nlohmann::json;
 
+enum SPORTING_CODE
+{
+	CRICKET = 0,
+	SOCCER = 1,
+	RUGBY = 2,
+	HOCKEY = 3,
+	BASEBALL = 4
+};
+
 class PlayerItemWidget : public QObject, public QGraphicsEllipseItem
 {
 	Q_OBJECT
@@ -75,13 +84,13 @@ private:
 };
 
 
-class CricketOvalScene : public QGraphicsScene
+class PitchViewScene : public QGraphicsScene
 {
 	Q_OBJECT
 
 public:
-	CricketOvalScene(QObject* parent=nullptr);
-	CricketOvalScene(QRect sceneRect);
+	PitchViewScene(QObject* parent=nullptr);
+	PitchViewScene(QRect sceneRect);
 
 	void init();
 	void update();
@@ -95,6 +104,8 @@ public:
 	void addDistanceInfo(json distanceInfo);
 	void deleteDistanceLine(long long id);
 
+	void selectSportingCode(SPORTING_CODE code);
+
 public slots:
 	void dataChangeUpdate(json data);
 	void selectedIdChanged(int trackId);
@@ -103,6 +114,10 @@ public slots:
 
 signals:
 	void selectedIdChangedSig(int trackId);
+
+private:
+	void __draw_cricket_background();
+	void __draw_soccer_background();
 
 private:
 	qreal _width, _height; // bounding rect

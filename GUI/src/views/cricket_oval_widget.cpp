@@ -2,80 +2,44 @@
 
 #include <iostream>
 
-CricketOvalScene::CricketOvalScene(QObject* parent)
+PitchViewScene::PitchViewScene(QObject* parent)
 	:
 	QGraphicsScene(parent),
 	_width(540),
 	_height(500),
 	_boundingRect(0, 0, _width, _height)
 {
-	setSceneRect(_boundingRect);
+	//setSceneRect(_boundingRect);
 	init();
-	/*this->addItem(new PlayerItemWidget(6, { 100, 100 }));*/
+	
 }
 
-CricketOvalScene::CricketOvalScene(QRect sceneRect)
+PitchViewScene::PitchViewScene(QRect sceneRect)
 	:
 	QGraphicsScene(sceneRect),
 	_width(sceneRect.width()),
 	_height(sceneRect.height()),
 	_boundingRect(sceneRect)
 {
-	setSceneRect(_boundingRect);
+	//setSceneRect(_boundingRect);
 	init();
 }
 
-void CricketOvalScene::init()
+void PitchViewScene::init()
 {
-	int x, y, w, h;
-	x = _boundingRect.x();
-	y = _boundingRect.y();
-	w = _boundingRect.width();
-	h = _boundingRect.height();
-	QGraphicsEllipseItem* greenEllipse = this->addEllipse(
-		_boundingRect,
-		QPen(QColorConstants::White),
-		QBrush(QColorConstants::DarkGreen)
-	);
-
-	float scale = 0.95f;
-	QGraphicsEllipseItem* boundaryLine = this->addEllipse(
-		QRect(x + ((1 - scale)/2) * w, y + ((1 - scale)/2) * h, scale * w, scale * h),
-		QPen(QColorConstants::White, 3)
-	);
-
-	int rWidth, rHeight;
-	rWidth = w * 0.15; rHeight = h * 0.3;
-	QColor rectColor(234, 227, 201);
-	QGraphicsRectItem* pitchRect = this->addRect(
-		QRect(w / 2 - rWidth/2, h / 2 - rHeight / 2, rWidth, rHeight),
-		QPen(rectColor),
-		QBrush(rectColor)
-	);
-
-	QFont font;
-	font.setBold(true);
-	font.setPointSizeF(40);
-	int lineHeight = 40;
-
-	QGraphicsTextItem* text = this->addText(QString("Leg"), font);
-	QRectF r = text->boundingRect();
-	text->setPos(w/2 - rWidth-100, h/2 - lineHeight);
-
-	text = this->addText(QString("Off"), font);
-	text->setPos(w/2 + rWidth, h/2 - lineHeight);
+	__draw_cricket_background();
 }
 
-void CricketOvalScene::update()
+void PitchViewScene::update()
 {
 }
 
-void CricketOvalScene::dataChangeUpdate(json frameData)
+void PitchViewScene::dataChangeUpdate(json frameData)
 {
 	updateFrameData(frameData);
 }
 
-void CricketOvalScene::updateFrameData(json frameData)
+void PitchViewScene::updateFrameData(json frameData)
 {
 	// check if the data has tracks
 	if (frameData.contains("tracks"))
@@ -108,7 +72,7 @@ void CricketOvalScene::updateFrameData(json frameData)
 	updateScene();
 }
 
-void CricketOvalScene::updateId(int id, json data)
+void PitchViewScene::updateId(int id, json data)
 {
 	// find out if the object already exists
 	if (playersMap.contains(id))
@@ -141,11 +105,11 @@ void CricketOvalScene::updateId(int id, json data)
 		PlayerItemWidget* player = new PlayerItemWidget(id, { coordinates[0], coordinates[1]});
 		this->addItem(player);
 		playersMap[id] = player;
-		connect(player, &PlayerItemWidget::updateClickedId, this, &CricketOvalScene::selectedIdChanged);
+		connect(player, &PlayerItemWidget::updateClickedId, this, &PitchViewScene::selectedIdChanged);
 	}
 }
 
-void CricketOvalScene::updateScene()
+void PitchViewScene::updateScene()
 {
 	// check if we have distance preview information
 	drawDistanceLines();
@@ -155,7 +119,7 @@ void CricketOvalScene::updateScene()
 	}
 }
 
-void CricketOvalScene::drawDistanceLines()
+void PitchViewScene::drawDistanceLines()
 {
 	// Check if we have a preview line to draw
 	if (!distancePreviewLine.empty())
@@ -231,7 +195,7 @@ void CricketOvalScene::drawDistanceLines()
 	}
 }
 
-QGraphicsLineItem* CricketOvalScene::__drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color)
+QGraphicsLineItem* PitchViewScene::__drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color)
 {
 	int offset = 10;
 	return addLine(QLineF(
@@ -241,7 +205,7 @@ QGraphicsLineItem* CricketOvalScene::__drawDistanceLine__(std::tuple<double, dou
 	);
 }
 
-void CricketOvalScene::addDistanceInfo(json distanceInfo)
+void PitchViewScene::addDistanceInfo(json distanceInfo)
 {
 	long long objectId = distanceInfo["objectId"];
 	distanceObjects[objectId] = distanceInfo;
@@ -249,7 +213,7 @@ void CricketOvalScene::addDistanceInfo(json distanceInfo)
 	
 }
 
-void CricketOvalScene::deleteDistanceLine(long long id)
+void PitchViewScene::deleteDistanceLine(long long id)
 {
 	if (distanceObjects.contains(id))
 	{
@@ -265,22 +229,146 @@ void CricketOvalScene::deleteDistanceLine(long long id)
 	std::cout << "Distance Object with ID: " << id << " deleted.\n";
 }
 
-void CricketOvalScene::selectedIdChanged(int trackId)
+void PitchViewScene::selectSportingCode(SPORTING_CODE code)
+{
+	if (code == CRICKET)
+	{
+		__draw_cricket_background();
+	}
+	else if (code == SOCCER)
+	{
+		__draw_soccer_background();
+	}
+
+}
+
+void PitchViewScene::selectedIdChanged(int trackId)
 {
 	emit selectedIdChangedSig(trackId);
 }
 
-void CricketOvalScene::previewDistanceLineReady(json data)
+void PitchViewScene::previewDistanceLineReady(json data)
 {
 	distancePreviewLine = data;
 	std::cout << "Distance Preview Line: " << distancePreviewLine<< std::endl;
 }
 
-void CricketOvalScene::clearPreviewLine()
+void PitchViewScene::clearPreviewLine()
 {
 	distancePreviewLine = json();
 	if(previewDistanceLine)
 		this->removeItem(previewDistanceLine);
+}
+
+void PitchViewScene::__draw_cricket_background()
+{
+	setSceneRect(_boundingRect);
+	this->clear();
+	int x, y, w, h;
+	x = _boundingRect.x();
+	y = _boundingRect.y();
+	w = _boundingRect.width();
+	h = _boundingRect.height();
+
+	/*Cricket Oval Construction*/
+	QGraphicsEllipseItem* greenEllipse = this->addEllipse(
+		_boundingRect,
+		QPen(QColorConstants::White),
+		QBrush(QColorConstants::DarkGreen)
+	);
+
+	float scale = 0.95f;
+	QGraphicsEllipseItem* boundaryLine = this->addEllipse(
+		QRect(x + ((1 - scale) / 2) * w, y + ((1 - scale) / 2) * h, scale * w, scale * h),
+		QPen(QColorConstants::White, 3)
+	);
+
+	int rWidth, rHeight;
+	rWidth = w * 0.15; rHeight = h * 0.3;
+	QColor rectColor(234, 227, 201);
+	QGraphicsRectItem* pitchRect = this->addRect(
+		QRect(w / 2 - rWidth / 2, h / 2 - rHeight / 2, rWidth, rHeight),
+		QPen(rectColor),
+		QBrush(rectColor)
+	);
+
+	QFont font;
+	font.setBold(true);
+	font.setPointSizeF(40);
+	int lineHeight = 40;
+
+	QGraphicsTextItem* text = this->addText(QString("Leg"), font);
+	QRectF r = text->boundingRect();
+	text->setPos(w / 2 - rWidth - 100, h / 2 - lineHeight);
+
+	text = this->addText(QString("Off"), font);
+	text->setPos(w / 2 + rWidth, h / 2 - lineHeight);
+}
+
+void PitchViewScene::__draw_soccer_background()
+{
+	this->clear();
+	// the ratia of height to width height:width = 1:1.3
+	int height = 580;
+	int width = height * 1.3;
+	_boundingRect = QRect(0, 0, width, height);
+	setSceneRect(_boundingRect);
+	QGraphicsRectItem* rect = this->addRect(
+		_boundingRect,
+		QPen(QColorConstants::White, 3),
+		QBrush(QColorConstants::DarkGreen)
+	);
+
+	/*Left 18 area */
+	int lx = 0, y = int(_boundingRect.height() * ((1 - 0.44) / 2)), w = int(_boundingRect.width() * 0.14), h = int(_boundingRect.height() * 0.44);
+	float pX = _boundingRect.width() * (12.0 / 130.0), pY = _boundingRect.height() * 0.5;
+	/*Penalty arc Left*/
+	float pAwidth = _boundingRect.width() * 0.16;
+	this->addEllipse(QRectF(pX - pAwidth/2, pY - pAwidth/2, pAwidth,  pAwidth), 
+		QPen(QColorConstants::White, 2)
+	);
+
+	/*Penalty Arc right*/
+	float rPX = _boundingRect.width() * (1 - 12.0 / 130.0);
+	this->addEllipse(QRectF(rPX - pAwidth / 2, pY - pAwidth / 2, pAwidth, pAwidth),
+		QPen(QColorConstants::White, 2)
+	);
+
+	/*Left 18 Area rectangle*/
+	this->addRect(QRect(0, y, w, h), 
+		QPen(QColorConstants::White, 2), QBrush(QColorConstants::DarkGreen));
+
+	/*Left penalty dot*/
+	this->addEllipse(pX - 2.5, pY - 2.5, 5, 5, QPen(QColorConstants::White, 2), QBrush(QColorConstants::White));
+
+	/*Right 18 area*/
+	this->addRect(QRect(int(_boundingRect.width() - _boundingRect.width() * 0.14), y, w, h),
+		QPen(QColorConstants::White, 2),
+		QBrush(QColorConstants::DarkGreen));
+
+	/*right penalty dot*/
+	this->addEllipse(rPX - 2.5, pY - 2.5, 5, 5, QPen(QColorConstants::White, 2), QBrush(QColorConstants::White));
+
+	/*Left Goal Area*/
+	int gL = 0, gT = int(y + _boundingRect.height() * 0.12), gW = int(_boundingRect.width() * 0.05), gH = int(_boundingRect.height() * 0.20);
+	this->addRect(QRect(gL, gT, gW, gH), QPen(QColorConstants::White, 2));
+
+	/*Right Goal Area*/ 
+	this->addRect(QRect(gL + _boundingRect.width()*(1-0.05), gT, gW, gH), QPen(QColorConstants::White, 2));
+
+	/*Center Circle*/
+	float cX = _boundingRect.width() * 0.5, cY = _boundingRect.height() *0.5, bW = _boundingRect.height() * 0.20;
+	float rX = cX - bW / 2, rY = cY - bW / 2;
+	this->addEllipse(rX, rY, bW, bW, QPen(QColorConstants::White, 2));
+	this->addEllipse(cX-5, cY-5, 10.0f, 10.0f, QPen(QColorConstants::White, 2), QBrush(QColorConstants::White));
+
+	/*Center Line*/
+	this->addLine(_boundingRect.width() * 0.5, 0,
+		_boundingRect.width() * 0.5, _boundingRect.height(),
+		QPen(QColorConstants::White, 2)
+	);
+
+	
 }
 
 

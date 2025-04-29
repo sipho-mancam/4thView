@@ -23,10 +23,13 @@ AppMain::AppMain(QWidget *parent)
 	distanceObjectModel(new DistanceObjectModel(this))
 {
     ui->setupUi(this);
+
+    selectedSportingCode = ui->actionCricket;
+
     outputHandle = new StdoutStreamBuffer(this);
     connect(outputHandle, &StdoutStreamBuffer::outputCaptured, this, &AppMain::appendOutput);
 
-    scene = (QGraphicsScene*) new CricketOvalScene();
+    scene = (QGraphicsScene*) new PitchViewScene();
     ui->graphicsView->setScene(scene);
 
     propsGroup = new PlayerPropertiesGroup(
@@ -53,6 +56,21 @@ AppMain::AppMain(QWidget *parent)
 	);
 
    
+    /**Select Current Sporting Code*/
+	connect(ui->actionCricket, &QAction::triggered, this, [&]() {
+		PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
+        cS->selectSportingCode(CRICKET);
+		selectedSportingCode->setChecked(false);
+		selectedSportingCode = ui->actionCricket;
+	});
+
+    connect(ui->actionSoccer, &QAction::triggered, this, [&]() {
+        PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
+        cS->selectSportingCode(SOCCER);
+        selectedSportingCode->setChecked(false);
+        selectedSportingCode = ui->actionSoccer;
+    });
+
     connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
     connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
 	connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, storedEventsManager, &StoredEventsViewManager::addEvent);
@@ -65,23 +83,23 @@ AppMain::AppMain(QWidget *parent)
 	connect(ui->seeker_bar, &QSlider::sliderMoved, this, &AppMain::setSeekerPosition_1);
 	connect(ui->replay_control, &QPushButton::clicked, this, &AppMain::replayControl);
 
-    CricketOvalScene* cS = static_cast<CricketOvalScene*>(scene);
-    connect(cS, &CricketOvalScene::selectedIdChangedSig, distance_dialog, &DistanceDialog::selectedPlayer);
+    PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
+    connect(cS, &PitchViewScene::selectedIdChangedSig, distance_dialog, &DistanceDialog::selectedPlayer);
 
     /*Distance Preview Line Information*/
-	connect(distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig, cS, &CricketOvalScene::previewDistanceLineReady);
-	connect(distanceObjectModel, &DistanceObjectModel::clearPreviewObject, cS, &CricketOvalScene::clearPreviewLine);
+	connect(distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig, cS, &PitchViewScene::previewDistanceLineReady);
+	connect(distanceObjectModel, &DistanceObjectModel::clearPreviewObject, cS, &PitchViewScene::clearPreviewLine);
 	connect(distance_dialog, &DistanceDialog::previewDistanceDataReady, distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig);
 	connect(distance_dialog, &DistanceDialog::clearDistancePreview, distanceObjectModel, &DistanceObjectModel::clearPreviewObject);
 
     /*Distance Lines to be drawn*/
 	connect(distance_dialog, &DistanceDialog::distanceData, distanceObjectModel, &DistanceObjectModel::addDistanceObject);
 	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, distanceObjectsGroup, &DistanceObjectsManager::addDistanceObject);
-    connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, cS, &CricketOvalScene::addDistanceInfo);
+    connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, cS, &PitchViewScene::addDistanceInfo);
     
     connect(distanceObjectModel, &DistanceObjectModel::computedDistanceUpdate, distanceObjectsGroup, &DistanceObjectsManager::computedDistanceUpdate);
 	connect(distanceObjectsGroup, &DistanceObjectsManager::distanceObjectDeletedSignal, distanceObjectModel, &DistanceObjectModel::deleteDistanceObject);
-    connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, cS, &CricketOvalScene::deleteDistanceLine);
+    connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, cS, &PitchViewScene::deleteDistanceLine);
 
 
     /*The connections here, handle data leaving the app going to the event-bus (Output)*/
@@ -110,9 +128,9 @@ void AppMain::closeEvent(QCloseEvent* e)
 void AppMain::setStreamDataStore(StreamDataStore* sDs)
 {
     streamDs = sDs;
-    CricketOvalScene* cS = static_cast<CricketOvalScene*>(scene);
+    PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
     QMetaObject::Connection con = connect(sDs, &StreamDataStore::dataChanged, 
-        cS , &CricketOvalScene::dataChangeUpdate);
+        cS , &PitchViewScene::dataChangeUpdate);
 
 
 	connect(sDs, &StreamDataStore::dataChanged, distanceObjectModel, &DistanceObjectModel::updateFrameData);
@@ -121,7 +139,7 @@ void AppMain::setStreamDataStore(StreamDataStore* sDs)
         this, &AppMain::updateStatusBarFrameCount);
 
 
-   con = connect(cS, &CricketOvalScene::selectedIdChangedSig, sDs, &StreamDataStore::setCurrentClicked);
+   con = connect(cS, &PitchViewScene::selectedIdChangedSig, sDs, &StreamDataStore::setCurrentClicked);
 
    con = connect(sDs, &StreamDataStore::currentSelectedChangedSig, 
        propsGroup, &PlayerPropertiesGroup::currentClickedTrack);

@@ -355,7 +355,15 @@ QSlider#seeker_bar::sub-page:horizontal {
     <addaction name="actionCheck_for_Updates"/>
     <addaction name="actionVersion"/>
    </widget>
+   <widget class="QMenu" name="menuSporting_Code">
+    <property name="title">
+     <string>Sporting Code</string>
+    </property>
+    <addaction name="actionCricket"/>
+    <addaction name="actionSoccer"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuSporting_Code"/>
    <addaction name="menuTracker"/>
    <addaction name="menuPlotter"/>
    <addaction name="menuStats"/>
@@ -382,9 +390,11 @@ QSlider#seeker_bar::sub-page:horizontal {
    </attribute>
    <addaction name="actionTracker"/>
    <addaction name="actionPlotter"/>
-   <addaction name="actionATracker"/>
    <addaction name="actionSport_Events"/>
    <addaction name="action3D_Model"/>
+   <addaction name="actionSwitch_Camera_View"/>
+   <addaction name="actionStart_Live_Data_Capture"/>
+   <addaction name="actionPause_Output_Stream"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_3">
@@ -483,9 +493,8 @@ QDockWidget{
    </attribute>
    <addaction name="actionClear_All"/>
    <addaction name="actionAdd_Distance"/>
-   <addaction name="actionSwitch_Camera_View"/>
-   <addaction name="actionStart_Live_Data_Capture"/>
-   <addaction name="actionPause_Output_Stream"/>
+   <addaction name="actionAdd_Fixed_Distance"/>
+   <addaction name="actionCreate_Player"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_5">
    <property name="windowTitle">
@@ -905,7 +914,7 @@ QDockWidget{
     <iconset theme="QIcon::ThemeIcon::ListAdd"/>
    </property>
    <property name="text">
-    <string>Add Distance</string>
+    <string>Add Distance Between Players</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -994,6 +1003,47 @@ QDockWidget{
    </property>
    <property name="text">
     <string>Pause Output Stream</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionCricket">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Cricket</string>
+   </property>
+  </action>
+  <action name="actionSoccer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Soccer</string>
+   </property>
+  </action>
+  <action name="actionAdd_Fixed_Distance">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::ListAdd"/>
+   </property>
+   <property name="text">
+    <string>Add Fixed Distance</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionCreate_Player">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::ContactNew"/>
+   </property>
+   <property name="text">
+    <string>Create Player</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
