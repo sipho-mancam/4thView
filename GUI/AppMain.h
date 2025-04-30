@@ -16,6 +16,7 @@
 #include "time_conversions.hpp"
 #include "models/distance_object_model.hpp"
 #include "models/stored_events_manager.hpp"
+#include "models/teams_config_dialog.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -93,6 +94,7 @@ public:
 
     void openEventProcessorDialog();
 	void openDistanceDialog();
+	void openTeamsConfigDialog();
     void PauseOutputStreamTrigger();
     void setLiveMode();
     void setReplayMode();
@@ -190,9 +192,11 @@ private:
     PlayerPropertiesGroup* propsGroup;
     PlayerStateModifierGroup* playerStateModifier;
     DistanceObjectsManager* distanceObjectsGroup;
-    EventProcessorDialog* event_proc_dialog;
+    EventProcessorDialog* eventProcDialog;
+    QGraphicsEllipseItemS* teamAColor, * teamBColor;
     StoredEventsViewManager* storedEventsManager;
-	DistanceDialog* distance_dialog;
+	DistanceDialog* distanceDialog;
+	TeamsConfigManager* teamsConfigDialog;
 	std::shared_ptr<ExternalGUIControlEvents> extGuiControl;
     QAction* selectedSportingCode;
 

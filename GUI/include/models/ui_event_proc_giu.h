@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'event_proc_giuQHPuKm.ui'
+** Form generated from reading UI file 'event_proc_giuMJDwmr.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef EVENT_PROC_GIUQHPUKM_H
-#define EVENT_PROC_GIUQHPUKM_H
+#ifndef EVENT_PROC_GIUMJDWMR_H
+#define EVENT_PROC_GIUMJDWMR_H
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
@@ -82,7 +82,7 @@ public:
 
     void retranslateUi(QDialog *event_processor_dialog)
     {
-        event_processor_dialog->setWindowTitle(QCoreApplication::translate("event_processor_dialog", "Dialog", nullptr));
+        event_processor_dialog->setWindowTitle(QCoreApplication::translate("event_processor_dialog", "Sport Event", nullptr));
         label->setText(QCoreApplication::translate("event_processor_dialog", "Event Name: ", nullptr));
         okButton->setText(QCoreApplication::translate("event_processor_dialog", "OK", nullptr));
         cancelButton->setText(QCoreApplication::translate("event_processor_dialog", "Cancel", nullptr));
@@ -96,4 +96,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // EVENT_PROC_GIUQHPUKM_H
+#endif // EVENT_PROC_GIUMJDWMR_H

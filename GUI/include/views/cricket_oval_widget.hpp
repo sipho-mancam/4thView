@@ -121,7 +121,7 @@ private:
 
 private:
 	qreal _width, _height; // bounding rect
-	QRect _boundingRect;
+	QRect _boundingRect, cricketBoundingRect;
 	std::map<int, PlayerItemWidget*> playersMap;
 	std::map<long long, QGraphicsLineItem*> distanceLines;
 	QGraphicsLineItem* previewDistanceLine;

@@ -7,7 +7,8 @@ PitchViewScene::PitchViewScene(QObject* parent)
 	QGraphicsScene(parent),
 	_width(540),
 	_height(500),
-	_boundingRect(0, 0, _width, _height)
+	_boundingRect(0, 0, _width, _height),
+	cricketBoundingRect(_boundingRect)
 {
 	//setSceneRect(_boundingRect);
 	init();
@@ -27,7 +28,7 @@ PitchViewScene::PitchViewScene(QRect sceneRect)
 
 void PitchViewScene::init()
 {
-	__draw_cricket_background();
+	__draw_soccer_background();
 }
 
 void PitchViewScene::update()
@@ -262,7 +263,8 @@ void PitchViewScene::clearPreviewLine()
 
 void PitchViewScene::__draw_cricket_background()
 {
-	setSceneRect(_boundingRect);
+	setSceneRect(cricketBoundingRect);
+	_boundingRect = cricketBoundingRect;
 	this->clear();
 	int x, y, w, h;
 	x = _boundingRect.x();
@@ -308,8 +310,8 @@ void PitchViewScene::__draw_cricket_background()
 void PitchViewScene::__draw_soccer_background()
 {
 	this->clear();
-	// the ratia of height to width height:width = 1:1.3
-	int height = 580;
+	// the ratio of height to width height:width = 1:1.3
+	int height = 590;
 	int width = height * 1.3;
 	_boundingRect = QRect(0, 0, width, height);
 	setSceneRect(_boundingRect);

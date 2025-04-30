@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1304</width>
-    <height>892</height>
+    <width>1440</width>
+    <height>960</height>
    </rect>
   </property>
   <property name="font">
@@ -35,7 +35,7 @@ QDockWidget{
    <enum>Qt::ToolButtonStyle::ToolButtonIconOnly</enum>
   </property>
   <property name="documentMode">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <property name="tabShape">
    <enum>QTabWidget::TabShape::Rounded</enum>
@@ -44,7 +44,7 @@ QDockWidget{
    <set>QMainWindow::DockOption::AllowNestedDocks|QMainWindow::DockOption::AllowTabbedDocks|QMainWindow::DockOption::AnimatedDocks|QMainWindow::DockOption::GroupedDragging</set>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -298,7 +298,7 @@ QSlider#seeker_bar::sub-page:horizontal {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1304</width>
+     <width>1440</width>
      <height>21</height>
     </rect>
    </property>
@@ -332,10 +332,9 @@ QSlider#seeker_bar::sub-page:horizontal {
    </widget>
    <widget class="QMenu" name="menuATracker">
     <property name="title">
-     <string>ATracker</string>
+     <string>Teams</string>
     </property>
-    <addaction name="actionLaunch"/>
-    <addaction name="actionOn_Air"/>
+    <addaction name="actionConfigTeams"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -364,10 +363,10 @@ QSlider#seeker_bar::sub-page:horizontal {
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSporting_Code"/>
+   <addaction name="menuATracker"/>
    <addaction name="menuTracker"/>
    <addaction name="menuPlotter"/>
    <addaction name="menuStats"/>
-   <addaction name="menuATracker"/>
    <addaction name="menuWindow"/>
    <addaction name="menuUpdates"/>
    <addaction name="menuHelp"/>
@@ -420,6 +419,12 @@ QDockWidget{
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
       <widget class="QScrollArea" name="scrollArea">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>400</height>
+        </size>
+       </property>
        <property name="widgetResizable">
         <bool>true</bool>
        </property>
@@ -429,7 +434,7 @@ QDockWidget{
           <x>0</x>
           <y>0</y>
           <width>279</width>
-          <height>212</height>
+          <height>601</height>
          </rect>
         </property>
        </widget>
@@ -498,7 +503,7 @@ QDockWidget{
   </widget>
   <widget class="QDockWidget" name="dockWidget_5">
    <property name="windowTitle">
-    <string>Player Properties</string>
+    <string>Properties</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -755,6 +760,20 @@ QDockWidget{
          </layout>
         </item>
         <item>
+         <widget class="QComboBox" name="team">
+          <item>
+           <property name="text">
+            <string>Team A</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Team B</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButton">
           <property name="minimumSize">
            <size>
@@ -778,6 +797,112 @@ QDockWidget{
            <string>Ctrl+S</string>
           </property>
          </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_3">
+       <property name="title">
+        <string>Teams Information</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_12">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="leftMargin">
+             <number>10</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Team A</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGraphicsView" name="teamAGView">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>100</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="teamAName">
+              <property name="text">
+               <string>Team Name</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <property name="leftMargin">
+             <number>11</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>Team A</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGraphicsView" name="teamBGView">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>100</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="teamBName">
+              <property name="text">
+               <string>Team Name</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -957,14 +1082,9 @@ QDockWidget{
     <string>Save Perspective</string>
    </property>
   </action>
-  <action name="actionLaunch">
+  <action name="actionConfigTeams">
    <property name="text">
-    <string>Launch</string>
-   </property>
-  </action>
-  <action name="actionOn_Air">
-   <property name="text">
-    <string>On Air</string>
+    <string>Config Teams</string>
    </property>
   </action>
   <action name="actionLaunch_2">
@@ -1013,7 +1133,7 @@ QDockWidget{
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Cricket</string>
@@ -1021,6 +1141,9 @@ QDockWidget{
   </action>
   <action name="actionSoccer">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">

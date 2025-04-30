@@ -79,6 +79,9 @@
     <ClCompile Include="src\stored_events_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\teams_config_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -95,6 +98,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="include\models\distance_widget.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="include\models\teams_configuration.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -118,6 +124,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\models\ui_distance_widget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\models\ui_teams_configuration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,6 +179,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\models\stored_events_manager.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\models\teams_config_dialog.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

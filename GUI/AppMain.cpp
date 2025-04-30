@@ -11,8 +11,9 @@ AppMain::AppMain(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AppMainClass()),
     eventMan(nullptr),
-    event_proc_dialog(new EventProcessorDialog(this)),
-    distance_dialog(new DistanceDialog(this)),
+    eventProcDialog(new EventProcessorDialog(this)),
+    distanceDialog(new DistanceDialog(this)),
+	teamsConfigDialog(new TeamsConfigManager(this)),
     pauseIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackPause)),
     playIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart)),
     currentIcon(true),
@@ -24,7 +25,18 @@ AppMain::AppMain(QWidget *parent)
 {
     ui->setupUi(this);
 
-    selectedSportingCode = ui->actionCricket;
+    selectedSportingCode = ui->actionSoccer;
+
+
+	QGraphicsScene* teamAScene = new QGraphicsScene();
+    ui->teamAGView->setScene(teamAScene);
+	teamAColor = new QGraphicsEllipseItemS(QRect(0, 0, 80, 80), QPen(QColorConstants::Gray), QBrush(QColorConstants::Gray));
+	teamAScene->addItem(teamAColor);
+
+    QGraphicsScene* teamBScene = new QGraphicsScene();
+    ui->teamBGView->setScene(teamBScene);
+    teamBColor = new QGraphicsEllipseItemS(QRect(0, 0, 80, 80), QPen(QColorConstants::Gray), QBrush(QColorConstants::Gray));
+    teamBScene->addItem(teamBColor);
 
     outputHandle = new StdoutStreamBuffer(this);
     connect(outputHandle, &StdoutStreamBuffer::outputCaptured, this, &AppMain::appendOutput);
@@ -62,6 +74,7 @@ AppMain::AppMain(QWidget *parent)
         cS->selectSportingCode(CRICKET);
 		selectedSportingCode->setChecked(false);
 		selectedSportingCode = ui->actionCricket;
+        selectedSportingCode->setChecked(true);
 	});
 
     connect(ui->actionSoccer, &QAction::triggered, this, [&]() {
@@ -69,11 +82,15 @@ AppMain::AppMain(QWidget *parent)
         cS->selectSportingCode(SOCCER);
         selectedSportingCode->setChecked(false);
         selectedSportingCode = ui->actionSoccer;
+        selectedSportingCode->setChecked(true);
     });
 
+
+	connect(ui->actionConfigTeams, &QAction::triggered, this, &AppMain::openTeamsConfigDialog);
+
     connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
-    connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
-	connect(event_proc_dialog, &EventProcessorDialog::event_processor_name, storedEventsManager, &StoredEventsViewManager::addEvent);
+    connect(eventProcDialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
+	connect(eventProcDialog, &EventProcessorDialog::event_processor_name, storedEventsManager, &StoredEventsViewManager::addEvent);
 	connect(storedEventsManager, &StoredEventsViewManager::loadEventSignal, this, &AppMain::switchToStoredStateSlot);
     connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
 	connect(ui->actionAdd_Distance, &QAction::triggered, this, &AppMain::openDistanceDialog);
@@ -84,16 +101,16 @@ AppMain::AppMain(QWidget *parent)
 	connect(ui->replay_control, &QPushButton::clicked, this, &AppMain::replayControl);
 
     PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
-    connect(cS, &PitchViewScene::selectedIdChangedSig, distance_dialog, &DistanceDialog::selectedPlayer);
+    connect(cS, &PitchViewScene::selectedIdChangedSig, distanceDialog, &DistanceDialog::selectedPlayer);
 
     /*Distance Preview Line Information*/
 	connect(distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig, cS, &PitchViewScene::previewDistanceLineReady);
 	connect(distanceObjectModel, &DistanceObjectModel::clearPreviewObject, cS, &PitchViewScene::clearPreviewLine);
-	connect(distance_dialog, &DistanceDialog::previewDistanceDataReady, distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig);
-	connect(distance_dialog, &DistanceDialog::clearDistancePreview, distanceObjectModel, &DistanceObjectModel::clearPreviewObject);
+	connect(distanceDialog, &DistanceDialog::previewDistanceDataReady, distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig);
+	connect(distanceDialog, &DistanceDialog::clearDistancePreview, distanceObjectModel, &DistanceObjectModel::clearPreviewObject);
 
     /*Distance Lines to be drawn*/
-	connect(distance_dialog, &DistanceDialog::distanceData, distanceObjectModel, &DistanceObjectModel::addDistanceObject);
+	connect(distanceDialog, &DistanceDialog::distanceData, distanceObjectModel, &DistanceObjectModel::addDistanceObject);
 	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, distanceObjectsGroup, &DistanceObjectsManager::addDistanceObject);
     connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, cS, &PitchViewScene::addDistanceInfo);
     
@@ -106,16 +123,37 @@ AppMain::AppMain(QWidget *parent)
 	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, this, &AppMain::distanceDataChanged);
     connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, this, &AppMain::deleteDistanceId);
 
+    /**Configuring Teams Informations*/
+    connect(teamsConfigDialog, &TeamsConfigManager::teamsConfigured, this, [&](QColor tAColor, std::string teamAName, QColor tBColor, std::string teamBName) {
+		ui->teamAName->setText(QString::fromStdString(teamAName));
+		ui->teamBName->setText(QString::fromStdString(teamBName));
+        teamAColor->setBrush(tAColor);
+        teamBColor->setBrush(tBColor);
+	});
+
+    connect(teamsConfigDialog, & TeamsConfigManager::teamAConfigured, this, [&](QColor tAColor, std::string teamAName) {
+		ui->teamAName->setText(QString::fromStdString(teamAName));
+		teamAColor->setBrush(tAColor);
+     });
+
+
+    connect(teamsConfigDialog, &TeamsConfigManager::teamBConfigured, this, [&](QColor tBColor, std::string teamBName) {
+		ui->teamBName->setText(QString::fromStdString(teamBName));
+		teamBColor->setBrush(tBColor);
+    });
+
 
     setLiveMode();
 }
 
 AppMain::~AppMain()
 {
-	delete event_proc_dialog;
-    delete distance_dialog;
+	delete eventProcDialog;
+    delete distanceDialog;
 	delete distanceObjectModel;
+	delete teamsConfigDialog;
     delete ui;
+
 }
 
 void AppMain::closeEvent(QCloseEvent* e)
@@ -192,18 +230,26 @@ void AppMain::setExtGuiControl(std::shared_ptr<ExternalGUIControlEvents> extGuiC
 
 void AppMain::openEventProcessorDialog()
 {
-    if (event_proc_dialog)
+    if (eventProcDialog)
     {
-        event_proc_dialog->open();
+        eventProcDialog->open();
     }
 }
 
 void AppMain::openDistanceDialog()
 {
    
-	if (distance_dialog)
+	if (distanceDialog)
 	{
-		distance_dialog->show();
+		distanceDialog->show();
+	}
+}
+
+void AppMain::openTeamsConfigDialog()
+{
+	if (teamsConfigDialog)
+	{
+		teamsConfigDialog->show();
 	}
 }
 

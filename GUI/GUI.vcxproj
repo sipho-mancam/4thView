@@ -106,6 +106,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\teams_config_dialog.cpp" />
     <ClCompile Include="src\stored_events_manager.cpp" />
     <ClCompile Include="src\distance_object_model.cpp" />
     <ClCompile Include="src\distance_dialog.cpp" />
@@ -126,6 +127,7 @@
     <ClCompile Include="main.cpp" />
     <QtUic Include="include\models\distance_widget.ui" />
     <QtUic Include="include\models\event_proc_giu.ui" />
+    <QtUic Include="include\models\teams_configuration.ui" />
     <QtUic Include="include\models\Widget.ui" />
     <QtUic Include="output_console.ui" />
   </ItemGroup>
@@ -142,7 +144,9 @@
     <QtMoc Include="include\models\distance_dialog.hpp" />
     <QtMoc Include="include\models\distance_object_model.hpp" />
     <QtMoc Include="include\models\stored_events_manager.hpp" />
+    <QtMoc Include="include\models\teams_config_dialog.hpp" />
     <ClInclude Include="include\models\ui_distance_widget.h" />
+    <ClInclude Include="include\models\ui_teams_configuration.h" />
     <ClInclude Include="include\time_conversions.hpp" />
     <QtMoc Include="include\state_modification_callback.hpp" />
     <QtMoc Include="include\models\distance_objects_manager.hpp" />
