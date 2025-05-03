@@ -390,10 +390,10 @@ QSlider#seeker_bar::sub-page:horizontal {
    <addaction name="actionTracker"/>
    <addaction name="actionPlotter"/>
    <addaction name="actionSport_Events"/>
-   <addaction name="action3D_Model"/>
    <addaction name="actionSwitch_Camera_View"/>
    <addaction name="actionStart_Live_Data_Capture"/>
    <addaction name="actionPause_Output_Stream"/>
+   <addaction name="action3D_Model"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_3">
@@ -1018,7 +1018,10 @@ QDockWidget{
     <iconset theme="QIcon::ThemeIcon::CameraVideo"/>
    </property>
    <property name="text">
-    <string>3D Model</string>
+    <string>Build 3D Model</string>
+   </property>
+   <property name="toolTip">
+    <string>build Model</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
