@@ -35,6 +35,23 @@ void SystemEventsSender::sendEvent(std::string topic, KEvents::Event e)
 	__send_event__(topic, e);
 }
 
+void SystemEventsSender::clearAllPlottedPlayers()
+{
+	KEvents::Event e;
+	json eventData, payload;
+	eventData["state_def"] = KEvents::STATES_DEF::PLAYER;
+	payload["plotted_mod"] = true;
+	payload["instruction"] = "clear_all";
+	eventData["data"] = payload;
+
+	e.setEventData(eventData);
+	e.setSourceModule("gui");
+	e.setEventData(EN_STATE_MOD);
+	e.setEventType(KEvents::E_GUI);
+	std::string topic = config["DataAggregator"]["serviceTopic"];
+	__send_event__(topic, e);
+}
+
 void SystemEventsSender::__send_event__(std::string topic, KEvents::Event e)
 {
 	eventsMan->sendEvent(topic, e);

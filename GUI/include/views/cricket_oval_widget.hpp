@@ -51,12 +51,15 @@ public:
 	explicit PlayerItemWidget(int id, std::tuple<double, double> coord, PLAYER_TYPE pT = PLAYER_TYPE::TRACKED, QGraphicsItem* parent = nullptr);
 	PlayerItemWidget() = delete;
 
+	void init();
+
 	void updateCoordinates(std::tuple<double, double>coord);
 	void updateCoordinates(double x, double y);
 	void updateGraphic();
 
 	void setPosition(int pos) { playerPosition = pos; }
 	void setState(E_STATE st) { state = st; }
+	E_STATE getPlayerState() { return state; }
 	int getTrackId() { return trackId; }	
 
 	std::tuple<double, double> getCoordinates() { return coordinates; }
@@ -117,6 +120,8 @@ public:
 	std::tuple<qreal, qreal> getDimensions() { return { _width, _height }; }
 	void updateScene();
 
+	void clearAllPlotted();
+
 	void plotPlayerSlot(PlayerItemWidget* player);
 
 	void drawDistanceLines();
@@ -126,7 +131,6 @@ public:
 	void selectSportingCode(SPORTING_CODE code);
 	QRect getCurrentSceneRect() { return _boundingRect; }
 
-	
 
 public slots:
 	void dataChangeUpdate(json data);
@@ -140,6 +144,7 @@ signals:
 	void selectedIdChangedSig(int trackId);
 	void itemDraggedSig(int id, QPointF itemSceneCoordinates);
 	void itemPositionChanged(int itemId, QPointF itemPosition);
+	void clearAllPlottedSig();
 
 private:
 	void __draw_cricket_background();
@@ -154,6 +159,7 @@ private:
 	json distancePreviewLine;
 	std::map<long long, json> distanceObjects;
 	std::vector<int> plottedIds;
+	int currentClickedId;
 };
 
 QColor __state2color__(PlayerItemWidget::E_STATE);

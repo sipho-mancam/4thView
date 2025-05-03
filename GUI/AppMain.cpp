@@ -180,6 +180,7 @@ void AppMain::init()
         });
 
 
+    /** Plotted Player Control **/
     connect(ui->actionCreate_Player, &QAction::triggered, plotterController, &PlotterController::createPlayerItem);
     connect(plotterController, &PlotterController::playerCreated, reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::plotPlayerSlot);
     connect(reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::itemPositionChanged, this, 
@@ -188,7 +189,16 @@ void AppMain::init()
             {
 				systemEventsSender->playerPositionChanged(trackId, itemCoordiantesNormalized);
             }
-        });
+     });
+
+	connect(ui->actionClear_All_Plotted, &QAction::triggered, reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::clearAllPlotted);
+	connect(reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::clearAllPlottedSig, plotterController, &PlotterController::clearAllPlotted);
+	connect(plotterController, &PlotterController::clearAllPlottedPlayersSig, [&]() {
+        if (systemEventsSender) 
+        {
+			systemEventsSender->clearAllPlottedPlayers();
+        }
+	});
 
     connect(ui->actionConfigTeams, &QAction::triggered, this, &AppMain::openTeamsConfigDialog);
     connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);

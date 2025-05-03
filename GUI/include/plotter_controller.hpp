@@ -15,10 +15,12 @@ public:
 	PlayerItemWidget* createPlayerItem();
 	void deletePlayer(int id);
 	void sceneRectChangedSlot(const QRect& sceneRect);
+	void clearAllPlotted();
 	
 signals:
 	void playerCreated(PlayerItemWidget* player);
 	void playerDeleted(int id);
+	void clearAllPlottedPlayersSig();
 
 private:
 	long playerIds;

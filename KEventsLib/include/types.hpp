@@ -106,7 +106,8 @@ namespace KEvents
 		ANNOTATION = 1,
 		HIGHLIGHT = 2,
 		DISTANCE = 3,
-		POSITION = 4
+		POSITION = 4,
+		PLAYER = 5
 	};
 	
 	enum STREAM_TYPES {

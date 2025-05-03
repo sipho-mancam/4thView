@@ -27,6 +27,7 @@ PitchViewScene::PitchViewScene(QRect sceneRect)
 
 void PitchViewScene::init()
 {
+	currentClickedId = -1;
 	__draw_soccer_background();
 }
 
@@ -119,6 +120,21 @@ void PitchViewScene::updateScene()
 	}
 }
 
+void PitchViewScene::clearAllPlotted()
+{
+	for (int id : plottedIds)
+	{
+		if (playersMap.contains(id))
+		{
+			PlayerItemWidget* player = playersMap[id];
+			this->removeItem(player);
+			playersMap.erase(id);
+		}
+	}
+	updateScene();
+	Q_EMIT clearAllPlottedSig();
+}
+
 void PitchViewScene::plotPlayerSlot(PlayerItemWidget* player)
 {
 	int id = player->getTrackId();
@@ -128,7 +144,6 @@ void PitchViewScene::plotPlayerSlot(PlayerItemWidget* player)
 	connect(player, &PlayerItemWidget::updateClickedId, this, &PitchViewScene::selectedIdChanged);
 	connect(player, &PlayerItemWidget::itemDraggedSig, this, &PitchViewScene::itemDraggedSig);
 	plottedIds.push_back(id);
-	
 }
 
 void PitchViewScene::drawDistanceLines()
@@ -279,6 +294,21 @@ void PitchViewScene::itemDraggedCoordinatesSlot(int id, QPointF itemSceneCoordin
 
 void PitchViewScene::selectedIdChanged(int trackId)
 {
+	if (playersMap.contains(currentClickedId))
+	{
+		PlayerItemWidget* player = playersMap[currentClickedId];
+		player->setState(PlayerItemWidget::E_STATE::DEFAULT);
+		currentClickedId = trackId;
+	}
+
+	if (playersMap.contains(trackId))
+	{
+		PlayerItemWidget* player = playersMap[trackId];
+		player->setState(PlayerItemWidget::E_STATE::SELECTED);
+		currentClickedId = trackId;
+	}
+
+	updateScene();
 	emit selectedIdChangedSig(trackId);
 }
 
@@ -441,6 +471,28 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, PLA
 	idText->setPos(x-2, y-3);
 	this->setZValue(3);
 	currentPlayerPosition = QPointF(x, y);
+	init();
+}
+
+void PlayerItemWidget::init()
+{
+	if (playerType == PLAYER_TYPE::PLOTTED)
+	{
+		// add a little traingle on the objects top to indicate that it's plotted
+		auto [x, y] = coordinates;
+		double t_width = 10, t_height = 10;
+		x = x + (width / 2);
+		y = y - (height / 2);
+		QPolygonF polygon({
+			QPointF(x - (t_width / 2), y - (t_height / 2)),
+			QPointF(x + (t_width / 2), y - (t_height / 2)),
+			QPointF(x, y + (t_height / 2))
+		});
+
+		QGraphicsPolygonItem* triangle = new QGraphicsPolygonItem(polygon, this);
+		triangle->setBrush(QBrush(QColorConstants::Blue));
+		triangle->setPen(QPen(QColorConstants::Blue));
+	}
 }
 
 void PlayerItemWidget::updateCoordinates(std::tuple<double, double> coord)
@@ -496,6 +548,7 @@ void PlayerItemWidget::updateGraphic()
 		this->setPen(__state2pen__(state));
 	}
 	idText->setPos(x - 2, y - 3);
+
 }
 
 bool PlayerItemWidget::operator==(int& trackId)

@@ -434,7 +434,7 @@ QDockWidget{
           <x>0</x>
           <y>0</y>
           <width>279</width>
-          <height>601</height>
+          <height>516</height>
          </rect>
         </property>
        </widget>
@@ -500,6 +500,7 @@ QDockWidget{
    <addaction name="actionAdd_Distance"/>
    <addaction name="actionAdd_Fixed_Distance"/>
    <addaction name="actionCreate_Player"/>
+   <addaction name="actionClear_All_Plotted"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_5">
    <property name="windowTitle">
@@ -1167,6 +1168,17 @@ QDockWidget{
    </property>
    <property name="text">
     <string>Create Player</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionClear_All_Plotted">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::EditDelete"/>
+   </property>
+   <property name="text">
+    <string>Clear All Plotted</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

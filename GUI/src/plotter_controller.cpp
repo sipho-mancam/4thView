@@ -35,9 +35,7 @@ void PlotterController::deletePlayer(int id)
 		if (*pl == id)
 		{
 			createdPlayers.erase(std::remove(createdPlayers.begin(), createdPlayers.end(), pl), createdPlayers.end());
-			
 			delete pl;
-			
 			Q_EMIT playerDeleted(id);
 			break;
 		}
@@ -49,4 +47,15 @@ void PlotterController::sceneRectChangedSlot(const QRect& sceneRect)
 	this->sceneRect = sceneRect;
 	centerX = sceneRect.width() / 2;
 	centerY = sceneRect.height() / 2;
+}
+
+void PlotterController::clearAllPlotted()
+{
+	for (PlayerItemWidget* pl : createdPlayers)
+	{
+		delete pl;	
+	}
+	createdPlayers.clear();
+	playerIds = 40;
+	Q_EMIT clearAllPlottedPlayersSig();
 }
