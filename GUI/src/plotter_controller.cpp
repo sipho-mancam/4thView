@@ -1,0 +1,52 @@
+#include "plotter_controller.hpp"
+
+#include "views/cricket_oval_widget.hpp"
+
+PlotterController::PlotterController(const QRect& scRect, QObject* parent)
+	:QObject(parent),
+	playerIds(40),
+	sceneRect(scRect)
+{
+	centerX = sceneRect.width() / 2;
+	centerY = sceneRect.height() / 2;
+}
+
+PlotterController::~PlotterController()
+{
+	for (PlayerItemWidget* pl : createdPlayers)
+	{
+		delete pl;
+	}
+}
+
+PlayerItemWidget* PlotterController::createPlayerItem()
+{
+	PlayerItemWidget* playerItem = new PlayerItemWidget(playerIds, { centerX, centerY }, PLAYER_TYPE::PLOTTED);
+	createdPlayers.push_back(playerItem);
+	playerIds += 1;
+	Q_EMIT playerCreated(playerItem);
+	return playerItem;
+}
+
+void PlotterController::deletePlayer(int id)
+{
+	for (PlayerItemWidget* pl : createdPlayers)
+	{
+		if (*pl == id)
+		{
+			createdPlayers.erase(std::remove(createdPlayers.begin(), createdPlayers.end(), pl), createdPlayers.end());
+			
+			delete pl;
+			
+			Q_EMIT playerDeleted(id);
+			break;
+		}
+	}
+}
+
+void PlotterController::sceneRectChangedSlot(const QRect& sceneRect)
+{
+	this->sceneRect = sceneRect;
+	centerX = sceneRect.width() / 2;
+	centerY = sceneRect.height() / 2;
+}

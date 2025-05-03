@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
     w.setExtGuiControl(extGuiControlCb);
 
     eventsManager.startEventLoop();
-
     w.setEventManager(&eventsManager);
 
     return a.exec();

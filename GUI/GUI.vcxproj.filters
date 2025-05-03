@@ -82,6 +82,12 @@
     <ClCompile Include="src\teams_config_dialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\plotter_controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system_events_sender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -182,6 +188,15 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\models\teams_config_dialog.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\plotter_controller.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\stream_buffer_manipulator.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\system_events_sender.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

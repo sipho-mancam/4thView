@@ -1,5 +1,5 @@
 #include "views/cricket_oval_widget.hpp"
-
+#include <QGraphicsSceneDragDropEvent>
 #include <iostream>
 
 PitchViewScene::PitchViewScene(QObject* parent)
@@ -12,7 +12,6 @@ PitchViewScene::PitchViewScene(QObject* parent)
 {
 	//setSceneRect(_boundingRect);
 	init();
-	
 }
 
 PitchViewScene::PitchViewScene(QRect sceneRect)
@@ -118,6 +117,18 @@ void PitchViewScene::updateScene()
 	{
 		item.second->updateGraphic();
 	}
+}
+
+void PitchViewScene::plotPlayerSlot(PlayerItemWidget* player)
+{
+	int id = player->getTrackId();
+
+	this->addItem(player);
+	playersMap[id] = player;
+	connect(player, &PlayerItemWidget::updateClickedId, this, &PitchViewScene::selectedIdChanged);
+	connect(player, &PlayerItemWidget::itemDraggedSig, this, &PitchViewScene::itemDraggedSig);
+	plottedIds.push_back(id);
+	
 }
 
 void PitchViewScene::drawDistanceLines()
@@ -241,6 +252,29 @@ void PitchViewScene::selectSportingCode(SPORTING_CODE code)
 		__draw_soccer_background();
 	}
 
+}
+
+void PitchViewScene::playerPositionChangedSlot(int trackId, QPointF playerSceneCoordinates)
+{
+	// normalize the coordinates of the player
+	QPointF playerCoordinatesNormalized = QPointF(playerSceneCoordinates.x()/_boundingRect.width(), 
+		playerSceneCoordinates.y()/_boundingRect.height());
+
+	if (playerCoordinatesNormalized.x() > 1)
+		playerCoordinatesNormalized.setX(1);
+	if (playerCoordinatesNormalized.y() > 1)
+		playerCoordinatesNormalized.setY(1);
+	if (playerCoordinatesNormalized.x() < 0)
+		playerCoordinatesNormalized.setX(0);
+	if (playerCoordinatesNormalized.y() < 0)
+		playerCoordinatesNormalized.setY(0);
+
+	Q_EMIT itemPositionChanged(trackId, playerCoordinatesNormalized);
+}
+
+void PitchViewScene::itemDraggedCoordinatesSlot(int id, QPointF itemSceneCoordinates)
+{
+	Q_EMIT itemDraggedSig(id, itemSceneCoordinates);
 }
 
 void PitchViewScene::selectedIdChanged(int trackId)
@@ -374,21 +408,22 @@ void PitchViewScene::__draw_soccer_background()
 }
 
 
-PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, QGraphicsItem* parent)
+PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, PLAYER_TYPE pt, QGraphicsItem* parent)
 	:QGraphicsEllipseItem(parent), 
 	trackId(id),
 	coordinates(coord),
 	state(E_STATE::DEFAULT),
 	playerPosition(E_POSITION::FIELDER),
-	width(20), height(20)
+	width(20), height(20),
+	playerType(pt),
+	playerPositionChanged(false)
 {
 	const auto [x, y] = coordinates;
 	QRect rect(x, y, width, height);
 	this->setRect(rect);
 	this->setBrush(QBrush(__state2color__(state)));
 	this->setPen(__state2pen__(state));
-	//this->setPos(x, y);
-
+	
 	idText = new QGraphicsTextItem(this);
 	std::string idTextStr;
 	std::ostringstream oss;
@@ -405,6 +440,7 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, QGr
 	idText->setDefaultTextColor(__state2text__(state));
 	idText->setPos(x-2, y-3);
 	this->setZValue(3);
+	currentPlayerPosition = QPointF(x, y);
 }
 
 void PlayerItemWidget::updateCoordinates(std::tuple<double, double> coord)
@@ -424,9 +460,12 @@ void PlayerItemWidget::updateGraphic()
 	const auto [x, y] = coordinates;
 	idText->setDefaultTextColor(__state2text__(state));
 	this->prepareGeometryChange();
-	this->setRect(QRect(x, y, width, height));
-	this->setPos(x, y);
 
+	if (playerType != PLAYER_TYPE::PLOTTED)
+	{
+		this->setRect(QRectF(x, y, width, height));
+	}
+	
 	if (playerPosition == KEvents::EPLAYER_POSITIONS::BATMAN || playerPosition == KEvents::EPLAYER_POSITIONS::BATMAN_A)
 	{
 		QColor c = QColorConstants::Red;
@@ -466,11 +505,39 @@ bool PlayerItemWidget::operator==(int& trackId)
 
 void PlayerItemWidget::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-	/*std::cout << "You clicked : " << trackId << "\n";
-	std::cout << "X : " << this->pos().x() << "Y: " << this->pos().y() <<"\n";*/
 	emit updateClickedId(this->trackId);
 	state = E_STATE::SELECTED;
 	updateGraphic();
+
+}
+
+void PlayerItemWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+	if (event->buttons() & Qt::LeftButton && playerType == PLAYER_TYPE::PLOTTED)
+	{
+		QPointF deltaPos = event->pos() - event->lastPos();
+		QRectF sceneRect = scene()->sceneRect();
+		if (sceneRect.contains(event->scenePos()))
+		{
+			this->setPos(this->pos() + deltaPos);
+			playerPositionChanged = true;
+			if (QGraphicsView* view = scene()->views().first()) {
+				QPoint viewPos = view->mapFromScene(event->scenePos());
+				//coordinates = { viewPos.x(), viewPos.y() };
+				currentPlayerPosition = viewPos;
+				Q_EMIT itemDraggedSig(trackId, viewPos);
+			}
+		}
+	}
+}
+
+void PlayerItemWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+	if (playerPositionChanged)
+	{
+		playerPositionChanged = false;
+		Q_EMIT itemPositionChanged(trackId, currentPlayerPosition);
+	}
 }
 
 QColor __state2color__(PlayerItemWidget::E_STATE state)

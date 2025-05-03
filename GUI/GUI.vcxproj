@@ -106,6 +106,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\system_events_sender.cpp" />
+    <ClCompile Include="src\plotter_controller.cpp" />
     <ClCompile Include="src\teams_config_dialog.cpp" />
     <ClCompile Include="src\stored_events_manager.cpp" />
     <ClCompile Include="src\distance_object_model.cpp" />
@@ -147,6 +149,9 @@
     <QtMoc Include="include\models\teams_config_dialog.hpp" />
     <ClInclude Include="include\models\ui_distance_widget.h" />
     <ClInclude Include="include\models\ui_teams_configuration.h" />
+    <QtMoc Include="include\plotter_controller.hpp" />
+    <QtMoc Include="include\stream_buffer_manipulator.hpp" />
+    <QtMoc Include="include\system_events_sender.hpp" />
     <ClInclude Include="include\time_conversions.hpp" />
     <QtMoc Include="include\state_modification_callback.hpp" />
     <QtMoc Include="include\models\distance_objects_manager.hpp" />

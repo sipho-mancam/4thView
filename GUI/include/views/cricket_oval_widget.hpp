@@ -20,6 +20,12 @@ enum SPORTING_CODE
 	BASEBALL = 4
 };
 
+enum PLAYER_TYPE
+{
+	TRACKED = 0,
+	PLOTTED = 1
+};
+
 class PlayerItemWidget : public QObject, public QGraphicsEllipseItem
 {
 	Q_OBJECT
@@ -42,7 +48,7 @@ public:
 		UMPIRE
 	};
 
-	explicit PlayerItemWidget(int id, std::tuple<double, double> coord, QGraphicsItem* parent = nullptr);
+	explicit PlayerItemWidget(int id, std::tuple<double, double> coord, PLAYER_TYPE pT = PLAYER_TYPE::TRACKED, QGraphicsItem* parent = nullptr);
 	PlayerItemWidget() = delete;
 
 	void updateCoordinates(std::tuple<double, double>coord);
@@ -51,6 +57,7 @@ public:
 
 	void setPosition(int pos) { playerPosition = pos; }
 	void setState(E_STATE st) { state = st; }
+	int getTrackId() { return trackId; }	
 
 	std::tuple<double, double> getCoordinates() { return coordinates; }
 
@@ -69,25 +76,36 @@ public:
 		return std::ref(*this);
 	}
 
-	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
+	void setPlayerType(PLAYER_TYPE type) { playerType = type; }
+	PLAYER_TYPE getPlayerType() { return playerType; }
 
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+	
 signals:
 	void updateClickedId(int id);
+	void itemDraggedSig(int id, QPointF itemSceneCoordinates);
+	void itemPositionChanged(int itemId, QPointF itemPosition);
 
 private:
-	int trackId;
+	
 	std::tuple<double, double> coordinates;
+	QPointF currentPlayerPosition;
 	PlayerItemWidget::E_STATE state;
 	QGraphicsTextItem* idText;
 	int playerPosition;
 	double width, height;
+	int trackId;
+	bool playerPositionChanged;
+	PLAYER_TYPE playerType;
+	
 };
 
 
 class PitchViewScene : public QGraphicsScene
 {
 	Q_OBJECT
-
 public:
 	PitchViewScene(QObject* parent=nullptr);
 	PitchViewScene(QRect sceneRect);
@@ -99,21 +117,29 @@ public:
 	std::tuple<qreal, qreal> getDimensions() { return { _width, _height }; }
 	void updateScene();
 
+	void plotPlayerSlot(PlayerItemWidget* player);
+
 	void drawDistanceLines();
 	QGraphicsLineItem* __drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color);
 	void addDistanceInfo(json distanceInfo);
 	void deleteDistanceLine(long long id);
-
 	void selectSportingCode(SPORTING_CODE code);
+	QRect getCurrentSceneRect() { return _boundingRect; }
+
+	
 
 public slots:
 	void dataChangeUpdate(json data);
 	void selectedIdChanged(int trackId);
 	void previewDistanceLineReady(json data);
 	void clearPreviewLine();
+	void itemDraggedCoordinatesSlot(int id, QPointF itemSceneCoordinates);
+	void playerPositionChangedSlot(int trackId, QPointF playerSceneCoordiantes);
 
 signals:
 	void selectedIdChangedSig(int trackId);
+	void itemDraggedSig(int id, QPointF itemSceneCoordinates);
+	void itemPositionChanged(int itemId, QPointF itemPosition);
 
 private:
 	void __draw_cricket_background();
@@ -127,6 +153,7 @@ private:
 	QGraphicsLineItem* previewDistanceLine;
 	json distancePreviewLine;
 	std::map<long long, json> distanceObjects;
+	std::vector<int> plottedIds;
 };
 
 QColor __state2color__(PlayerItemWidget::E_STATE);

@@ -17,66 +17,15 @@
 #include "models/distance_object_model.hpp"
 #include "models/stored_events_manager.hpp"
 #include "models/teams_config_dialog.hpp"
+#include "plotter_controller.hpp"
+#include "stream_buffer_manipulator.hpp"
+#include "system_events_sender.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
 QT_END_NAMESPACE
 
 class StateModificationCb;
-// Custom stream buffer to capture stdout
- class StdoutStreamBuffer  : public QObject, public std::streambuf{
-    Q_OBJECT
-public:
-    StdoutStreamBuffer(QObject* parent = nullptr) : m_parent(parent) {
-        // Save the old buffer for stdout
-        oldBuffer = std::cout.rdbuf(this);
-    }
-
-    ~StdoutStreamBuffer() {
-        // Restore the old buffer
-        std::cout.rdbuf(oldBuffer);
-    }
-
-protected:
-    // Override the overflow method to capture output
-    int_type overflow(int_type v) override {
-        if (v == traits_type::eof()) {
-            return traits_type::eof();
-        }
-
-        char ch = static_cast<char>(v);
-        emitOutput(QString(ch));
-        return v;
-    }
-
-    std::streamsize xsputn(const char* p, std::streamsize n) override {
-        QString str = QString::fromLocal8Bit(p, n);
-        emitOutput(str);
-        return n;
-    }
-
-private:
-    void emitOutput(const QString& text) {
-        // Get the current timestamp
-        QString timestamp = QDateTime::currentDateTime().toString("[dd:MM:yyyy][HH:mm:ss]");
-
-        // Define the system name
-        QString systemName = "[GUI]";
-
-        // Format the output
-        QString formattedOutput = timestamp + systemName + text;
-        // Emit a signal with the captured text
-        Q_EMIT outputCaptured(text);
-    }
-
-signals:
-    void outputCaptured(const QString& text);
-
-private:
-    std::streambuf* oldBuffer;
-    QObject* m_parent;
-};
-
 
 class AppMain : public QMainWindow
 {
@@ -85,13 +34,12 @@ class AppMain : public QMainWindow
 public:
     AppMain(QWidget *parent = nullptr);
     ~AppMain();
-
+    inline void init();
     virtual void closeEvent(QCloseEvent* e) override;
-    void setEventManager(KEvents::EventsManager* evMan) { eventMan = evMan; }
+    void setEventManager(KEvents::EventsManager* evMan); 
     void setStreamDataStore(StreamDataStore* sDs);
     void setStatePlayerStateModifier(std::shared_ptr<StateModificationCb> stMod);
 	void setExtGuiControl(std::shared_ptr<ExternalGUIControlEvents> extGuiControl);
-
     void openEventProcessorDialog();
 	void openDistanceDialog();
 	void openTeamsConfigDialog();
@@ -101,13 +49,34 @@ public:
 	void setSeekerPosition_1(int position=-1);
 	void setSeekerPosition();
 	void __updateSeekerTracker(int seekerPos);
-
+	void sendSystemEvent(std::string topic, KEvents::Event e);
     void updateStatusBarFrameCount();
-
     void sendSeekerEvent(int seekerPosition);
     void replayControl();
 
-	
+private:
+    Ui::AppMainClass* ui;
+    QGraphicsScene* scene;
+    PlayerPropertiesGroup* propsGroup;
+    PlayerStateModifierGroup* playerStateModifier;
+    DistanceObjectsManager* distanceObjectsGroup;
+    EventProcessorDialog* eventProcDialog;
+    QGraphicsEllipseItemS* teamAColor, * teamBColor;
+    StoredEventsViewManager* storedEventsManager;
+    DistanceDialog* distanceDialog;
+    TeamsConfigManager* teamsConfigDialog;
+    std::shared_ptr<ExternalGUIControlEvents> extGuiControl;
+    QAction* selectedSportingCode;
+    StdoutStreamBuffer* outputHandle;
+    KEvents::EventsManager* eventMan;
+    QIcon playIcon, pauseIcon;
+    bool currentIcon, replayPaused, liveMode, seekingBack;
+    DistanceObjectModel* distanceObjectModel;
+    StreamDataStore* streamDs;
+    std::shared_ptr<StateModificationCb> stateMod;
+    int currentSliderPosition;
+    PlotterController* plotterController;
+	SystemEventsSender* systemEventsSender;
 
 private slots:
 
@@ -186,27 +155,5 @@ private slots:
 		}
 	}
 
-private:
-    Ui::AppMainClass *ui;
-    QGraphicsScene* scene;
-    PlayerPropertiesGroup* propsGroup;
-    PlayerStateModifierGroup* playerStateModifier;
-    DistanceObjectsManager* distanceObjectsGroup;
-    EventProcessorDialog* eventProcDialog;
-    QGraphicsEllipseItemS* teamAColor, * teamBColor;
-    StoredEventsViewManager* storedEventsManager;
-	DistanceDialog* distanceDialog;
-	TeamsConfigManager* teamsConfigDialog;
-	std::shared_ptr<ExternalGUIControlEvents> extGuiControl;
-    QAction* selectedSportingCode;
 
-    StdoutStreamBuffer* outputHandle;
-    KEvents::EventsManager* eventMan;
-    QIcon playIcon, pauseIcon;
-    bool currentIcon, replayPaused, liveMode, seekingBack;
-
-	DistanceObjectModel* distanceObjectModel;
-    StreamDataStore* streamDs;
-    std::shared_ptr<StateModificationCb> stateMod;
-    int currentSliderPosition;
 };

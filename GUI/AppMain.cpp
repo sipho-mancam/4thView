@@ -5,6 +5,8 @@
 #include <string>
 #include <QObject>
 #include "state_modification_callback.hpp"
+#include "plotter_controller.hpp"
+
 
 
 AppMain::AppMain(QWidget *parent)
@@ -24,126 +26,7 @@ AppMain::AppMain(QWidget *parent)
 	distanceObjectModel(new DistanceObjectModel(this))
 {
     ui->setupUi(this);
-
-    selectedSportingCode = ui->actionSoccer;
-
-
-	QGraphicsScene* teamAScene = new QGraphicsScene();
-    ui->teamAGView->setScene(teamAScene);
-	teamAColor = new QGraphicsEllipseItemS(QRect(0, 0, 80, 80), QPen(QColorConstants::Gray), QBrush(QColorConstants::Gray));
-	teamAScene->addItem(teamAColor);
-
-    QGraphicsScene* teamBScene = new QGraphicsScene();
-    ui->teamBGView->setScene(teamBScene);
-    teamBColor = new QGraphicsEllipseItemS(QRect(0, 0, 80, 80), QPen(QColorConstants::Gray), QBrush(QColorConstants::Gray));
-    teamBScene->addItem(teamBColor);
-
-    outputHandle = new StdoutStreamBuffer(this);
-    connect(outputHandle, &StdoutStreamBuffer::outputCaptured, this, &AppMain::appendOutput);
-
-    scene = (QGraphicsScene*) new PitchViewScene();
-    ui->graphicsView->setScene(scene);
-
-    propsGroup = new PlayerPropertiesGroup(
-        ui->label_3,
-        ui->lineEdit_2,
-        ui->lineEdit_3,
-        ui->label_7
-    );
-
-    playerStateModifier = new PlayerStateModifierGroup(
-        ui->checkBox,
-        ui->lineEdit,
-        ui->checkBox_2,
-        ui->comboBox,
-        ui->pushButton
-    );
-
-    distanceObjectsGroup = new DistanceObjectsManager(
-        ui->objectsList,
-        ui->scrollArea
-    );
-
-	storedEventsManager = new StoredEventsViewManager(ui->storedEventsListWidget, this
-	);
-
-   
-    /**Select Current Sporting Code*/
-	connect(ui->actionCricket, &QAction::triggered, this, [&]() {
-		PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
-        cS->selectSportingCode(CRICKET);
-		selectedSportingCode->setChecked(false);
-		selectedSportingCode = ui->actionCricket;
-        selectedSportingCode->setChecked(true);
-	});
-
-    connect(ui->actionSoccer, &QAction::triggered, this, [&]() {
-        PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
-        cS->selectSportingCode(SOCCER);
-        selectedSportingCode->setChecked(false);
-        selectedSportingCode = ui->actionSoccer;
-        selectedSportingCode->setChecked(true);
-    });
-
-
-	connect(ui->actionConfigTeams, &QAction::triggered, this, &AppMain::openTeamsConfigDialog);
-
-    connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
-    connect(eventProcDialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
-	connect(eventProcDialog, &EventProcessorDialog::event_processor_name, storedEventsManager, &StoredEventsViewManager::addEvent);
-	connect(storedEventsManager, &StoredEventsViewManager::loadEventSignal, this, &AppMain::switchToStoredStateSlot);
-    connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
-	connect(ui->actionAdd_Distance, &QAction::triggered, this, &AppMain::openDistanceDialog);
-	connect(ui->live_mode_button, &QPushButton::clicked, this, &AppMain::setLiveMode);
-	connect(ui->seeker_bar, &QSlider::sliderPressed, this, &AppMain::setReplayMode);
-	connect(ui->seeker_bar, &QSlider::sliderReleased, this, &AppMain::setSeekerPosition);
-	connect(ui->seeker_bar, &QSlider::sliderMoved, this, &AppMain::setSeekerPosition_1);
-	connect(ui->replay_control, &QPushButton::clicked, this, &AppMain::replayControl);
-
-    PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
-    connect(cS, &PitchViewScene::selectedIdChangedSig, distanceDialog, &DistanceDialog::selectedPlayer);
-
-    /*Distance Preview Line Information*/
-	connect(distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig, cS, &PitchViewScene::previewDistanceLineReady);
-	connect(distanceObjectModel, &DistanceObjectModel::clearPreviewObject, cS, &PitchViewScene::clearPreviewLine);
-	connect(distanceDialog, &DistanceDialog::previewDistanceDataReady, distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig);
-	connect(distanceDialog, &DistanceDialog::clearDistancePreview, distanceObjectModel, &DistanceObjectModel::clearPreviewObject);
-
-    /*Distance Lines to be drawn*/
-	connect(distanceDialog, &DistanceDialog::distanceData, distanceObjectModel, &DistanceObjectModel::addDistanceObject);
-	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, distanceObjectsGroup, &DistanceObjectsManager::addDistanceObject);
-    connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, cS, &PitchViewScene::addDistanceInfo);
-    
-    connect(distanceObjectModel, &DistanceObjectModel::computedDistanceUpdate, distanceObjectsGroup, &DistanceObjectsManager::computedDistanceUpdate);
-	connect(distanceObjectsGroup, &DistanceObjectsManager::distanceObjectDeletedSignal, distanceObjectModel, &DistanceObjectModel::deleteDistanceObject);
-    connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, cS, &PitchViewScene::deleteDistanceLine);
-
-
-    /*The connections here, handle data leaving the app going to the event-bus (Output)*/
-	connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, this, &AppMain::distanceDataChanged);
-    connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, this, &AppMain::deleteDistanceId);
-
-    /**Configuring Teams Informations*/
-    connect(teamsConfigDialog, &TeamsConfigManager::teamsConfigured, this, [&](QColor tAColor, std::string teamAName, QColor tBColor, std::string teamBName) {
-		ui->teamAName->setText(QString::fromStdString(teamAName));
-		ui->teamBName->setText(QString::fromStdString(teamBName));
-        teamAColor->setBrush(tAColor);
-        teamBColor->setBrush(tBColor);
-	});
-
-    connect(teamsConfigDialog, & TeamsConfigManager::teamAConfigured, this, [&](QColor tAColor, std::string teamAName) {
-		ui->teamAName->setText(QString::fromStdString(teamAName));
-		teamAColor->setBrush(tAColor);
-     });
-
-
-    connect(teamsConfigDialog, &TeamsConfigManager::teamBConfigured, this, [&](QColor tBColor, std::string teamBName) {
-		ui->teamBName->setText(QString::fromStdString(teamBName));
-		teamBColor->setBrush(tBColor);
-    });
-
-
-    setLiveMode();
+    init(); 
 }
 
 AppMain::~AppMain()
@@ -153,7 +36,7 @@ AppMain::~AppMain()
 	delete distanceObjectModel;
 	delete teamsConfigDialog;
     delete ui;
-
+    delete systemEventsSender;
 }
 
 void AppMain::closeEvent(QCloseEvent* e)
@@ -161,6 +44,12 @@ void AppMain::closeEvent(QCloseEvent* e)
     if (eventMan) {
         eventMan->exit();
    }
+}
+
+void AppMain::setEventManager(KEvents::EventsManager* evMan)
+{
+    eventMan = evMan; 
+	systemEventsSender = new SystemEventsSender(eventMan, this);
 }
 
 void AppMain::setStreamDataStore(StreamDataStore* sDs)
@@ -226,6 +115,141 @@ void AppMain::setExtGuiControl(std::shared_ptr<ExternalGUIControlEvents> extGuiC
 
     con = connect(this->extGuiControl.get(), &ExternalGUIControlEvents::seekerPositionChanged,
         this, &AppMain::updateSeekerPosition, Qt::QueuedConnection);
+}
+
+void AppMain::init()
+{
+    selectedSportingCode = ui->actionSoccer;
+    QGraphicsScene* teamAScene = new QGraphicsScene();
+    ui->teamAGView->setScene(teamAScene);
+    teamAColor = new QGraphicsEllipseItemS(QRect(0, 0, 80, 80), QPen(QColorConstants::Gray), QBrush(QColorConstants::Gray));
+    teamAScene->addItem(teamAColor);
+
+    QGraphicsScene* teamBScene = new QGraphicsScene();
+    ui->teamBGView->setScene(teamBScene);
+    teamBColor = new QGraphicsEllipseItemS(QRect(0, 0, 80, 80), QPen(QColorConstants::Gray), QBrush(QColorConstants::Gray));
+    teamBScene->addItem(teamBColor);
+
+    outputHandle = new StdoutStreamBuffer(this);
+    connect(outputHandle, &StdoutStreamBuffer::outputCaptured, this, &AppMain::appendOutput);
+
+    scene = (QGraphicsScene*) new PitchViewScene();
+    ui->graphicsView->setScene(scene);
+
+    plotterController = new PlotterController(reinterpret_cast<PitchViewScene*>(scene)->getCurrentSceneRect(), this);
+
+    propsGroup = new PlayerPropertiesGroup(
+        ui->label_3,
+        ui->lineEdit_2,
+        ui->lineEdit_3,
+        ui->label_7
+    );
+
+    playerStateModifier = new PlayerStateModifierGroup(
+        ui->checkBox,
+        ui->lineEdit,
+        ui->checkBox_2,
+        ui->comboBox,
+        ui->pushButton
+    );
+
+    distanceObjectsGroup = new DistanceObjectsManager(
+        ui->objectsList,
+        ui->scrollArea
+    );
+
+    storedEventsManager = new StoredEventsViewManager(ui->storedEventsListWidget, this
+    );
+
+
+    /**Select Current Sporting Code*/
+    connect(ui->actionCricket, &QAction::triggered, this, [&]() {
+        PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
+        cS->selectSportingCode(CRICKET);
+        selectedSportingCode->setChecked(false);
+        selectedSportingCode = ui->actionCricket;
+        selectedSportingCode->setChecked(true);
+        });
+
+    connect(ui->actionSoccer, &QAction::triggered, this, [&]() {
+        PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
+        cS->selectSportingCode(SOCCER);
+        selectedSportingCode->setChecked(false);
+        selectedSportingCode = ui->actionSoccer;
+        selectedSportingCode->setChecked(true);
+        });
+
+
+    connect(ui->actionCreate_Player, &QAction::triggered, plotterController, &PlotterController::createPlayerItem);
+    connect(plotterController, &PlotterController::playerCreated, reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::plotPlayerSlot);
+    connect(reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::itemPositionChanged, this, 
+        [&](int trackId, QPointF itemCoordiantesNormalized) {
+            if (systemEventsSender) 
+            {
+				systemEventsSender->playerPositionChanged(trackId, itemCoordiantesNormalized);
+            }
+        });
+
+    connect(ui->actionConfigTeams, &QAction::triggered, this, &AppMain::openTeamsConfigDialog);
+    connect(ui->actionStart_Live_Data_Capture, &QAction::triggered, this, &AppMain::openEventProcessorDialog);
+    connect(eventProcDialog, &EventProcessorDialog::event_processor_name, this, &AppMain::sendEventProcessorName);
+    connect(eventProcDialog, &EventProcessorDialog::event_processor_name, storedEventsManager, &StoredEventsViewManager::addEvent);
+    connect(storedEventsManager, &StoredEventsViewManager::loadEventSignal, this, &AppMain::switchToStoredStateSlot);
+    connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
+    connect(ui->actionAdd_Distance, &QAction::triggered, this, &AppMain::openDistanceDialog);
+    connect(ui->live_mode_button, &QPushButton::clicked, this, &AppMain::setLiveMode);
+    connect(ui->seeker_bar, &QSlider::sliderPressed, this, &AppMain::setReplayMode);
+    connect(ui->seeker_bar, &QSlider::sliderReleased, this, &AppMain::setSeekerPosition);
+    connect(ui->seeker_bar, &QSlider::sliderMoved, this, &AppMain::setSeekerPosition_1);
+    connect(ui->replay_control, &QPushButton::clicked, this, &AppMain::replayControl);
+
+    PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
+    connect(cS, &PitchViewScene::selectedIdChangedSig, distanceDialog, &DistanceDialog::selectedPlayer);
+
+    /*Distance Preview Line Information*/
+    connect(distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig, cS, &PitchViewScene::previewDistanceLineReady);
+    connect(distanceObjectModel, &DistanceObjectModel::clearPreviewObject, cS, &PitchViewScene::clearPreviewLine);
+    connect(distanceDialog, &DistanceDialog::previewDistanceDataReady, distanceObjectModel, &DistanceObjectModel::distancePreviewObjectReadySig);
+    connect(distanceDialog, &DistanceDialog::clearDistancePreview, distanceObjectModel, &DistanceObjectModel::clearPreviewObject);
+
+    /*Distance Lines to be drawn*/
+    connect(distanceDialog, &DistanceDialog::distanceData, distanceObjectModel, &DistanceObjectModel::addDistanceObject);
+    connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, distanceObjectsGroup, &DistanceObjectsManager::addDistanceObject);
+    connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, cS, &PitchViewScene::addDistanceInfo);
+
+    connect(distanceObjectModel, &DistanceObjectModel::computedDistanceUpdate, distanceObjectsGroup, &DistanceObjectsManager::computedDistanceUpdate);
+    connect(distanceObjectsGroup, &DistanceObjectsManager::distanceObjectDeletedSignal, distanceObjectModel, &DistanceObjectModel::deleteDistanceObject);
+    connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, cS, &PitchViewScene::deleteDistanceLine);
+
+
+    /*The connections here, handle data leaving the app going to the event-bus (Output)*/
+    connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, this, &AppMain::distanceDataChanged);
+    connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, this, &AppMain::deleteDistanceId);
+
+    /**Configuring Teams Informations*/
+    connect(teamsConfigDialog, &TeamsConfigManager::teamsConfigured, this, [&](QColor tAColor, std::string teamAName, QColor tBColor, std::string teamBName) {
+        ui->teamAName->setText(QString::fromStdString(teamAName));
+        ui->teamBName->setText(QString::fromStdString(teamBName));
+        teamAColor->setBrush(tAColor);
+        teamBColor->setBrush(tBColor);
+        });
+
+    connect(teamsConfigDialog, &TeamsConfigManager::teamAConfigured, this, [&](QColor tAColor, std::string teamAName) {
+        ui->teamAName->setText(QString::fromStdString(teamAName));
+        teamAColor->setBrush(tAColor);
+        });
+
+
+    connect(teamsConfigDialog, &TeamsConfigManager::teamBConfigured, this, [&](QColor tBColor, std::string teamBName) {
+        ui->teamBName->setText(QString::fromStdString(teamBName));
+        teamBColor->setBrush(tBColor);
+        });
+
+    connect(ui->actionCreate_Player, &QAction::triggered, this, [&]() {
+
+        });
+
+    setLiveMode();
 }
 
 void AppMain::openEventProcessorDialog()
@@ -347,6 +371,14 @@ void AppMain::__updateSeekerTracker(int seekerPos)
     }
 
     currentSliderPosition = seekerPos;
+}
+
+void AppMain::sendSystemEvent(std::string topic, KEvents::Event e)
+{
+    if (systemEventsSender)
+    {
+        //systemEventsSender->
+    }
 }
 
 void AppMain::updateStatusBarFrameCount()
