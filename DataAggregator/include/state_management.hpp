@@ -16,6 +16,7 @@ public:
 	void addAnnotation(int playerID, json annotationData);
 	void addHighlight(int playerID, json highlightData);
 	void addPosition(int playerID, json playerPosition);
+	void updatePlottedPlayers(json eventData);
 
 	json updateTrackData(json track);
 	void updateState(json stateInfo);
@@ -25,6 +26,8 @@ private:
 	std::map<int, json> playerAnnotions;
 	std::map<int, json> playerHighlight;
 	std::map<int, json> playerPositions;
+
+	std::vector<json> plottedPlayers;
 
 	double fieldWidth, fieldHeight;
 

@@ -12,6 +12,7 @@ public:
 	~SystemEventsSender();
 
 	void playerPositionChanged(int trackId, QPointF itemPositionNormalized);
+	void createPlayer(int trackId, QPointF itemPositionNormalized);
 	void sendEvent(std::string topic, KEvents::Event e);
 	void clearAllPlottedPlayers();
 	

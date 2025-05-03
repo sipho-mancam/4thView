@@ -25,6 +25,7 @@ PlayerItemWidget* PlotterController::createPlayerItem()
 	createdPlayers.push_back(playerItem);
 	playerIds += 1;
 	Q_EMIT playerCreated(playerItem);
+	Q_EMIT playerCreatedSig(playerItem->getTrackId(), { centerX, centerY });
 	return playerItem;
 }
 

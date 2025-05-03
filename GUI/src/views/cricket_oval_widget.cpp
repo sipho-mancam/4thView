@@ -143,6 +143,7 @@ void PitchViewScene::plotPlayerSlot(PlayerItemWidget* player)
 	playersMap[id] = player;
 	connect(player, &PlayerItemWidget::updateClickedId, this, &PitchViewScene::selectedIdChanged);
 	connect(player, &PlayerItemWidget::itemDraggedSig, this, &PitchViewScene::itemDraggedSig);
+	connect(player, &PlayerItemWidget::itemPositionChanged, this, &PitchViewScene::playerPositionChangedSlot);
 	plottedIds.push_back(id);
 }
 
@@ -516,6 +517,7 @@ void PlayerItemWidget::updateGraphic()
 	if (playerType != PLAYER_TYPE::PLOTTED)
 	{
 		this->setRect(QRectF(x, y, width, height));
+		idText->setPos(x - 2, y - 3);
 	}
 	
 	if (playerPosition == KEvents::EPLAYER_POSITIONS::BATMAN || playerPosition == KEvents::EPLAYER_POSITIONS::BATMAN_A)
@@ -547,8 +549,6 @@ void PlayerItemWidget::updateGraphic()
 		this->setBrush(QBrush(__state2color__(state)));
 		this->setPen(__state2pen__(state));
 	}
-	idText->setPos(x - 2, y - 3);
-
 }
 
 bool PlayerItemWidget::operator==(int& trackId)
@@ -589,6 +589,7 @@ void PlayerItemWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 	if (playerPositionChanged)
 	{
 		playerPositionChanged = false;
+		std::cout << "Item position changed ..." << std::endl;
 		Q_EMIT itemPositionChanged(trackId, currentPlayerPosition);
 	}
 }

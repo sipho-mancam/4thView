@@ -36,6 +36,8 @@ public:
     ~AppMain();
     inline void init();
     virtual void closeEvent(QCloseEvent* e) override;
+
+
     void setEventManager(KEvents::EventsManager* evMan); 
     void setStreamDataStore(StreamDataStore* sDs);
     void setStatePlayerStateModifier(std::shared_ptr<StateModificationCb> stMod);

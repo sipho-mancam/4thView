@@ -182,6 +182,12 @@ void AppMain::init()
 
     /** Plotted Player Control **/
     connect(ui->actionCreate_Player, &QAction::triggered, plotterController, &PlotterController::createPlayerItem);
+    connect(plotterController, &PlotterController::playerCreatedSig, this, [&](int trackId, std::vector<double> coordinates) {
+        if (systemEventsSender)
+        {
+            systemEventsSender->createPlayer(trackId, QPointF( coordinates[0], coordinates[1] ));
+        }
+	});
     connect(plotterController, &PlotterController::playerCreated, reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::plotPlayerSlot);
     connect(reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::itemPositionChanged, this, 
         [&](int trackId, QPointF itemCoordiantesNormalized) {

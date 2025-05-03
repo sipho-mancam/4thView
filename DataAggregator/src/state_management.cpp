@@ -1,6 +1,8 @@
 #include "state_management.hpp"
 #include "types.hpp"
 
+
+
 StateManager::StateManager()
 	:fieldWidth(0),
 	fieldHeight(0)
@@ -30,11 +32,69 @@ void StateManager::addPosition(int playerID, json playerPosition)
 	__addStateInfo__(playerPositions, playerID, playerPosition);
 }
 
+void StateManager::updatePlottedPlayers(json payload)
+{
+	std::string instruction = payload["instruction"];
+	// 1. We are creating a new player
+	if (instruction == PI_ADD_PLAYER)
+	{
+		json playerData = payload["data"];
+		plottedPlayers.push_back(playerData);
+	}
+	else if (instruction == PI_UPDATE_PLAYER)
+	{
+		// 2. We are modifying an existing player (Position)
+		int trackId = payload["data"]["track_id"];
+		std::vector<double> coordinates = payload["data"]["coordinates"];
+		for (auto& player : plottedPlayers)
+		{
+			if (player["track_id"] == trackId)
+			{
+				player["coordinates"] = coordinates;
+				break;
+			}
+		}
+	}
+	else if (instruction == PI_REMOVE_PLAYER)
+	{
+		// 3. We are removing a player
+		int trackId = payload["track_id"];
+		if (playerPositions.contains(trackId))
+			playerPositions.erase(trackId);
+		if (playerAnnotions.contains(trackId))
+			playerAnnotions.erase(trackId);
+		if (playerHighlight.contains(trackId))
+			playerHighlight.erase(trackId);
+	}
+	else if (instruction == PI_CLEAR_ALL_PLAYERS)
+	{
+		// 4. We are clearing all players
+		for (auto& player : plottedPlayers)
+		{
+			int trackId = player["track_id"];
+			if (playerPositions.contains(trackId))
+				playerPositions.erase(trackId);
+			if (playerAnnotions.contains(trackId))
+				playerAnnotions.erase(trackId);
+			if (playerHighlight.contains(trackId))
+				playerHighlight.erase(trackId);
+		}
+		plottedPlayers.clear();
+		std::cout << "Cleared all players" << std::endl;
+	}
+}
+
 json StateManager::updateTrackData(json frame)
 {
 	if (frame["stream_type"] == KEvents::STREAM_TYPES::TRACKER)
 	{
 		json& tracks = frame["tracks"];
+
+		// 1. Append Plotted Players
+		for (auto& player : plottedPlayers)
+		{
+			tracks.push_back(player);
+		}
 		std::vector<json> processedTracks;
 		for (auto& track : tracks)
 		{
@@ -125,11 +185,11 @@ json StateManager::updateTrackData(json frame)
 
 void StateManager::updateState(json stateInfo)
 {
+	//std::cout << stateInfo << std::endl;
 	if (stateInfo["state_def"] == KEvents::STATES_DEF::ANNOTATION)
 	{
 		json data = stateInfo["data"];
 		addAnnotation(data["id"], data);
-
 		std::cout << "Added Annotation: " << data << std::endl;
  	}
 	else if (stateInfo["state_def"] == KEvents::STATES_DEF::HIGHLIGHT)
@@ -147,6 +207,15 @@ void StateManager::updateState(json stateInfo)
 		addDistance(stateInfo["data"]["id"], stateInfo["data"]);
 		std::cout << "Modified Distance: " << stateInfo["data"] << std::endl;
 	}
+	else if (stateInfo["state_def"] == KEvents::STATES_DEF::PLAYER) 
+	{
+		json data = stateInfo["data"];
+		std::cout << data << std::endl;
+		updatePlottedPlayers(data);
+		std::cout << "Modified Player: " << data << std::endl;
+	}
+
+	
 }
 
 void StateManager::__addStateInfo__(std::map<int, json>& _map, int id, json& data)

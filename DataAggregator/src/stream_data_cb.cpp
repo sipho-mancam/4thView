@@ -79,8 +79,8 @@ void StreamCallback::execute(KEvents::Event e)
 	}
 	else if (e.getEventName() == EN_STATE_MOD)
 	{
-		stateManager->updateState(e.getEventData());
 		std::cout << "Received State Modification event." << std::endl;
+		stateManager->updateState(e.getEventData());
 	}
 	else if (e.getEventName() == EN_STATE_CAPTURE_START)
 	{

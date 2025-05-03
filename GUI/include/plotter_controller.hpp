@@ -21,6 +21,7 @@ signals:
 	void playerCreated(PlayerItemWidget* player);
 	void playerDeleted(int id);
 	void clearAllPlottedPlayersSig();
+	void playerCreatedSig(int trackId, std::vector<double>coordinates);
 
 private:
 	long playerIds;

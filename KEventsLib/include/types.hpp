@@ -36,7 +36,10 @@
 #define EN_FRAME_STORE_SIZE "frame_store_size"
 #define EN_LOAD_STORED_STATE "load_stored_state"
 
-
+#define PI_ADD_PLAYER "add_player"
+#define PI_REMOVE_PLAYER "remove_player"
+#define PI_UPDATE_PLAYER "update_player"
+#define PI_CLEAR_ALL_PLAYERS "clear_all"
 
 using json = nlohmann::json;
 using namespace nlohmann::literals;
