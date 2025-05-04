@@ -158,8 +158,7 @@ void AppMain::init()
         ui->scrollArea
     );
 
-    storedEventsManager = new StoredEventsViewManager(ui->storedEventsListWidget, this
-    );
+    storedEventsManager = new StoredEventsViewManager(ui->storedEventsListWidget, this);
 
 
     /**Select Current Sporting Code*/
@@ -259,10 +258,6 @@ void AppMain::init()
     connect(teamsConfigDialog, &TeamsConfigManager::teamBConfigured, this, [&](QColor tBColor, std::string teamBName) {
         ui->teamBName->setText(QString::fromStdString(teamBName));
         teamBColor->setBrush(tBColor);
-        });
-
-    connect(ui->actionCreate_Player, &QAction::triggered, this, [&]() {
-
         });
 
     setLiveMode();

@@ -47,7 +47,11 @@ public:
 			// request the frame here
 			json currentFrame = playModeManager->getCurrentFrame();
 			if (currentFrame.empty())
-				continue;
+			{
+				currentFrame["tracks"] = std::vector<json>();
+				currentFrame["frame_number"] = 0;
+				currentFrame["stream_type"] = KEvents::STREAM_TYPES::TRACKER;
+			}
 
 			KEvents::Event ev = buildFrameEvent(currentFrame);
 			eventsManager->sendEvent(OutputTopic, ev);

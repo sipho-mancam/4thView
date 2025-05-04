@@ -56,8 +56,8 @@ void PitchViewScene::updateFrameData(json frameData)
 					// we need to scale up the coordinates data before we send it through.
 					auto coords = track["coordinates"];
 					double x = coords[0], y = coords[1], xScaled, yScaled;
-					xScaled = x * _boundingRect.width() / 2;
-					yScaled = y * _boundingRect.height() / 2;
+					xScaled = x * _boundingRect.width();
+					yScaled = y * _boundingRect.height();
 					track["coordinates"] = std::vector<double>({ xScaled, yScaled });
 					this->updateId(trackId, track);
 				}

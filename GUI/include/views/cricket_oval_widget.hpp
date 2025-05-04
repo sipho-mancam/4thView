@@ -118,12 +118,10 @@ public:
 	void updateFrameData(json frameData);
 	void updateId(int id, json data);
 	std::tuple<qreal, qreal> getDimensions() { return { _width, _height }; }
+
 	void updateScene();
-
 	void clearAllPlotted();
-
 	void plotPlayerSlot(PlayerItemWidget* player);
-
 	void drawDistanceLines();
 	QGraphicsLineItem* __drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color);
 	void addDistanceInfo(json distanceInfo);
