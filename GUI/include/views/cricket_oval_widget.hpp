@@ -23,7 +23,8 @@ enum SPORTING_CODE
 enum PLAYER_TYPE
 {
 	TRACKED = 0,
-	PLOTTED = 1
+	PLOTTED = 1,
+	PHANTOM = 2
 };
 
 class PlayerItemWidget : public QObject, public QGraphicsEllipseItem
@@ -123,7 +124,7 @@ public:
 	void clearAllPlotted();
 	void plotPlayerSlot(PlayerItemWidget* player);
 	void drawDistanceLines();
-	QGraphicsLineItem* __drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color);
+	QGraphicsLineItem* __drawDistanceLine__(QPointF start, QPointF end, QColor color);
 	void addDistanceInfo(json distanceInfo);
 	void deleteDistanceLine(long long id);
 	void selectSportingCode(SPORTING_CODE code);

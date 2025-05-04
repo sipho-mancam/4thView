@@ -211,7 +211,10 @@ void AppMain::init()
     connect(eventProcDialog, &EventProcessorDialog::event_processor_name, storedEventsManager, &StoredEventsViewManager::addEvent);
     connect(storedEventsManager, &StoredEventsViewManager::loadEventSignal, this, &AppMain::switchToStoredStateSlot);
     connect(ui->actionPause_Output_Stream, &QAction::triggered, this, &AppMain::PauseOutputStreamTrigger);
-    connect(ui->actionAdd_Distance, &QAction::triggered, this, &AppMain::openDistanceDialog);
+    connect(ui->actionAdd_Distance, &QAction::triggered, this, [&]() {
+		distanceDialog->setDistanceType(E_DISTANCE_TYPES::DYNAMIC_DISTANCE);
+		openDistanceDialog();
+    });
     connect(ui->live_mode_button, &QPushButton::clicked, this, &AppMain::setLiveMode);
     connect(ui->seeker_bar, &QSlider::sliderPressed, this, &AppMain::setReplayMode);
     connect(ui->seeker_bar, &QSlider::sliderReleased, this, &AppMain::setSeekerPosition);
@@ -241,6 +244,12 @@ void AppMain::init()
     connect(distanceObjectModel, &DistanceObjectModel::distanceObjectsUpdatedSig, this, &AppMain::distanceDataChanged);
     connect(distanceObjectModel, &DistanceObjectModel::deleteDistanceObjectSig, this, &AppMain::deleteDistanceId);
 
+    /*Fixed Distance Line*/
+    connect(ui->actionAdd_Fixed_Distance, &QAction::triggered, this, [&]() {
+		distanceDialog->setDistanceType(E_DISTANCE_TYPES::FIXED_DISTANCE);
+		openDistanceDialog();
+    });
+
     /**Configuring Teams Informations*/
     connect(teamsConfigDialog, &TeamsConfigManager::teamsConfigured, this, [&](QColor tAColor, std::string teamAName, QColor tBColor, std::string teamBName) {
         ui->teamAName->setText(QString::fromStdString(teamAName));
@@ -258,7 +267,8 @@ void AppMain::init()
     connect(teamsConfigDialog, &TeamsConfigManager::teamBConfigured, this, [&](QColor tBColor, std::string teamBName) {
         ui->teamBName->setText(QString::fromStdString(teamBName));
         teamBColor->setBrush(tBColor);
-        });
+    });
+
 
     setLiveMode();
 }

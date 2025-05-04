@@ -138,7 +138,6 @@ void PitchViewScene::clearAllPlotted()
 void PitchViewScene::plotPlayerSlot(PlayerItemWidget* player)
 {
 	int id = player->getTrackId();
-
 	this->addItem(player);
 	playersMap[id] = player;
 	connect(player, &PlayerItemWidget::updateClickedId, this, &PitchViewScene::selectedIdChanged);
@@ -153,7 +152,7 @@ void PitchViewScene::drawDistanceLines()
 	if (!distancePreviewLine.empty())
 	{
 		int previewP1 = distancePreviewLine["player1"], previewP2 = distancePreviewLine["player2"];
-		std::tuple<double, double> p1, p2;
+		QPointF p1, p2;
 		bool p1Found = false, p2Found = false;
 		auto lineColor = distancePreviewLine["lineColor"];
 
@@ -161,12 +160,12 @@ void PitchViewScene::drawDistanceLines()
 		{
 			if (item.first == previewP1)
 			{
-				p1 = item.second->getCoordinates();
+				p1 = item.second->mapToScene(item.second->boundingRect().center());
 				p1Found = true;
 			}
 			else if (item.first == previewP2)
 			{
-				p2 = item.second->getCoordinates();
+				p2 = item.second->mapToScene(item.second->boundingRect().center());
 				p2Found = true;
 			}
 
@@ -182,8 +181,7 @@ void PitchViewScene::drawDistanceLines()
 
 			previewDistanceLine = __drawDistanceLine__(p1, p2, QColor(lineColor[0], lineColor[1], lineColor[2]));
 			previewDistanceLine->setZValue(1);
-		}
-			
+		}	
 	}
 
 	if (!distanceObjects.empty())
@@ -192,19 +190,19 @@ void PitchViewScene::drawDistanceLines()
 		{
 			auto distanceInfo = item.second;
 			int p1 = distanceInfo["player1"], p2 = distanceInfo["player2"];
-			std::tuple<double, double> p1Coord, p2Coord;
+			QPointF p1Coord, p2Coord;
 			bool p1Found = false, p2Found = false;
 			auto lineColor = distanceInfo["lineColor"];
 			for (auto item : playersMap)
 			{
 				if (item.first == p1)
 				{
-					p1Coord = item.second->getCoordinates();
+					p1Coord = item.second->mapToScene(item.second->boundingRect().center());
 					p1Found = true;
 				}
 				else if (item.first == p2)
 				{
-					p2Coord = item.second->getCoordinates();
+					p2Coord = item.second->mapToScene(item.second->boundingRect().center());
 					p2Found = true;
 				}
 				if (p1Found && p2Found)
@@ -216,6 +214,7 @@ void PitchViewScene::drawDistanceLines()
 					this->removeItem(distanceLines[item.first]);
 				else
 					distanceLines[item.first] = nullptr;
+
 				distanceLines[item.first] = __drawDistanceLine__(p1Coord, p2Coord, QColor(lineColor[0], lineColor[1], lineColor[2]));
 				distanceLines[item.first]->setZValue(0);
 			}
@@ -223,14 +222,12 @@ void PitchViewScene::drawDistanceLines()
 	}
 }
 
-QGraphicsLineItem* PitchViewScene::__drawDistanceLine__(std::tuple<double, double> start, std::tuple<double, double> end, QColor color)
+QGraphicsLineItem* PitchViewScene::__drawDistanceLine__(QPointF start, QPointF end, QColor color)
 {
 	int offset = 10;
-	return addLine(QLineF(
-		std::get<0>(start) * 2 + offset, std::get<1>(start) * 2 + offset,
-		std::get<0>(end) * 2  + offset, std::get<1>(end) * 2 + offset),
-		QPen(color, 3)
-	);
+	QGraphicsLineItem* line = addLine(QLineF(start, end));
+	line->setPen(QPen(color, 3));
+	return line;
 }
 
 void PitchViewScene::addDistanceInfo(json distanceInfo)
@@ -493,6 +490,23 @@ void PlayerItemWidget::init()
 		QGraphicsPolygonItem* triangle = new QGraphicsPolygonItem(polygon, this);
 		triangle->setBrush(QBrush(QColorConstants::Blue));
 		triangle->setPen(QPen(QColorConstants::Blue));
+	}
+	else if (playerType == PLAYER_TYPE::PHANTOM) 
+	{
+		auto [x, y] = coordinates;
+		double t_width = 35, t_height = 25;
+		x = x + (width / 2);
+		y = y + (height / 2);
+		QPolygonF polygon({
+			QPointF(x - (t_width / 2), y - (t_height / 2)),
+			QPointF(x + (t_width / 2), y - (t_height / 2)),
+			QPointF(x, y + (t_height / 2))
+			});
+
+		QGraphicsPolygonItem* triangle = new QGraphicsPolygonItem(polygon, this);
+		triangle->setBrush(QBrush(QColorConstants::Blue));
+		triangle->setPen(QPen(QColorConstants::Blue));
+		triangle->setZValue(3);
 	}
 }
 

@@ -13,7 +13,8 @@ DistanceDialog::DistanceDialog(QWidget* parent)
 	player1Id(0),
 	player2Id(0),
 	currentPlayerId(0),
-	lineColor(Qt::gray)
+	lineColor(Qt::gray),
+	currentDistanceType(E_DISTANCE_TYPES::DYNAMIC_DISTANCE)
 {
 	ui->setupUi(this);
 	this->setModal(false);
@@ -83,17 +84,16 @@ void DistanceDialog::dialogAccepted()
 		data["player2"] = player2Id;
 		data["lineColor"] = std::vector<int>({ lineColor.red(), lineColor.green(), lineColor.blue() });
 		Q_EMIT distanceData(data);
-
 		resetState();
 	}
 	else if (player1Id == player2Id)
 	{
-		QMessageBox::critical(this, "Invalid Input", "Player 1 and Player 2 cannot be the same.");
+		QMessageBox::critical(this, "Invalid Input", "point 1 and point 2 cannot be the same.");
 		this->show();
 		return;
 	}
 	else {
-		QMessageBox::critical(this, "Invalid Input", "Please select both players.");
+		QMessageBox::critical(this, "Invalid Input", "Please select both points.");
 		this->show();
 		return;
 	}
@@ -121,7 +121,17 @@ void DistanceDialog::resetState()
 
 void DistanceDialog::showEvent(QShowEvent* evnt)
 {
-	
+	QDialog::showEvent(evnt);
+
+	if (currentDistanceType == E_DISTANCE_TYPES::DYNAMIC_DISTANCE)
+	{
+		ui->player1_btn->setText("Select Player 1");
+		ui->player2_btn->setText("Select Player 2");
+	}
+	else if(currentDistanceType == E_DISTANCE_TYPES::FIXED_DISTANCE) {
+		ui->player1_btn->setText("Place Point 1");
+		ui->player2_btn->setText("Place Point 2");
+	}
 }
 
 void DistanceDialog::selectedPlayer(int id)

@@ -37,6 +37,4 @@ void DistanceObjectModel::updateFrameData(json frameData)
 		json distanceObjects = frameData["distance_objects"];
 		Q_EMIT computedDistanceUpdate(distanceObjects);
 	}
-	
-	
 }
