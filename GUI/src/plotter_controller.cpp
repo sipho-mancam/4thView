@@ -5,7 +5,8 @@
 PlotterController::PlotterController(const QRect& scRect, QObject* parent)
 	:QObject(parent),
 	playerIds(40),
-	sceneRect(scRect)
+	sceneRect(scRect),
+	kickersId(-1)
 {
 	centerX = sceneRect.width() / 2;
 	centerY = sceneRect.height() / 2;
@@ -26,6 +27,22 @@ PlayerItemWidget* PlotterController::createPlayerItem()
 	playerIds += 1;
 	Q_EMIT playerCreated(playerItem);
 	Q_EMIT playerCreatedSig(playerItem->getTrackId(), { centerX, centerY });
+	return playerItem;
+}
+
+PlayerItemWidget* PlotterController::placeKicker()
+{
+	if (kickersId != -1)
+	{
+		kickerRejected(kickersId);
+	}
+
+	PlayerItemWidget* playerItem = new PlayerItemWidget(playerIds, { centerX, centerY }, PLAYER_TYPE::PLOTTED);
+	kickerItem = playerItem;
+	kickersId = playerIds;
+	playerIds += 1;
+	Q_EMIT playerCreated(playerItem);
+	Q_EMIT placeKicker(playerItem->getTrackId(), QPointF(centerX, centerY));
 	return playerItem;
 }
 
@@ -59,4 +76,15 @@ void PlotterController::clearAllPlotted()
 	createdPlayers.clear();
 	playerIds = 40;
 	Q_EMIT clearAllPlottedPlayersSig();
+}
+
+void PlotterController::kickerRejected(int id)
+{
+	if (kickerItem != nullptr)
+	{
+		delete kickerItem;
+		kickerItem = nullptr;
+	}
+	kickersId = -1;
+	Q_EMIT kickerRejectedSig(kickersId);
 }

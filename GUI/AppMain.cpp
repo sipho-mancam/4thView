@@ -23,9 +23,11 @@ AppMain::AppMain(QWidget *parent)
 	liveMode(true),
     seekingBack(false),
 	currentSliderPosition(0),
-	distanceObjectModel(new DistanceObjectModel(this))
+	distanceObjectModel(new DistanceObjectModel(this)),
+    freeKickDialog(new FreeKickSideDialog(this))
 {
     ui->setupUi(this);
+
     init(); 
 }
 
@@ -37,6 +39,7 @@ AppMain::~AppMain()
 	delete teamsConfigDialog;
     delete ui;
     delete systemEventsSender;
+    delete freeKickDialog;
 }
 
 void AppMain::closeEvent(QCloseEvent* e)
@@ -176,7 +179,7 @@ void AppMain::init()
         selectedSportingCode->setChecked(false);
         selectedSportingCode = ui->actionSoccer;
         selectedSportingCode->setChecked(true);
-        });
+    });
 
 
     /** Plotted Player Control **/
@@ -269,6 +272,20 @@ void AppMain::init()
         teamBColor->setBrush(tBColor);
     });
 
+
+    /**Placing the Kicker in the Scene*/
+    connect(ui->actionPlace_Kicker, &QAction::triggered, [&]() {
+		plotterController->placeKicker();
+        freeKickDialog->show();
+    });
+
+	connect(freeKickDialog, &FreeKickSideDialog::rejected, [&]() {
+        int id = plotterController->getKickersId();
+        PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
+		cS->deletePlayer(id);
+
+        plotterController->kickerRejected(id);
+	});
 
     setLiveMode();
 }

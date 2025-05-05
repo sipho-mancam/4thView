@@ -20,6 +20,7 @@
 #include "plotter_controller.hpp"
 #include "stream_buffer_manipulator.hpp"
 #include "system_events_sender.hpp"
+#include "models/FreeKickDialog.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -78,6 +79,7 @@ private:
     int currentSliderPosition;
     PlotterController* plotterController;
 	SystemEventsSender* systemEventsSender;
+    FreeKickSideDialog* freeKickDialog;
 
 private slots:
 

@@ -122,6 +122,7 @@ public:
 
 	void updateScene();
 	void clearAllPlotted();
+	void deletePlayer(int trackId);
 	void plotPlayerSlot(PlayerItemWidget* player);
 	void drawDistanceLines();
 	QGraphicsLineItem* __drawDistanceLine__(QPointF start, QPointF end, QColor color);

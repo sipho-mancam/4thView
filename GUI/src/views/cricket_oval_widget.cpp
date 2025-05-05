@@ -135,6 +135,18 @@ void PitchViewScene::clearAllPlotted()
 	Q_EMIT clearAllPlottedSig();
 }
 
+void PitchViewScene::deletePlayer(int trackId)
+{
+	if (playersMap.contains(trackId))
+	{
+		PlayerItemWidget* player = playersMap[trackId];
+		this->removeItem(player);
+		playersMap.erase(trackId);
+		plottedIds.erase(std::remove(plottedIds.begin(), plottedIds.end(), trackId), plottedIds.end());
+		//delete player;
+	}
+}
+
 void PitchViewScene::plotPlayerSlot(PlayerItemWidget* player)
 {
 	int id = player->getTrackId();
@@ -682,7 +694,7 @@ QColor __state2text__(PlayerItemWidget::E_STATE state)
 	{
 		return QColorConstants::White;
 	}
-
+	
 	return QColorConstants::Black;
 	
 }

@@ -88,6 +88,9 @@
     <ClCompile Include="src\system_events_sender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\models\FreeKickDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main_styles.qss" />
@@ -107,6 +110,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="include\models\teams_configuration.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="include\models\free_kick_side_dialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -133,6 +139,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\models\ui_teams_configuration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\models\ui_free_kick_side_dialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -197,6 +206,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\system_events_sender.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\models\FreeKickDialog.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

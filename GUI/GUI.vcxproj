@@ -81,7 +81,8 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>
+      </SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -106,6 +107,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\models\FreeKickDialog.cpp" />
     <ClCompile Include="src\system_events_sender.cpp" />
     <ClCompile Include="src\plotter_controller.cpp" />
     <ClCompile Include="src\teams_config_dialog.cpp" />
@@ -129,6 +131,7 @@
     <ClCompile Include="main.cpp" />
     <QtUic Include="include\models\distance_widget.ui" />
     <QtUic Include="include\models\event_proc_giu.ui" />
+    <QtUic Include="include\models\free_kick_side_dialog.ui" />
     <QtUic Include="include\models\teams_configuration.ui" />
     <QtUic Include="include\models\Widget.ui" />
     <QtUic Include="output_console.ui" />
@@ -147,7 +150,9 @@
     <QtMoc Include="include\models\distance_object_model.hpp" />
     <QtMoc Include="include\models\stored_events_manager.hpp" />
     <QtMoc Include="include\models\teams_config_dialog.hpp" />
+    <QtMoc Include="include\models\FreeKickDialog.hpp" />
     <ClInclude Include="include\models\ui_distance_widget.h" />
+    <ClInclude Include="include\models\ui_free_kick_side_dialog.h" />
     <ClInclude Include="include\models\ui_teams_configuration.h" />
     <QtMoc Include="include\plotter_controller.hpp" />
     <QtMoc Include="include\stream_buffer_manipulator.hpp" />
