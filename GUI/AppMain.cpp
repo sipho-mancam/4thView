@@ -283,9 +283,15 @@ void AppMain::init()
         int id = plotterController->getKickersId();
         PitchViewScene* cS = static_cast<PitchViewScene*>(scene);
 		cS->deletePlayer(id);
-
         plotterController->kickerRejected(id);
 	});
+	connect(plotterController, &PlotterController::placeKickerSig, freeKickDialog, &FreeKickSideDialog::kickerPlacedSlot);
+    connect(freeKickDialog, &FreeKickSideDialog::kickerPlacedSig, this, [&](int kickerId, QPointF kickerCoordinates, QPointF sideCoordinates) {
+		if (systemEventsSender)
+		{
+			systemEventsSender->kickerPlaced(kickerId, kickerCoordinates, sideCoordinates);
+		}
+    });
 
     setLiveMode();
 }

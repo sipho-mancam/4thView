@@ -26,7 +26,7 @@ signals:
 	void playerDeleted(int id);
 	void clearAllPlottedPlayersSig();
 	void playerCreatedSig(int trackId, std::vector<double>coordinates);
-	void placeKicker(int trackId, QPointF coordinates);
+	void placeKickerSig(int trackId, QPointF coordinates);
 	void kickerRejectedSig(int id);
 
 private:

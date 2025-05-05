@@ -40,6 +40,7 @@
 #define PI_REMOVE_PLAYER "remove_player"
 #define PI_UPDATE_PLAYER "update_player"
 #define PI_CLEAR_ALL_PLAYERS "clear_all"
+#define PI_PLACE_KICKER "place_kicker"
 
 using json = nlohmann::json;
 using namespace nlohmann::literals;

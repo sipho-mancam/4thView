@@ -87,6 +87,27 @@ void SystemEventsSender::clearAllPlottedPlayers()
 	__send_event__(topic, e);
 }
 
+void SystemEventsSender::kickerPlaced(int kickerId, QPointF kickerCoordinates, QPointF sideCoordinates)
+{
+	KEvents::Event e;
+	json eventData, payload;
+	eventData["state_def"] = KEvents::STATES_DEF::PLAYER;
+	payload["instruction"] = PI_PLACE_KICKER;
+	payload["data"] = json();
+	payload["data"]["kicker_id"] = kickerId;
+	payload["data"]["kicker_coordinates"] = std::vector<double>({ kickerCoordinates.x(), kickerCoordinates.y() });
+	payload["data"]["side_coordinates"] = std::vector<double>({ sideCoordinates.x(), sideCoordinates.y() });
+	eventData["data"] = payload;
+
+	e.setEventData(eventData);
+	e.setSourceModule("gui");
+	e.setEventName(EN_STATE_MOD);
+	e.setEventType(KEvents::E_GUI);
+	std::string topic = config["DataAggregator"]["serviceTopic"];
+
+	__send_event__(topic, e);
+}
+
 void SystemEventsSender::__send_event__(std::string topic, KEvents::Event e)
 {
 	eventsMan->sendEvent(topic, e);

@@ -38,10 +38,15 @@ public:
 	~FreeKickSideDialog();
 
 	virtual void showEvent(QShowEvent* event) override;
+
+	void kickerPlacedSlot(int trackId, QPointF coordinates);
 signals:
 	void selectedSideSig(E_SIDE s);
+	void kickerPlacedSig(int trackId, QPointF kickerCoordinates, QPointF sideCoordinates);
 
 private:
 	Ui::freeKickSideDialog* ui;
 	E_SIDE selectedSide;
+	int kickerId;
+	QPointF kickerCoordinates;
 };

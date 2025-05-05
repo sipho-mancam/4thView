@@ -15,6 +15,7 @@ public:
 	void createPlayer(int trackId, QPointF itemPositionNormalized);
 	void sendEvent(std::string topic, KEvents::Event e);
 	void clearAllPlottedPlayers();
+	void kickerPlaced(int kickerId, QPointF kickerCoordinates, QPointF sideCoordinates);
 	
 private:
 	void __send_event__(std::string topic, KEvents::Event e);

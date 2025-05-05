@@ -42,7 +42,7 @@ PlayerItemWidget* PlotterController::placeKicker()
 	kickersId = playerIds;
 	playerIds += 1;
 	Q_EMIT playerCreated(playerItem);
-	Q_EMIT placeKicker(playerItem->getTrackId(), QPointF(centerX, centerY));
+	Q_EMIT placeKickerSig(playerItem->getTrackId(), QPointF(centerX, centerY));
 	return playerItem;
 }
 

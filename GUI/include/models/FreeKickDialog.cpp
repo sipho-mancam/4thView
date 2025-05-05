@@ -17,7 +17,19 @@ FreeKickSideDialog::FreeKickSideDialog(QWidget* parent)
 			this->show();
 		}
 		else {
+
+			std::cout << kickerId << " : " << kickerCoordinates.x() << " , " << kickerCoordinates.y() << std::endl;
 			Q_EMIT selectedSideSig(selectedSide);
+			QPointF sideCoordinates;
+			if (selectedSide == E_SIDE::LEFT_SIDE)
+			{
+				sideCoordinates = QPointF(0, 0.5);
+			}
+			else if (selectedSide == E_SIDE::RIGHT_SIDE)
+			{
+				sideCoordinates = QPointF(1, 0.5);
+			}
+			Q_EMIT kickerPlacedSig(kickerId, kickerCoordinates, sideCoordinates);
 		}
 	});
 
@@ -58,6 +70,12 @@ void FreeKickSideDialog::showEvent(QShowEvent* event)
 	QDialog::showEvent(event);
 	selectedSide = E_SIDE::NONE;
 
+}
+
+void FreeKickSideDialog::kickerPlacedSlot(int trackId, QPointF coordinates)
+{
+	kickerId = trackId;
+	kickerCoordinates = coordinates;
 }
 
 PitchSideItem::PitchSideItem(E_SIDE pSide, QGraphicsItem* parent)
