@@ -38,6 +38,7 @@ PlayerItemWidget* PlotterController::placeKicker()
 	}
 
 	PlayerItemWidget* playerItem = new PlayerItemWidget(playerIds, { centerX, centerY }, PLAYER_TYPE::PLOTTED);
+	playerItem->setPlayerModifiers(PLAYER_MODIFIERS::KICKER_MODIFIER);
 	kickerItem = playerItem;
 	kickersId = playerIds;
 	playerIds += 1;

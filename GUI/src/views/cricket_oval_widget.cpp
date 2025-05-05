@@ -458,7 +458,9 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, PLA
 	playerPosition(E_POSITION::FIELDER),
 	width(20), height(20),
 	playerType(pt),
-	playerPositionChanged(false)
+	playerPositionChanged(false),
+	triangle(nullptr),
+	playerModifiers(PLAYER_MODIFIERS::NONE_MODIFIER)
 {
 	const auto [x, y] = coordinates;
 	QRect rect(x, y, width, height);
@@ -501,9 +503,17 @@ void PlayerItemWidget::init()
 			QPointF(x, y + (t_height / 2))
 		});
 
-		QGraphicsPolygonItem* triangle = new QGraphicsPolygonItem(polygon, this);
-		triangle->setBrush(QBrush(QColorConstants::Blue));
-		triangle->setPen(QPen(QColorConstants::Blue));
+		triangle = new QGraphicsPolygonItem(polygon, this);
+		if (playerModifiers != PLAYER_MODIFIERS::NONE_MODIFIER && (playerModifiers & PLAYER_MODIFIERS::KICKER_MODIFIER))
+		{
+			triangle->setBrush(QBrush(QColorConstants::Red));
+			triangle->setPen(QPen(QColorConstants::Red));
+		}
+		else {
+			triangle->setBrush(QBrush(QColorConstants::Blue));
+			triangle->setPen(QPen(QColorConstants::Blue));
+		}
+		
 	}
 	else if (playerType == PLAYER_TYPE::PHANTOM) 
 	{
@@ -576,6 +586,14 @@ void PlayerItemWidget::updateGraphic()
 
 		this->setBrush(QBrush(__state2color__(state)));
 		this->setPen(__state2pen__(state));
+	}
+	if (!triangle)
+		return;
+
+	if (playerModifiers != PLAYER_MODIFIERS::NONE_MODIFIER && (playerModifiers & PLAYER_MODIFIERS::KICKER_MODIFIER))
+	{
+		triangle->setBrush(QBrush(QColorConstants::Red));
+		triangle->setPen(QPen(QColorConstants::Red));
 	}
 }
 

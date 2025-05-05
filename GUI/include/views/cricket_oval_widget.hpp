@@ -27,6 +27,11 @@ enum PLAYER_TYPE
 	PHANTOM = 2
 };
 
+enum PLAYER_MODIFIERS { // this modifiers add extra looks to the player without really affecting how they interact with the scene
+	NONE_MODIFIER = 0xFFFF,
+	KICKER_MODIFIER = 0x0001
+};
+
 class PlayerItemWidget : public QObject, public QGraphicsEllipseItem
 {
 	Q_OBJECT
@@ -82,6 +87,7 @@ public:
 
 	void setPlayerType(PLAYER_TYPE type) { playerType = type; }
 	PLAYER_TYPE getPlayerType() { return playerType; }
+	void setPlayerModifiers(PLAYER_MODIFIERS modifiers) { playerModifiers = modifiers; }
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
@@ -98,11 +104,13 @@ private:
 	QPointF currentPlayerPosition;
 	PlayerItemWidget::E_STATE state;
 	QGraphicsTextItem* idText;
+	QGraphicsPolygonItem * triangle;
 	int playerPosition;
 	double width, height;
 	int trackId;
 	bool playerPositionChanged;
 	PLAYER_TYPE playerType;
+	PLAYER_MODIFIERS playerModifiers;
 	
 };
 
