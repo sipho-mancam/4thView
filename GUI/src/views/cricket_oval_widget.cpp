@@ -137,6 +137,7 @@ void PitchViewScene::clearAllPlotted()
 
 void PitchViewScene::deletePlayer(int trackId)
 {
+	std::cout << "Player with ID: " << trackId << " deleted.\n";
 	if (playersMap.contains(trackId))
 	{
 		PlayerItemWidget* player = playersMap[trackId];
@@ -144,6 +145,7 @@ void PitchViewScene::deletePlayer(int trackId)
 		playersMap.erase(trackId);
 		plottedIds.erase(std::remove(plottedIds.begin(), plottedIds.end(), trackId), plottedIds.end());
 		//delete player;
+		std::cout << "Player with ID: " << trackId << " deleted.\n";
 	}
 }
 

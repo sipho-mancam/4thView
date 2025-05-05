@@ -80,11 +80,11 @@ void PlotterController::clearAllPlotted()
 
 void PlotterController::kickerRejected(int id)
 {
+	Q_EMIT kickerRejectedSig(kickersId);
+	kickersId = -1;
 	if (kickerItem != nullptr)
 	{
 		delete kickerItem;
 		kickerItem = nullptr;
 	}
-	kickersId = -1;
-	Q_EMIT kickerRejectedSig(kickersId);
 }

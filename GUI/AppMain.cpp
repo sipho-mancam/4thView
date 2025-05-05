@@ -293,6 +293,8 @@ void AppMain::init()
 		}
     });
 
+	connect(plotterController, &PlotterController::kickerRejectedSig, reinterpret_cast<PitchViewScene*>(scene), &PitchViewScene::deletePlayer);
+
     setLiveMode();
 }
 

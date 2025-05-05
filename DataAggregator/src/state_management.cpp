@@ -46,6 +46,14 @@ void StateManager::updatePlottedPlayers(json payload)
 		// 2. We are modifying an existing player (Position)
 		int trackId = payload["data"]["track_id"];
 		std::vector<double> coordinates = payload["data"]["coordinates"];
+
+		if (!kickerObject.empty() && kickerObject["id"] == trackId)
+		{
+			kickerObject["coordinates"] = coordinates;
+			std::cout << "Kicker Coordinates updated: " << kickerObject << std::endl;
+			return;
+		}
+		
 		for (auto& player : plottedPlayers)
 		{
 			if (player["track_id"] == trackId)
@@ -81,6 +89,15 @@ void StateManager::updatePlottedPlayers(json payload)
 		}
 		plottedPlayers.clear();
 		std::cout << "Cleared all players" << std::endl;
+		kickerObject = json();
+	}
+	else if (instruction == PI_PLACE_KICKER)
+	{
+		int k_id = payload["data"]["kicker_id"];
+		kickerObject["id"] = k_id;
+		kickerObject["coordinates"] = payload["data"]["kicker_coordinates"];
+		kickerObject["side_coordinates"] = payload["data"]["side_coordinates"];
+		std::cout << "Placed kicker: " << kickerObject << std::endl;
 	}
 }
 
@@ -177,6 +194,16 @@ json StateManager::updateTrackData(json frame)
 			{
 				frame["distance_objects"] = computedDistances;
 			}
+
+			if (!kickerObject.empty())
+			{
+				std::vector<double> coordinates = kickerObject["coordinates"];
+				std::vector<double> sideCoordinates = kickerObject["side_coordinates"];
+				double dist = sqrt(pow((coordinates[0] - sideCoordinates[0]) * fieldWidth, 2) + pow((coordinates[1] - sideCoordinates[1]) * fieldHeight, 2));
+				kickerObject["distance"] = dist;
+			}
+
+			frame["kicker"] = kickerObject;
 		}
 	}
 	

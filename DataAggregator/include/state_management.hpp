@@ -28,7 +28,7 @@ private:
 	std::map<int, json> playerPositions;
 
 	std::vector<json> plottedPlayers;
-
+	json kickerObject;
 	double fieldWidth, fieldHeight;
 
 	void __addStateInfo__(std::map<int, json>& _map, int id, json& data);
