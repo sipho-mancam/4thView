@@ -52,6 +52,8 @@ int main()
             // This is a cheat, hacking the callback system to execute events on our own.
             // But should be common for data generators
             //outputCb->execute(e);
+			//std::cout << e.getEventData() << std::endl;
+
 			eventManager.sendEvent(inputManagerTopic, e);
 			execTimeEnd = std::chrono::steady_clock::now();
 			frameCounter += 1; 

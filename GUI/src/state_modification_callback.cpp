@@ -60,6 +60,20 @@ void StateModificationCb::playerStateChanged(json stateObject)
 			e.setEventData(stateEventObject);
 			eventProducerPtr->sendMessage(procAddress, e);
 		}
+
+		if (stateObject.contains("team"))
+		{
+			KEvents::Event e;
+			e.setEventName(EN_STATE_MOD);
+			e.setSourceModule("gui");
+			e.setEventType(KEvents::E_GUI);
+
+			json stateEventObject;
+			stateEventObject["state_def"] = KEvents::STATES_DEF::TEAM;
+			stateEventObject["data"] = stateObject["team"];
+			e.setEventData(stateEventObject);
+			eventProducerPtr->sendMessage(procAddress, e);
+		}
 	}
 
 	std::cout << "State Modified in some way ..." << std::endl;

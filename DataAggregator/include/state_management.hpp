@@ -26,6 +26,7 @@ private:
 	std::map<int, json> playerAnnotions;
 	std::map<int, json> playerHighlight;
 	std::map<int, json> playerPositions;
+	std::map<int, int> teamAssignment;
 
 	std::vector<json> plottedPlayers;
 	json kickerObject;

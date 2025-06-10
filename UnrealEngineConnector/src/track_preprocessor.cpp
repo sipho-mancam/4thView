@@ -30,5 +30,23 @@ json CoordinateSpaceTransform::convertFromFrameData(json frameData)
 	std::vector<json> tracks = frameData.at("tracks");
 	tracks = convertBatch(tracks);
 	frameData["tracks"] = tracks;
+
+	if (frameData.contains("kicker"))
+	{
+		json& kicker = frameData["kicker"];
+		if (kicker.contains("coordinates"))
+		{
+			std::tuple<double, double> coordinates = kicker["coordinates"];
+			kicker["coordinates"] = CoordinateSpaceTransform::screen2Catersian_n(coordinates);
+		}
+		if (kicker.contains("side_coordinates"))
+		{
+			std::tuple<double, double> coordinates = kicker["side_coordinates"];
+			kicker["side_coordinates"] = CoordinateSpaceTransform::screen2Catersian_n(coordinates);
+		}
+
+		frameData["kicker"] = kicker;
+	}
+
 	return frameData;
 }

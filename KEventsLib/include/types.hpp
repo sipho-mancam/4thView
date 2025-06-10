@@ -111,7 +111,8 @@ namespace KEvents
 		HIGHLIGHT = 2,
 		DISTANCE = 3,
 		POSITION = 4,
-		PLAYER = 5
+		PLAYER = 5,
+		TEAM = 6
 	};
 	
 	enum STREAM_TYPES {

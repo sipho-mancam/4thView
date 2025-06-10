@@ -1,10 +1,10 @@
 #include <views/player_state_mod.hpp>
 #include <iostream>
-
+#include "ui_AppMain.h"
 
 PlayerStateModifierGroup::PlayerStateModifierGroup(QCheckBox* _highlight, QLineEdit* annotText, 
 	QCheckBox* _activateAnnotation, QComboBox* position, 
-	QPushButton* _updateButton, QObject *parent)
+	QPushButton* _updateButton, Ui::AppMainClass* ui_p, QObject *parent)
 
 	:QObject(parent),
 	highlight(_highlight),
@@ -12,7 +12,8 @@ PlayerStateModifierGroup::PlayerStateModifierGroup(QCheckBox* _highlight, QLineE
 	activateAnnotation(_activateAnnotation),
 	positionInfo(position),
 	updateButton(_updateButton),
-	playerId(-1)
+	playerId(-1),
+	ui(ui_p)
 {
 	_updateButton->connect(_updateButton, &QPushButton::clicked, this,
 		&PlayerStateModifierGroup::updateState);
@@ -27,12 +28,11 @@ void PlayerStateModifierGroup::updateState()
 	
 	// read the GUI state of a highlight
 	
-	
-		json highlighObject;
-		highlighObject["id"] = playerId;
-		highlighObject["activate"] = highlight->isChecked();
-		highlighObject["set"] = highlight->isChecked();
-		stateObject["highlight"] = highlighObject;
+	json highlighObject;
+	highlighObject["id"] = playerId;
+	highlighObject["activate"] = highlight->isChecked();
+	highlighObject["set"] = highlight->isChecked();
+	stateObject["highlight"] = highlighObject;
 	
 
 	if (!annotationText->text().isEmpty())
@@ -67,6 +67,24 @@ void PlayerStateModifierGroup::updateState()
 		positionObject["position"] = pos;
 		positionObject["set"] = true;
 		stateObject["position"] = positionObject;
+	}
+
+	if (ui)
+	{
+		json teamObject;
+		if (ui->teamARadio->isChecked())
+		{
+			teamObject["id"] = playerId;
+			teamObject["team"] = 7;
+			teamObject["set"] = true;
+		}
+		else {
+			teamObject["id"] = playerId;
+			teamObject["team"] = 8;
+			teamObject["set"] = true;
+		}
+
+		stateObject["team"] = teamObject;
 	}
 	
 	Q_EMIT playerStateChanged(stateObject);

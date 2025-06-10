@@ -24,7 +24,9 @@ AppMain::AppMain(QWidget *parent)
     seekingBack(false),
 	currentSliderPosition(0),
 	distanceObjectModel(new DistanceObjectModel(this)),
-    freeKickDialog(new FreeKickSideDialog(this))
+    freeKickDialog(new FreeKickSideDialog(this)),
+	skinColorRadioGroup(new QButtonGroup(this)),
+	teamsRadioGroup(new QButtonGroup(this))
 {
     ui->setupUi(this);
 
@@ -153,7 +155,7 @@ void AppMain::init()
         ui->lineEdit,
         ui->checkBox_2,
         ui->comboBox,
-        ui->pushButton
+        ui->pushButton, ui
     );
 
     distanceObjectsGroup = new DistanceObjectsManager(
@@ -162,7 +164,8 @@ void AppMain::init()
     );
 
     storedEventsManager = new StoredEventsViewManager(ui->storedEventsListWidget, this);
-
+	teamsRadioGroup->addButton(ui->teamARadio);
+	teamsRadioGroup->addButton(ui->teamBRadio);
 
     /**Select Current Sporting Code*/
     connect(ui->actionCricket, &QAction::triggered, this, [&]() {

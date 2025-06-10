@@ -21,6 +21,7 @@
 #include "stream_buffer_manipulator.hpp"
 #include "system_events_sender.hpp"
 #include "models/FreeKickDialog.hpp"
+#include <QButtonGroup>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AppMainClass; };
@@ -80,6 +81,7 @@ private:
     PlotterController* plotterController;
 	SystemEventsSender* systemEventsSender;
     FreeKickSideDialog* freeKickDialog;
+	QButtonGroup* teamsRadioGroup, * skinColorRadioGroup;
 
 private slots:
 

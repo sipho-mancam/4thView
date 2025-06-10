@@ -699,6 +699,9 @@ QDockWidget{
               <property name="checked">
                <bool>true</bool>
               </property>
+              <property name="autoExclusive">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
@@ -706,12 +709,18 @@ QDockWidget{
               <property name="text">
                <string>W</string>
               </property>
+              <property name="autoExclusive">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QRadioButton" name="rb_brown">
               <property name="text">
                <string>B</string>
+              </property>
+              <property name="autoExclusive">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -766,18 +775,32 @@ QDockWidget{
          </layout>
         </item>
         <item>
-         <widget class="QComboBox" name="team">
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
           <item>
-           <property name="text">
-            <string>Team A</string>
-           </property>
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Select Team</string>
+            </property>
+           </widget>
           </item>
           <item>
-           <property name="text">
-            <string>Team B</string>
-           </property>
+           <widget class="QRadioButton" name="teamARadio">
+            <property name="text">
+             <string>Team A</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
-         </widget>
+          <item>
+           <widget class="QRadioButton" name="teamBRadio">
+            <property name="text">
+             <string>Team B</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QPushButton" name="pushButton">

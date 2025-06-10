@@ -133,6 +133,10 @@ json StateManager::updateTrackData(json frame)
 				{
 					track["position"] = playerPositions[trackId];
 				}
+				if (teamAssignment.contains(trackId))
+				{
+					track["mode"] = teamAssignment[trackId];
+				}
 				else {
 					json pos;
 					pos["position"] = KEvents::EPLAYER_POSITIONS::FIELDER;
@@ -193,18 +197,18 @@ json StateManager::updateTrackData(json frame)
 			if (!computedDistances.empty())
 			{
 				frame["distance_objects"] = computedDistances;
-			}
-
-			if (!kickerObject.empty())
-			{
-				std::vector<double> coordinates = kickerObject["coordinates"];
-				std::vector<double> sideCoordinates = kickerObject["side_coordinates"];
-				double dist = sqrt(pow((coordinates[0] - sideCoordinates[0]) * fieldWidth, 2) + pow((coordinates[1] - sideCoordinates[1]) * fieldHeight, 2));
-				kickerObject["distance"] = dist;
-			}
-
-			frame["kicker"] = kickerObject;
+			}	
 		}
+		/* Add Free-Kick Kicker information*/
+		if (!kickerObject.empty())
+		{
+			std::vector<double> coordinates = kickerObject["coordinates"];
+			std::vector<double> sideCoordinates = kickerObject["side_coordinates"];
+			double dist = sqrt(pow((coordinates[0] - sideCoordinates[0]) * fieldWidth, 2) + pow((coordinates[1] - sideCoordinates[1]) * fieldHeight, 2));
+			kickerObject["distance"] = dist;
+		}
+
+		frame["kicker"] = kickerObject;
 	}
 	
 	return frame;
@@ -240,6 +244,11 @@ void StateManager::updateState(json stateInfo)
 		std::cout << data << std::endl;
 		updatePlottedPlayers(data);
 		std::cout << "Modified Player: " << data << std::endl;
+	}
+	else if (stateInfo["state_def"] == KEvents::STATES_DEF::TEAM)
+	{
+		teamAssignment[stateInfo["data"]["id"]] = stateInfo["data"]["team"];
+		std::cout << "Modifed Team Information: " << stateInfo["data"] << std::endl;
 	}
 
 	

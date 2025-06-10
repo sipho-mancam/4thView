@@ -9,7 +9,12 @@
 #include <kevents.hpp>
 
 
+
 using json = nlohmann::json;
+
+namespace Ui {
+	class AppMainClass;
+}
 
 class PlayerStateModifierGroup : public QObject
 {
@@ -18,7 +23,7 @@ class PlayerStateModifierGroup : public QObject
 public:
 	PlayerStateModifierGroup(QCheckBox* highlight, QLineEdit* annotText, 
 		QCheckBox* activateAnnotation, QComboBox* position,
-		QPushButton* _updateButton, QObject* parent=(nullptr));
+		QPushButton* _updateButton, Ui::AppMainClass *ui=nullptr, QObject* parent=(nullptr));
 
 	void updateState();
 	json getCurrentState();
@@ -64,6 +69,5 @@ private:
 	json playerState, stateObject;
 	int playerId;
 
-
-
+	Ui::AppMainClass* ui;
 };
