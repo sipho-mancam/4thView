@@ -29,7 +29,6 @@ AppMain::AppMain(QWidget *parent)
 	teamsRadioGroup(new QButtonGroup(this))
 {
     ui->setupUi(this);
-
     init(); 
 }
 
@@ -166,6 +165,9 @@ void AppMain::init()
     storedEventsManager = new StoredEventsViewManager(ui->storedEventsListWidget, this);
 	teamsRadioGroup->addButton(ui->teamARadio);
 	teamsRadioGroup->addButton(ui->teamBRadio);
+
+    teamAColor->setBrush(QBrush(QColor::fromRgb(231, 199, 31)));
+	teamBColor->setBrush(QBrush(QColor::fromRgb(243, 243, 243)));
 
     /**Select Current Sporting Code*/
     connect(ui->actionCricket, &QAction::triggered, this, [&]() {

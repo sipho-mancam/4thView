@@ -88,6 +88,7 @@ public:
 	void setPlayerType(PLAYER_TYPE type) { playerType = type; }
 	PLAYER_TYPE getPlayerType() { return playerType; }
 	void setPlayerModifiers(PLAYER_MODIFIERS modifiers) { playerModifiers = modifiers; }
+	void setTeam(int teamId) { team = teamId; }
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
@@ -105,7 +106,7 @@ private:
 	PlayerItemWidget::E_STATE state;
 	QGraphicsTextItem* idText;
 	QGraphicsPolygonItem * triangle;
-	int playerPosition;
+	int playerPosition, team;
 	double width, height;
 	int trackId;
 	bool playerPositionChanged;

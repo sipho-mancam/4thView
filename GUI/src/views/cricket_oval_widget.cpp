@@ -96,6 +96,14 @@ void PitchViewScene::updateId(int id, json data)
 			int pos = data["position"]["position"];
 			player->setPosition(pos);
 		}
+
+		if (data.contains("mode"))
+		{
+			if (data["mode"] == 7 || data["mode"] == 8)
+			{
+				player->setTeam(data["mode"]);
+			}
+		}
 		player->updateGraphic();
 	}
 	else { // we need to create the object for this new ID.
@@ -460,7 +468,8 @@ PlayerItemWidget::PlayerItemWidget(int id, std::tuple<double, double> coord, PLA
 	playerType(pt),
 	playerPositionChanged(false),
 	triangle(nullptr),
-	playerModifiers(PLAYER_MODIFIERS::NONE_MODIFIER)
+	playerModifiers(PLAYER_MODIFIERS::NONE_MODIFIER),
+	team(7)
 {
 	const auto [x, y] = coordinates;
 	QRect rect(x, y, width, height);
@@ -583,9 +592,22 @@ void PlayerItemWidget::updateGraphic()
 		}
 	}
 	else {
-
-		this->setBrush(QBrush(__state2color__(state)));
+	
+		if (team == 7)
+		{
+			QColor col(QColor::fromRgb(231, 199, 31));
+			this->setBrush(QBrush(col));
+			this->setPen(QPen(col, 1));
+		}
+		else if (team == 8)
+		{
+			QColor col = QColor::fromRgb(243, 243, 243);
+			this->setBrush(QBrush(col));
+			this->setPen(QPen(col, 1));
+		}
+		
 		this->setPen(__state2pen__(state));
+		
 	}
 	if (!triangle)
 		return;
