@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <numbers>
 
 using json = nlohmann::json;
 
@@ -33,4 +34,6 @@ private:
 	double fieldWidth, fieldHeight;
 
 	void __addStateInfo__(std::map<int, json>& _map, int id, json& data);
+
+	float __calculateKickerAngleToGoal();
 };

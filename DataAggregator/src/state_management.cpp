@@ -51,6 +51,7 @@ void StateManager::updatePlottedPlayers(json payload)
 		{
 			kickerObject["coordinates"] = coordinates;
 			std::cout << "Kicker Coordinates updated: " << kickerObject << std::endl;
+			__calculateKickerAngleToGoal();
 			return;
 		}
 		
@@ -97,6 +98,7 @@ void StateManager::updatePlottedPlayers(json payload)
 		kickerObject["id"] = k_id;
 		kickerObject["coordinates"] = payload["data"]["kicker_coordinates"];
 		kickerObject["side_coordinates"] = payload["data"]["side_coordinates"];
+		__calculateKickerAngleToGoal();
 		std::cout << "Placed kicker: " << kickerObject << std::endl;
 	}
 }
@@ -266,4 +268,27 @@ void StateManager::__addStateInfo__(std::map<int, json>& _map, int id, json& dat
 	// other wise remove the object from the map
 	if(_map.contains(id))
 		_map.erase(id);
+}
+
+float StateManager::__calculateKickerAngleToGoal()
+{
+	if(kickerObject.empty())
+		return 0.0f;
+
+	kickerObject["angle"] = 0.0f; // Reset angle to 0
+
+	std::vector<double> coordinates = kickerObject["coordinates"];
+	std::vector<double> sideCoordinates = kickerObject["side_coordinates"];
+	if (coordinates.empty() || sideCoordinates.empty())
+		return 0.0f;
+
+	if (sideCoordinates[0] == coordinates[0] || sideCoordinates[1] == coordinates[1])
+		return 0.0f;
+
+	float hypotenuse = sqrt(pow((coordinates[0] - sideCoordinates[0]), 2) + pow((coordinates[1] - sideCoordinates[1]), 2));
+	float opposite = abs(coordinates[1] - sideCoordinates[1]);
+	float angle = asin(opposite / hypotenuse);
+	float angleDegrees = angle * (180.0f/std::numbers::pi_v<float>);
+	kickerObject["angle"] = angleDegrees;
+	return angleDegrees;
 }
